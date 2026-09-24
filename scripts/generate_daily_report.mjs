@@ -29,7 +29,7 @@ async function callGemini(prompt, isJson = false) {
   if (!GEMINI_API_KEY) return isJson ? { summary: "API 키 누락", topNewsIndex: [0, 1] } : "API 키 누락으로 인한 더미 데이터입니다.";
   
   try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -217,6 +217,7 @@ async function main() { try {
   const outPath = path.join(process.cwd(), 'src', 'data', 'latest_report.json');
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, JSON.stringify(report, null, 2), "utf-8"); } catch(err) { console.error("FATAL ERROR:", err); const outPath = path.join(process.cwd(), "src", "data", "latest_report.json"); fs.writeFileSync(outPath, JSON.stringify({date: new Date().toISOString(), section1: {summary: "ERROR: " + err.message + " " + err.stack}})); process.exit(0); } } main();
+
 
 
 
