@@ -1,0 +1,8 @@
+{
+  "stocks": [
+    { "name": "삼성전자", "code": "005930", "type": "major" },
+    { "name": "SK하이닉스", "code": "000660", "type": "major" },
+    { "name": "현대차", "code": "005380", "type": "interest" }
+  ],
+  "scraps": []
+}

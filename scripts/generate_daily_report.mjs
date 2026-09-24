@@ -4,12 +4,11 @@ import path from 'path';
 // GitHub Secrets에서 주입될 Gemini API 키
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-// 어머님의 주요 종목 및 관심 종목 리스트 (추후 외부 설정 파일로 분리 가능)
-const STOCKS = [
-  { name: '삼성전자', code: '005930', type: 'major' },
-  { name: 'SK하이닉스', code: '000660', type: 'major' },
-  { name: '현대차', code: '005380', type: 'interest' }
-];
+// 동적 관리되는 어머님의 종목 리스트 파일을 읽어옵니다.
+const profilePath = path.join(process.cwd(), 'src', 'data', 'user_profile.json');
+const userProfile = JSON.parse(fs.readFileSync(profilePath, 'utf8'));
+const STOCKS = userProfile.stocks || [];
+
 
 // 구글 뉴스 RSS를 활용한 종목별 최신 기사 수집 (가볍고 빠르며 무료)
 async function fetchGoogleNews(stockName) {

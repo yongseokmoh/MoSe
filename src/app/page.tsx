@@ -1,6 +1,8 @@
 import AccordionNews from '@/components/AccordionNews';
 import fs from 'fs';
 import path from 'path';
+import Link from 'next/link';
+import path from 'path';
 
 // 서버에서 JSON 파일을 읽어오는 함수
 function getReportData() {
@@ -42,7 +44,7 @@ export default function Home() {
            <span className="font-extrabold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-500">MoSe News</span>
         </div>
         <div className="flex gap-4 text-lg">
-          <span className="cursor-pointer" title="종목 설정">⚙️</span>
+          <Link href="/settings" className="cursor-pointer" title="종목 설정">⚙️</Link>
           <span className="cursor-pointer" title="테마 변경">🌙</span>
         </div>
       </div>
