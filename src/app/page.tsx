@@ -1,12 +1,36 @@
 import AccordionNews from '@/components/AccordionNews';
+import fs from 'fs';
+import path from 'path';
+
+// 서버에서 JSON 파일을 읽어오는 함수
+function getReportData() {
+  try {
+    const filePath = path.join(process.cwd(), 'src', 'data', 'latest_report.json');
+    const fileContents = fs.readFileSync(filePath, 'utf8');
+    return JSON.parse(fileContents);
+  } catch (error) {
+    console.error("데이터 파일을 읽을 수 없습니다:", error);
+    return null;
+  }
+}
 
 export default function Home() {
-  const dummyNews = {
-    id: '1',
-    title: '1. 차세대 HBM 양산 돌입',
-    summary: '엔비디아 납품을 위한 HBM 테스트를 최종 통과했으며 다음 달부터 대량 양산에 들어갑니다. 메모리 사이클 회복세 진입이 뚜렷합니다.',
-    content: '(기사 원문 텍스트... 삼성전자가 세계 최고 수준의 집적도를 가진 HBM3E 12단 제품을...)'
+  const report = getReportData();
+
+  // 날짜 포맷팅 함수
+  const formatDate = (isoString: string) => {
+    if (!isoString) return '업데이트 대기중';
+    const date = new Date(isoString);
+    return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 리포트`;
   };
+
+  if (!report) {
+    return <div className="p-10 text-center">데이터를 불러오는 중입니다...</div>;
+  }
+
+  // 종목 분류 (주요종목, 관심종목 등)
+  const majorStocks = report.stocks.filter((s: any) => s.type === 'major');
+  const interestStocks = report.stocks.filter((s: any) => s.type === 'interest');
 
   return (
     <div className="min-h-screen bg-[var(--muted)]/20 max-w-[600px] mx-auto shadow-xl relative pb-20 overflow-x-hidden">
@@ -26,7 +50,7 @@ export default function Home() {
       <div className="px-4 py-5 space-y-6">
         
         <div className="text-sm font-bold text-[var(--foreground)] px-1 flex items-center gap-2">
-          📅 2024년 9월 24일 리포트
+          📅 {formatDate(report.date)}
         </div>
 
         {/* Section 1: Market */}
@@ -34,41 +58,69 @@ export default function Home() {
           <h3 className="font-bold text-sm mb-3">거시/증시 요약</h3>
           <div className="grid grid-cols-2 gap-2 text-xs mb-3 font-medium">
             <div className="bg-[var(--muted)]/60 p-2.5 rounded-xl flex justify-between">
-              <span>🇺🇸 나스닥</span> <span className="text-red-500">+1.2%</span>
+              <span>🇺🇸 나스닥</span> <span className="text-red-500">{report.market.nasdaq}</span>
             </div>
             <div className="bg-[var(--muted)]/60 p-2.5 rounded-xl flex justify-between">
-              <span>🇰🇷 코스피</span> <span className="text-red-500">+0.5%</span>
+              <span>🇰🇷 코스피</span> <span className="text-red-500">{report.market.kospi}</span>
             </div>
             <div className="bg-[var(--muted)]/60 p-2.5 rounded-xl flex justify-between">
-              <span>💱 환율</span> <span>1,350원</span>
+              <span>💱 환율</span> <span>{report.market.exchangeRate}</span>
             </div>
             <div className="bg-[var(--muted)]/60 p-2.5 rounded-xl flex justify-between">
-              <span>🛢️ 유가</span> <span>$75.00</span>
+              <span>🛢️ 유가</span> <span>{report.market.oil}</span>
             </div>
           </div>
           <p className="text-xs text-[var(--muted-foreground)] leading-relaxed bg-[var(--background)] p-3 rounded-xl border border-[var(--border)]/50">
             <span className="text-[var(--primary)] font-bold mb-1 block">🤖 AI 증시 요약</span> 
-            어제 미국 증시는 빅테크 실적 호조로 상승 마감했습니다. 오늘은 국내 반도체 섹터의 강세가 예상됩니다.
+            {report.market.aiSummary}
           </p>
         </section>
 
-        {/* Section 3: Major Stock */}
-        <section className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm border-l-4 border-l-[var(--primary)]">
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="font-bold text-base">삼성전자 <span className="text-xs text-[var(--muted-foreground)] font-normal ml-1">나의 주요종목</span></h3>
-            <span className="text-sm text-red-500 font-bold">75,000 🔺</span>
+        {/* Section 3: Major Stocks */}
+        {majorStocks.map((stock: any) => (
+          <section key={stock.id} className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm border-l-4 border-l-[var(--primary)]">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="font-bold text-base">{stock.name} <span className="text-xs text-[var(--muted-foreground)] font-normal ml-1">주요종목</span></h3>
+              <span className="text-sm text-red-500 font-bold">{stock.currentPrice}</span>
+            </div>
+            
+            {/* AI Summary as first item */}
+            <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-[13px] text-[var(--foreground)] leading-relaxed">
+               <strong className="text-[var(--primary)] block mb-1">🤖 종목 AI 요약</strong>
+               {stock.summary}
+            </div>
+
+            {/* News List */}
+            {stock.news.map((newsItem: any, index: number) => (
+              <AccordionNews 
+                key={index} 
+                news={{
+                  id: `${stock.id}-${index}`,
+                  title: `${index + 1}. ${newsItem.title}`,
+                  summary: '상세 기사 원문 링크 연결', // 향후 원문 크롤링 시 확장
+                  content: newsItem.link
+                }} 
+              />
+            ))}
+          </section>
+        ))}
+
+        {/* Section 4: Interest Stocks */}
+        {interestStocks.length > 0 && (
+          <div className="pt-2 border-t border-[var(--border)] border-dashed">
+            <h2 className="font-bold text-[var(--muted-foreground)] px-1 mb-4 text-sm">👀 나의 관심 종목</h2>
+            {interestStocks.map((stock: any) => (
+              <section key={stock.id} className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm mb-4">
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="font-bold text-base text-[var(--primary)]">{stock.name}</h3>
+                </div>
+                <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-[13px] text-[var(--foreground)] leading-relaxed">
+                   {stock.summary}
+                </div>
+              </section>
+            ))}
           </div>
-          
-          <AccordionNews news={dummyNews} />
-          
-          {/* Dummy closed item */}
-          <div className="border border-[var(--border)] rounded-xl overflow-hidden mt-2 bg-[var(--background)] shadow-sm">
-            <button className="w-full text-left p-3.5 text-sm font-semibold hover:bg-[var(--muted)]/30 flex justify-between items-center transition-colors">
-              <span className="truncate pr-2">2. 외국인 연속 순매수 행진</span>
-              <span className="text-[var(--muted-foreground)] text-xs bg-[var(--muted)] px-2 py-1 rounded-full">펼치기 ⬇️</span>
-            </button>
-          </div>
-        </section>
+        )}
         
         <div className="pb-6 pt-4 text-center text-xs text-[var(--muted-foreground)]">
           끝까지 다 읽으셨습니다! 수고하셨습니다.
