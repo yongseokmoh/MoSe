@@ -24,13 +24,14 @@ export default function Login() {
       className="min-h-screen flex items-center justify-center p-4 relative"
       style={{
         backgroundImage: 'url(/background.jpg)',
-        backgroundSize: 'cover',
+        backgroundSize: '50vw',
+        backgroundRepeat: 'repeat',
         backgroundPosition: 'center'
       }}
     >
-      <div className="absolute inset-0 bg-black/50 z-0"></div>
+      
 
-      <div className="bg-[var(--card)]/90 backdrop-blur-md p-8 rounded-3xl shadow-2xl w-full max-w-sm border border-[var(--border)] relative z-10">
+      <div className="bg-[var(--card)]/20 backdrop-blur-md p-8 rounded-3xl shadow-2xl w-full max-w-sm border border-[var(--border)] relative z-10">
         <h1 className="text-[2.6rem] font-extrabold mb-3 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-500 tracking-tight">MoSe News</h1>
         <p className="text-[20px] text-[var(--muted-foreground)] mb-8 text-center leading-relaxed font-bold">
           어머님을 위한 맞춤형 투자 뉴스
@@ -57,3 +58,4 @@ export default function Login() {
     </div>
   );
 }
+
