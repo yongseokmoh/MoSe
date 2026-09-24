@@ -22,22 +22,16 @@ jobs:
         with:
           node-version: '20'
           
-      - name: 3. Test Models
+      - name: 3. Run DeepSeek script (Primary Engine)
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: node scripts/test_models.mjs
-          
-      - name: 4. Run script
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: node scripts/generate_daily_report.mjs
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: node scripts/generate_deepseek_report.mjs
         
-      - name: 5. Commit & Push
+      - name: 4. Commit & Push
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/data/latest_report.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "✅ Auto-update daily news report" && git push)
-
+          git diff --quiet && git diff --staged --quiet || (git commit -m "✅ Auto-update daily news report (DeepSeek)" && git push)
