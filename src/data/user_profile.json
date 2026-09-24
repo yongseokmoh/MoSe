@@ -1,5 +1,6 @@
 {
   "stocks": [
+    { "name": "클로봇", "type": "major" },
     { "name": "현대건설", "type": "major" },
     { "name": "삼성SDI", "type": "major" },
     { "name": "KBI메탈", "type": "major" },
