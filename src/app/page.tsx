@@ -85,9 +85,35 @@ export default function Home() {
         {/* Section 2: 선행 정보 (미국 증시 주요 섹터 변화) */}
         <section className="bg-gradient-to-br from-[var(--primary)]/10 to-[var(--background)] border border-[var(--primary)]/20 rounded-2xl p-4 shadow-sm">
           <h2 className="font-bold text-base mb-3 text-[var(--primary)]">섹션 2: 선행 정보 (내 종목 맞춤 미국 섹터)</h2>
-          <p className="text-[13px] text-[var(--foreground)] leading-relaxed font-medium">
-            {s2.summary}
-          </p>
+          
+          {Array.isArray(s2.summary) ? (
+            <div className="space-y-4">
+              {s2.summary.map((sector: any, idx: number) => (
+                <div key={idx} className="bg-[var(--card)] p-3.5 rounded-xl border border-[var(--border)] shadow-sm">
+                  <h3 className="font-bold text-[14px] mb-2 flex items-center gap-2">
+                    <span className="text-lg">{sector.weather?.split(' ')[0]}</span>
+                    <span>{sector.sectorName}</span>
+                    <span className="text-[11px] font-normal text-[var(--muted-foreground)] bg-[var(--muted)] px-2 py-0.5 rounded-md border border-[var(--border)]">
+                      미국 대장주: {sector.usPeer}
+                    </span>
+                  </h3>
+                  <div className="text-[13px] leading-relaxed mb-2.5">
+                    <span className="font-bold text-blue-600 dark:text-blue-400">간밤 동향:</span> {sector.overnightTrend}
+                  </div>
+                  <div className="text-[12px] leading-relaxed text-[var(--muted-foreground)] bg-[var(--muted)]/30 p-2 rounded-lg">
+                    <span className="font-bold">과거 패턴:</span> {sector.historicalImpact}
+                  </div>
+                </div>
+              ))}
+              <div className="text-[10px] text-[var(--muted-foreground)] text-right mt-2">
+                ※ 과거의 패턴이 미래의 결과를 보장하지는 않습니다.
+              </div>
+            </div>
+          ) : (
+            <p className="text-[13px] text-[var(--foreground)] leading-relaxed font-medium">
+              {typeof s2.summary === 'string' ? s2.summary : "데이터 생성 중..."}
+            </p>
+          )}
         </section>
 
         {/* Section 3: 주요 종목 */}

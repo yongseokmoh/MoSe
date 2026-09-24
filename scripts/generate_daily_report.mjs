@@ -108,7 +108,31 @@ async function main() {
 
   console.log("Generating Section 2: Sector Summary...");
   const sectorNews = await fetchGoogleNews("미국 증시 특징주 OR 나스닥 특징주");
-  const sectorSummary = await callGemini(`나의 주요 종목은 [${majorNames.join(', ')}] 이야. 이 종목들의 주요 섹터(반도체, 자동차, 배터리 등)를 파악하고, 다음 미국장 뉴스를 바탕으로 해당 섹터 내 미국 대표주(엔비디아, 테슬라 등)들의 간밤 주가 변동 및 시사점을 심도 있게 4문장으로 분석해줘.\n${sectorNews.map(n=>n.title).join('\n')}`);
+  const sectorPrompt = `
+  너는 수석 글로벌 투자 전략가야. 
+  현재 나의 주요 투자 종목은 [${majorNames.join(', ')}] 이야.
+  이 종목들을 바탕으로 나의 '핵심 관심 섹터 3개'를 도출해.
+  그리고 다음 미국장 뉴스를 바탕으로 각 섹터별로 아래 JSON 양식에 맞춰 분석을 제공해.
+  
+  [분석 지침]
+  1. 간밤 동향(overnightTrend): 미국 대장주의 간밤 움직임과 그 원인(Driver)을 구체적이고 상세하게 2~3문장으로 작성할 것.
+  2. 과거 패턴(historicalImpact): 과거 비슷한 원인으로 미국 대장주가 유사한 움직임을 보였을 때, 한국 증시의 해당 섹터는 보통 어떻게 반응했었는지 1문장으로 짧고 간결하게 작성할 것.
+  
+  [미국장 뉴스]
+  ${sectorNews.map(n=>n.title).join('\n')}
+  
+  [출력 형식 (반드시 JSON 배열로 응답)]
+  [
+    {
+      "weather": "☀️ 맑음",
+      "sectorName": "반도체/AI",
+      "usPeer": "엔비디아",
+      "overnightTrend": "간밤 동향 2문장...",
+      "historicalImpact": "과거 패턴 1문장..."
+    }
+  ]
+  `;
+  const sectorSummary = await callGemini(sectorPrompt, true);
 
   const report = {
     date: new Date().toISOString(),
