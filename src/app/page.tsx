@@ -3,14 +3,11 @@ import fs from 'fs';
 import path from 'path';
 import Link from 'next/link';
 
-// 서버에서 JSON 파일을 읽어오는 함수
 function getReportData() {
   try {
     const filePath = path.join(process.cwd(), 'src', 'data', 'latest_report.json');
-    const fileContents = fs.readFileSync(filePath, 'utf8');
-    return JSON.parse(fileContents);
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
   } catch (error) {
-    console.error("데이터 파일을 읽을 수 없습니다:", error);
     return null;
   }
 }
@@ -18,25 +15,23 @@ function getReportData() {
 export default function Home() {
   const report = getReportData();
 
-  // 날짜 포맷팅 함수
   const formatDate = (isoString: string) => {
     if (!isoString) return '업데이트 대기중';
     const date = new Date(isoString);
     return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 리포트`;
   };
 
-  if (!report) {
-    return <div className="p-10 text-center">데이터를 불러오는 중입니다...</div>;
-  }
-
-  // 종목 분류 (주요종목, 관심종목 등)
-  const majorStocks = report.stocks.filter((s: any) => s.type === 'major');
-  const interestStocks = report.stocks.filter((s: any) => s.type === 'interest');
+  // 구형 JSON 하위 호환을 위한 안전장치
+  const s1 = report?.section1 || report?.market || {};
+  const s2 = report?.section2 || { summary: "데이터 생성 중..." };
+  const major = report?.section3_major || report?.stocks?.filter((s:any)=>s.type==='major') || [];
+  const interest = report?.section4_interest || report?.stocks?.filter((s:any)=>s.type==='interest') || [];
+  const watchlist = report?.section5_watchlist || [];
 
   return (
     <div className="min-h-screen bg-[var(--muted)]/20 max-w-[600px] mx-auto shadow-xl relative pb-20 overflow-x-hidden">
       
-      {/* Top Navigation */}
+      {/* Top Nav */}
       <div className="flex justify-between items-center px-5 py-4 border-b border-[var(--border)] bg-[var(--background)] sticky top-0 z-10 shadow-sm">
         <div className="flex items-center gap-3">
            <span className="text-xl cursor-pointer">☰</span>
@@ -49,83 +44,90 @@ export default function Home() {
       </div>
 
       <div className="px-4 py-5 space-y-6">
-        
         <div className="text-sm font-bold text-[var(--foreground)] px-1 flex items-center gap-2">
-          📅 {formatDate(report.date)}
+          📅 {formatDate(report?.date)}
         </div>
 
-        {/* Section 1: Market */}
+        {/* Section 1: 거시/증시 정보 */}
         <section className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm">
-          <h3 className="font-bold text-sm mb-3">거시/증시 요약</h3>
+          <h2 className="font-bold text-base mb-3 text-[var(--primary)]">섹션 1: 거시 및 증시 요약</h2>
           <div className="grid grid-cols-2 gap-2 text-xs mb-3 font-medium">
             <div className="bg-[var(--muted)]/60 p-2.5 rounded-xl flex justify-between">
-              <span>🇺🇸 나스닥</span> <span className="text-red-500">{report.market.nasdaq}</span>
+              <span>🇺🇸 나스닥</span> <span className="text-[var(--muted-foreground)]">{s1.nasdaq || '대기중'}</span>
             </div>
             <div className="bg-[var(--muted)]/60 p-2.5 rounded-xl flex justify-between">
-              <span>🇰🇷 코스피</span> <span className="text-red-500">{report.market.kospi}</span>
+              <span>🇰🇷 코스피</span> <span className="text-[var(--muted-foreground)]">{s1.kospi || '대기중'}</span>
             </div>
             <div className="bg-[var(--muted)]/60 p-2.5 rounded-xl flex justify-between">
-              <span>💱 환율</span> <span>{report.market.exchangeRate}</span>
+              <span>💱 환율</span> <span className="text-[var(--muted-foreground)]">{s1.exchangeRate || '대기중'}</span>
             </div>
             <div className="bg-[var(--muted)]/60 p-2.5 rounded-xl flex justify-between">
-              <span>🛢️ 유가</span> <span>{report.market.oil}</span>
+              <span>🛢️ 유가</span> <span className="text-[var(--muted-foreground)]">{s1.oil || '대기중'}</span>
             </div>
           </div>
-          <p className="text-xs text-[var(--muted-foreground)] leading-relaxed bg-[var(--background)] p-3 rounded-xl border border-[var(--border)]/50">
-            <span className="text-[var(--primary)] font-bold mb-1 block">🤖 AI 증시 요약</span> 
-            {report.market.aiSummary}
+          <p className="text-[13px] text-[var(--foreground)] leading-relaxed bg-[var(--background)] p-3 rounded-xl border border-[var(--border)]/50">
+            {s1.summary || s1.aiSummary || '요약 데이터가 없습니다.'}
           </p>
         </section>
 
-        {/* Section 3: Major Stocks */}
-        {majorStocks.map((stock: any) => (
-          <section key={stock.id} className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm border-l-4 border-l-[var(--primary)]">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="font-bold text-base">{stock.name} <span className="text-xs text-[var(--muted-foreground)] font-normal ml-1">주요종목</span></h3>
-              <span className="text-sm text-red-500 font-bold">{stock.currentPrice}</span>
-            </div>
-            
-            {/* AI Summary as first item */}
-            <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-[13px] text-[var(--foreground)] leading-relaxed">
-               <strong className="text-[var(--primary)] block mb-1">🤖 종목 AI 요약</strong>
-               {stock.summary}
-            </div>
+        {/* Section 2: 선행 정보 (미국 증시 주요 섹터 변화) */}
+        <section className="bg-gradient-to-br from-[var(--primary)]/10 to-[var(--background)] border border-[var(--primary)]/20 rounded-2xl p-4 shadow-sm">
+          <h2 className="font-bold text-base mb-3 text-[var(--primary)]">섹션 2: 선행 정보 (내 종목 맞춤 미국 섹터)</h2>
+          <p className="text-[13px] text-[var(--foreground)] leading-relaxed font-medium">
+            {s2.summary}
+          </p>
+        </section>
 
-            {/* News List */}
-            {stock.news.map((newsItem: any, index: number) => (
-              <AccordionNews 
-                key={index} 
-                news={{
-                  id: `${stock.id}-${index}`,
-                  title: `${index + 1}. ${newsItem.title}`,
-                  summary: '상세 기사 원문 링크 연결', // 향후 원문 크롤링 시 확장
-                  content: newsItem.link
-                }} 
-              />
-            ))}
-          </section>
-        ))}
-
-        {/* Section 4: Interest Stocks */}
-        {interestStocks.length > 0 && (
-          <div className="pt-2 border-t border-[var(--border)] border-dashed">
-            <h2 className="font-bold text-[var(--muted-foreground)] px-1 mb-4 text-sm">👀 나의 관심 종목</h2>
-            {interestStocks.map((stock: any) => (
-              <section key={stock.id} className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm mb-4">
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-bold text-base text-[var(--primary)]">{stock.name}</h3>
-                </div>
-                <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-[13px] text-[var(--foreground)] leading-relaxed">
-                   {stock.summary}
-                </div>
-              </section>
-            ))}
-          </div>
-        )}
-        
-        <div className="pb-6 pt-4 text-center text-xs text-[var(--muted-foreground)]">
-          끝까지 다 읽으셨습니다! 수고하셨습니다.
+        {/* Section 3: 주요 종목 */}
+        <div>
+          <h2 className="font-bold text-base px-1 mb-3">섹션 3: 주요 종목 <span className="text-xs font-normal text-[var(--muted-foreground)]">(리포트/장외거래 포함)</span></h2>
+          {major.length > 0 ? major.map((stock: any) => (
+            <section key={stock.id || stock.name} className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm mb-4 border-l-4 border-l-blue-500">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="font-bold text-[15px]">{stock.name}</h3>
+                <span className="text-sm font-bold text-[var(--muted-foreground)]">{stock.currentPrice}</span>
+              </div>
+              <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-[13px] leading-relaxed">
+                 <strong className="text-blue-500 block mb-1">🤖 AI 분석</strong>
+                 {stock.summary}
+              </div>
+              {stock.news?.map((newsItem: any, index: number) => (
+                <AccordionNews key={index} news={{ id: `${stock.name}-${index}`, title: `${index + 1}. ${newsItem.title}`, content: newsItem.link }} />
+              ))}
+            </section>
+          )) : <p className="text-xs text-[var(--muted-foreground)] px-2">등록된 주요 종목이 없습니다.</p>}
         </div>
+
+        {/* Section 4: 관심 종목 */}
+        <div>
+          <h2 className="font-bold text-base px-1 mb-3">섹션 4: 관심 종목</h2>
+          {interest.length > 0 ? interest.map((stock: any) => (
+            <section key={stock.id || stock.name} className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm mb-4 border-l-4 border-l-gray-400">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="font-bold text-[15px]">{stock.name}</h3>
+                <span className="text-sm font-bold text-[var(--muted-foreground)]">{stock.currentPrice}</span>
+              </div>
+              <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-[13px] leading-relaxed">
+                 {stock.summary}
+              </div>
+              {stock.news?.map((newsItem: any, index: number) => (
+                <AccordionNews key={index} news={{ id: `${stock.name}-${index}`, title: `${index + 1}. ${newsItem.title}`, content: newsItem.link }} />
+              ))}
+            </section>
+          )) : <p className="text-xs text-[var(--muted-foreground)] px-2">등록된 관심 종목이 없습니다.</p>}
+        </div>
+
+        {/* Section 5: 관망 종목 (슬립모드 해제) */}
+        <section className="bg-[var(--background)] border border-[var(--border)] border-dashed rounded-2xl p-4 opacity-80">
+          <h2 className="font-bold text-base mb-2 text-[var(--muted-foreground)]">섹션 5: 관망 종목 (슬립모드 해제)</h2>
+          {watchlist.length > 0 ? (
+            watchlist.map((stock:any) => <div key={stock.name}>{stock.name} 깨어남!</div>)
+          ) : (
+            <p className="text-xs text-[var(--muted-foreground)] leading-relaxed mt-2">
+              현재 관망 종목((구) 관심종목) 중 뉴스량이 폭증하여 슬립모드가 해제된 종목이 없습니다. 알고리즘 연동 대기 중입니다.
+            </p>
+          )}
+        </section>
 
       </div>
     </div>
