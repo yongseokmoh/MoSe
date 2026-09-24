@@ -2,10 +2,8 @@ name: MoSe Daily News Batch
 
 on:
   schedule:
-    # 매일 한국 시간(KST) 아침 6시 30분 실행
-    # UTC 기준으로는 전날 21:30 (KST = UTC + 9)
     - cron: '30 21 * * *'
-  workflow_dispatch: # 수동으로 즉시 실행(Run)할 수 있는 버튼 활성화
+  workflow_dispatch:
 
 jobs:
   generate-news:
@@ -13,25 +11,28 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: 1. 저장소 코드 가져오기 (Checkout)
+      - name: 1. Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_PAT || github.token }}
         
-      - name: 2. Node.js 환경 세팅
+      - name: 2. Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           
-      - name: 3. 데일리 리포트 스크립트 실행 및 Gemini API 호출
+      - name: 3. Run script
         working-directory: ./mose-app
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: node scripts/generate_daily_report.mjs
         
-      - name: 4. 생성된 JSON 데이터 GitHub에 덮어쓰기 (Commit & Push)
+      - name: 4. Commit & Push
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add mose-app/src/data/latest_report.json
-          # 변경사항이 있을 때만 커밋
           git diff --quiet && git diff --staged --quiet || git commit -m "✅ Auto-update daily news report"
           git push
