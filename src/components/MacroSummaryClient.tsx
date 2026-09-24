@@ -29,18 +29,18 @@ export default function MacroSummaryClient({ summaryData }: { summaryData: any }
     let currentIndex = 0;
     let match: RegExpExecArray | null;
 
-    while ((match = regex.exec(summaryText)) !== null) {
-      if (match.index > currentIndex) {
-        parts.push(summaryText.substring(currentIndex, match.index));
+    while ((match = regex.exec(summaryText)) !== null) { const currentMatch = match;
+      if (currentMatch.index > currentIndex) {
+        parts.push(summaryText.substring(currentIndex, currentMatch.index));
       }
-      const keywordObj = keywords.find((k: any) => k.word === match[0]);
+      const keywordObj = keywords.find((k: any) => k.word === currentMatch[0]);
       parts.push(
         <span 
-          key={match.index} 
+          key={currentMatch.index} 
           onClick={() => setSelectedKeyword(keywordObj)}
           className="text-blue-600 dark:text-blue-400 font-extrabold cursor-pointer border-b-2 border-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 active:bg-blue-200 transition-colors"
         >
-          {match[0]}
+          {currentMatch[0]}
         </span>
       );
       currentIndex = regex.lastIndex;
@@ -101,3 +101,4 @@ export default function MacroSummaryClient({ summaryData }: { summaryData: any }
     </>
   );
 }
+
