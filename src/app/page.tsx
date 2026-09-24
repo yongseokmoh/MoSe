@@ -91,6 +91,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
   // 구형 JSON 하위 호환을 위한 안전장치
   const s1 = report?.section1 || report?.market || {};
   const s2 = report?.section2 || { summary: "데이터 생성 중..." };
+  // DeepSeek은 {sectors:[...]} 형태로 감싸서 반환하므로 정규화
+  const s2Summary = Array.isArray(s2.summary)
+    ? s2.summary
+    : Array.isArray(s2.summary?.sectors)
+    ? s2.summary.sectors
+    : s2.summary;
   const major = report?.section3_major || report?.stocks?.filter((s:any)=>s.type==='major') || [];
   const interest = report?.section4_interest || report?.stocks?.filter((s:any)=>s.type==='interest') || [];
   const watchlist = report?.section5_watchlist || [];
@@ -133,9 +139,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
         <section className="bg-gradient-to-br from-[var(--primary)]/10 to-[var(--background)] border border-[var(--primary)]/20 rounded-2xl p-4 shadow-sm">
           <h2 className="font-bold text-[1.6rem] mb-3 text-[var(--primary)]">섹션 2: 선행 정보 (내 종목 맞춤 미국 섹터)</h2>
           
-          {Array.isArray(s2.summary) ? (
+          {Array.isArray(s2Summary) ? (
             <div className="space-y-4">
-              {s2.summary.map((sector: any, idx: number) => (
+              {s2Summary.map((sector: any, idx: number) => (
                 <div key={idx} className="bg-[var(--card)] p-3.5 rounded-xl border border-[var(--border)] shadow-sm">
                   <h3 className="font-bold text-[21px] mb-2 flex items-center gap-2">
                     <span className="text-[1.8rem]">{sector.weather?.split(' ')[0]}</span>
@@ -158,7 +164,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
             </div>
           ) : (
             <p className="text-[20px] text-[var(--foreground)] leading-relaxed font-medium">
-              {typeof s2.summary === 'string' ? s2.summary : "데이터 생성 중..."}
+              {typeof s2Summary === 'string' ? s2Summary : "데이터 생성 중..."}
             </p>
           )}
         </section>
