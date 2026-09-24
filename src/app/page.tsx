@@ -50,19 +50,31 @@ export default function Home() {
 
         {/* Section 1: 거시/증시 정보 */}
         <section className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm">
-          <h2 className="font-bold text-base mb-3 text-[var(--primary)]">섹션 1: 거시 및 증시 요약</h2>
-          <div className="grid grid-cols-2 gap-2 text-xs mb-3 font-medium">
-            <div className="bg-[var(--muted)]/60 p-2.5 rounded-xl flex justify-between">
-              <span>🇺🇸 나스닥</span> <span className="text-[var(--muted-foreground)]">{s1.nasdaq || '대기중'}</span>
+          <h2 className="font-bold text-base mb-3 text-[var(--primary)]">섹션 1: 거시 및 글로벌 지수</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-[13px] mb-4 font-bold tracking-tight">
+            <div className="bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-center">
+              <span className="text-[var(--muted-foreground)] text-[10px] mb-0.5">🇺🇸 S&P 500</span>
+              <span className={s1.sp500?.includes('-') ? 'text-blue-500' : 'text-red-500'}>{s1.sp500 || '대기중'}</span>
             </div>
-            <div className="bg-[var(--muted)]/60 p-2.5 rounded-xl flex justify-between">
-              <span>🇰🇷 코스피</span> <span className="text-[var(--muted-foreground)]">{s1.kospi || '대기중'}</span>
+            <div className="bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-center">
+              <span className="text-[var(--muted-foreground)] text-[10px] mb-0.5">🇺🇸 나스닥</span>
+              <span className={s1.nasdaq?.includes('-') ? 'text-blue-500' : 'text-red-500'}>{s1.nasdaq || '대기중'}</span>
             </div>
-            <div className="bg-[var(--muted)]/60 p-2.5 rounded-xl flex justify-between">
-              <span>💱 환율</span> <span className="text-[var(--muted-foreground)]">{s1.exchangeRate || '대기중'}</span>
+            <div className="bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-center border border-[var(--primary)]/20 shadow-inner">
+              <span className="text-[var(--muted-foreground)] text-[10px] mb-0.5 font-extrabold">🇺🇸 필라델피아 반도체</span>
+              <span className={s1.sox?.includes('-') ? 'text-blue-500' : 'text-red-500'}>{s1.sox || '대기중'}</span>
             </div>
-            <div className="bg-[var(--muted)]/60 p-2.5 rounded-xl flex justify-between">
-              <span>🛢️ 유가</span> <span className="text-[var(--muted-foreground)]">{s1.oil || '대기중'}</span>
+            <div className="bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-center">
+              <span className="text-[var(--muted-foreground)] text-[10px] mb-0.5">🇰🇷 코스피</span>
+              <span className={s1.kospi?.includes('-') ? 'text-blue-500' : 'text-red-500'}>{s1.kospi || '대기중'}</span>
+            </div>
+            <div className="bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-center">
+              <span className="text-[var(--muted-foreground)] text-[10px] mb-0.5">🇰🇷 코스닥</span>
+              <span className={s1.kosdaq?.includes('-') ? 'text-blue-500' : 'text-red-500'}>{s1.kosdaq || '대기중'}</span>
+            </div>
+            <div className="bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-center">
+              <span className="text-[var(--muted-foreground)] text-[10px] mb-0.5">💱 원/달러 환율</span>
+              <span className={s1.exchangeRate?.includes('-') ? 'text-blue-500' : 'text-red-500'}>{s1.exchangeRate || '대기중'}</span>
             </div>
           </div>
           <p className="text-[13px] text-[var(--foreground)] leading-relaxed bg-[var(--background)] p-3 rounded-xl border border-[var(--border)]/50">

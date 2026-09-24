@@ -67,24 +67,58 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
   return { summary: result.summary, news: selectedNews };
 }
 
+// Yahoo Finance API를 활용한 실시간 지수 수집 (별도 인증키 불필요)
+async function fetchYahooFinance(ticker) {
+  try {
+    const res = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=5d`, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+    });
+    const data = await res.json();
+    const result = data.chart.result[0];
+    const closes = result.indicators.quote[0].close;
+    
+    // 가장 최근의 유효한 종가 2개를 가져와 등락률 계산
+    const validCloses = closes.filter(c => c !== null);
+    if (validCloses.length < 2) return "데이터 없음";
+    
+    const current = validCloses[validCloses.length - 1];
+    const previous = validCloses[validCloses.length - 2];
+    
+    const change = current - previous;
+    const percentChange = (change / previous) * 100;
+    
+    const valueStr = ticker === 'KRW=X' ? current.toFixed(1) : current.toFixed(2);
+    const sign = change > 0 ? '+' : ''; // 음수는 이미 '-' 기호가 포함됨
+    
+    return `${valueStr} (${sign}${percentChange.toFixed(2)}%)`;
+  } catch (e) {
+    console.error(`Yahoo Finance 에러 (${ticker}):`, e);
+    return "데이터 없음";
+  }
+}
+
 async function main() {
   console.log("🚀 Daily News Batch Started...");
   
-  // 섹션 1 & 2 공통 데이터
   const majorNames = MAJOR_STOCKS.map(s => s.name);
   
-  console.log("Generating Section 1: Macro Summary...");
+  console.log("Generating Section 1: Macro Summary & Indices...");
   const macroNews = await fetchGoogleNews("미국 증시 마감 OR 글로벌 경제");
   const macroSummary = await callGemini(`다음 뉴스를 바탕으로 오늘 글로벌 거시 경제와 증시 전반의 흐름을 3문장으로 요약해줘.\n${macroNews.map(n=>n.title).join('\n')}`);
 
   console.log("Generating Section 2: Sector Summary...");
   const sectorNews = await fetchGoogleNews("미국 증시 특징주 OR 나스닥 특징주");
-  const sectorSummary = await callGemini(`나의 주요 종목은 [${majorNames.join(', ')}] 이야. 이 종목들의 주요 섹터(반도체, 로봇 등)를 파악하고, 다음 미국장 뉴스를 바탕으로 해당 섹터 내 미국 대표주들의 간밤 주가 변동 및 시사점을 심도 있게 4문장으로 분석해줘.\n${sectorNews.map(n=>n.title).join('\n')}`);
+  const sectorSummary = await callGemini(`나의 주요 종목은 [${majorNames.join(', ')}] 이야. 이 종목들의 주요 섹터(반도체, 자동차, 배터리 등)를 파악하고, 다음 미국장 뉴스를 바탕으로 해당 섹터 내 미국 대표주(엔비디아, 테슬라 등)들의 간밤 주가 변동 및 시사점을 심도 있게 4문장으로 분석해줘.\n${sectorNews.map(n=>n.title).join('\n')}`);
 
   const report = {
     date: new Date().toISOString(),
     section1: {
-      nasdaq: "API 연동 대기중", kospi: "API 연동 대기중", exchangeRate: "API 연동 대기중", oil: "API 연동 대기중",
+      sp500: await fetchYahooFinance('^GSPC'),
+      nasdaq: await fetchYahooFinance('^IXIC'),
+      sox: await fetchYahooFinance('^SOX'), // 필라델피아 반도체
+      kospi: await fetchYahooFinance('^KS11'),
+      kosdaq: await fetchYahooFinance('^KQ11'),
+      exchangeRate: await fetchYahooFinance('KRW=X'), // 원/달러 환율
       summary: macroSummary
     },
     section2: {
