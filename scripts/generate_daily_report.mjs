@@ -37,11 +37,7 @@ async function callGemini(prompt, isJson = false) {
         ...(isJson && { generationConfig: { responseMimeType: "application/json" } })
       })
     });
-    const data = await res.json(); if(data.error) throw new Error(data.error.message); if(!data.candidates || !data.candidates[0].content) throw new Error("No content generated: " + JSON.stringify(data)); const text = data.candidates[0].content.parts[0].text;
-    return isJson ? JSON.parse(text) : text;
-    console.error("Gemini Error:", e);
-    const errMsg = e.message || "Unknown Error"; return isJson ? { summary: "요약 에러 (" + errMsg + ")", topNewsIndex: [0] } : "요약 에러 (" + errMsg + ")";
-    return isJson ? { summary: "요약 오류", topNewsIndex: [0] } : "요약 오류 발생";
+    const data = await res.json(); if(data.error) throw new Error(data.error.message); if(!data.candidates || !data.candidates[0].content) throw new Error("No content: " + JSON.stringify(data)); const text = data.candidates[0].content.parts[0].text; return isJson ? JSON.parse(text) : text; } catch (e) { console.error("Gemini Error:", e.message); const errMsg = e.message || "Unknown"; return isJson ? { summary: "요약 에러 (" + errMsg + ")", topNewsIndex: [0] } : "요약 에러 (" + errMsg + ")";
   }
 }
 
