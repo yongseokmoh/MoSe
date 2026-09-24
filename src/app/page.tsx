@@ -4,6 +4,69 @@ import fs from 'fs';
 import path from 'path';
 import Link from 'next/link';
 
+// 미니 차트 (Sparkline) 컴포넌트
+const Sparkline = ({ data, isPositive }: { data: number[], isPositive: boolean }) => {
+  if (!data || data.length < 2) return <div className="w-[40px] h-[15px]"></div>;
+  
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  
+  const width = 40;
+  const height = 15;
+  const points = data.map((d, i) => {
+    const x = (i / (data.length - 1)) * width;
+    const y = height - ((d - min) / range) * height;
+    return `${x},${y}`;
+  }).join(' ');
+
+  const color = isPositive ? '#ef4444' : '#3b82f6'; // 상승 빨강, 하락 파랑 (한국식)
+
+  return (
+    <svg width={width} height={height} className="overflow-visible opacity-70">
+      <polyline fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" points={points} />
+    </svg>
+  );
+};
+
+// 지수 카드 컴포넌트
+const IndexCard = ({ title, data, highlight = false }: { title: string, data: any, highlight?: boolean }) => {
+  if (!data || typeof data === 'string') {
+    return (
+      <div className={`bg-[var(--muted)]/60 p-2.5 rounded-xl flex flex-col justify-center border ${highlight ? 'border-[var(--primary)]/30 shadow-inner' : 'border-transparent'}`}>
+        <span className={`text-[var(--muted-foreground)] text-[10px] mb-0.5 ${highlight ? 'font-extrabold' : ''}`}>{title}</span>
+        <span className="text-[var(--muted-foreground)] text-xs font-bold">데이터 없음</span>
+      </div>
+    );
+  }
+
+  const is1dPos = parseFloat(data.percent1d) >= 0;
+  const is5dPos = parseFloat(data.percent5d) >= 0;
+  
+  const color1d = is1dPos ? 'text-red-500' : 'text-blue-500';
+  const color5d = is5dPos ? 'text-red-500' : 'text-blue-500';
+
+  return (
+    <div className={`bg-[var(--muted)]/60 p-2.5 rounded-xl flex flex-col justify-between border transition-all ${highlight ? 'border-[var(--primary)]/30 shadow-inner bg-[var(--primary)]/5' : 'border-[var(--border)]/30'}`}>
+      <div className="flex justify-between items-center mb-1">
+        <span className={`text-[var(--muted-foreground)] text-[10px] ${highlight ? 'font-extrabold' : 'font-bold'}`}>{title}</span>
+        <Sparkline data={data.history} isPositive={is1dPos} />
+      </div>
+      <div className={`text-[13px] font-extrabold tracking-tight ${color1d} mb-1.5`}>
+        {data.value}
+      </div>
+      <div className="flex justify-between items-center text-[9px] font-bold">
+        <span className={`${color1d} bg-[var(--background)] px-1 py-0.5 rounded border border-[var(--border)] flex-1 text-center mr-0.5`}>
+          1D {is1dPos ? '+' : ''}{data.percent1d}%
+        </span>
+        <span className={`${color5d} bg-[var(--background)] px-1 py-0.5 rounded border border-[var(--border)] flex-1 text-center ml-0.5`}>
+          5D {is5dPos ? '+' : ''}{data.percent5d}%
+        </span>
+      </div>
+    </div>
+  );
+};
+
 function getReportData() {
   try {
     const filePath = path.join(process.cwd(), 'src', 'data', 'latest_report.json');
@@ -52,31 +115,13 @@ export default function Home() {
         {/* Section 1: 거시/증시 정보 */}
         <section className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm">
           <h2 className="font-bold text-base mb-3 text-[var(--primary)]">섹션 1: 거시 및 글로벌 지수</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-[13px] mb-4 font-bold tracking-tight">
-            <div className="bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-center">
-              <span className="text-[var(--muted-foreground)] text-[10px] mb-0.5">🇺🇸 S&P 500</span>
-              <span className={s1.sp500?.includes('-') ? 'text-blue-500' : 'text-red-500'}>{s1.sp500 || '대기중'}</span>
-            </div>
-            <div className="bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-center">
-              <span className="text-[var(--muted-foreground)] text-[10px] mb-0.5">🇺🇸 나스닥</span>
-              <span className={s1.nasdaq?.includes('-') ? 'text-blue-500' : 'text-red-500'}>{s1.nasdaq || '대기중'}</span>
-            </div>
-            <div className="bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-center border border-[var(--primary)]/20 shadow-inner">
-              <span className="text-[var(--muted-foreground)] text-[10px] mb-0.5 font-extrabold">🇺🇸 필라델피아 반도체</span>
-              <span className={s1.sox?.includes('-') ? 'text-blue-500' : 'text-red-500'}>{s1.sox || '대기중'}</span>
-            </div>
-            <div className="bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-center">
-              <span className="text-[var(--muted-foreground)] text-[10px] mb-0.5">🇰🇷 코스피</span>
-              <span className={s1.kospi?.includes('-') ? 'text-blue-500' : 'text-red-500'}>{s1.kospi || '대기중'}</span>
-            </div>
-            <div className="bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-center">
-              <span className="text-[var(--muted-foreground)] text-[10px] mb-0.5">🇰🇷 코스닥</span>
-              <span className={s1.kosdaq?.includes('-') ? 'text-blue-500' : 'text-red-500'}>{s1.kosdaq || '대기중'}</span>
-            </div>
-            <div className="bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-center">
-              <span className="text-[var(--muted-foreground)] text-[10px] mb-0.5">💱 원/달러 환율</span>
-              <span className={s1.exchangeRate?.includes('-') ? 'text-blue-500' : 'text-red-500'}>{s1.exchangeRate || '대기중'}</span>
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+            <IndexCard title="🇺🇸 S&P 500" data={s1.sp500} />
+            <IndexCard title="🇺🇸 나스닥" data={s1.nasdaq} />
+            <IndexCard title="🇺🇸 필라델피아 반도체" data={s1.sox} highlight={true} />
+            <IndexCard title="🇰🇷 코스피" data={s1.kospi} />
+            <IndexCard title="🇰🇷 코스닥" data={s1.kosdaq} />
+            <IndexCard title="💱 원/달러 환율" data={s1.exchangeRate} />
           </div>
           <MacroSummaryClient summaryData={s1.summary || s1.aiSummary} />
         </section>

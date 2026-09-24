@@ -67,33 +67,44 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
   return { summary: result.summary, news: selectedNews };
 }
 
-// Yahoo Finance API를 활용한 실시간 지수 수집 (별도 인증키 불필요)
+// Yahoo Finance API를 활용한 실시간 지수 수집 (1일/5일 트렌드 및 차트용 데이터 포함)
 async function fetchYahooFinance(ticker) {
   try {
-    const res = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=5d`, {
+    const res = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=10d`, {
       headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
     });
     const data = await res.json();
     const result = data.chart.result[0];
     const closes = result.indicators.quote[0].close;
     
-    // 가장 최근의 유효한 종가 2개를 가져와 등락률 계산
+    // 유효한 종가만 필터링
     const validCloses = closes.filter(c => c !== null);
-    if (validCloses.length < 2) return "데이터 없음";
+    if (validCloses.length < 2) return null;
     
-    const current = validCloses[validCloses.length - 1];
-    const previous = validCloses[validCloses.length - 2];
+    // 최근 5영업일 데이터 (모자라면 있는 만큼만)
+    const last5 = validCloses.slice(-5);
     
-    const change = current - previous;
-    const percentChange = (change / previous) * 100;
+    const current = last5[last5.length - 1];
+    const prev1d = last5[last5.length - 2] || current;
+    const prev5d = last5[0] || current;
+    
+    const change1d = current - prev1d;
+    const percent1d = (change1d / prev1d) * 100;
+    
+    const change5d = current - prev5d;
+    const percent5d = (change5d / prev5d) * 100;
     
     const valueStr = ticker === 'KRW=X' ? current.toFixed(1) : current.toFixed(2);
-    const sign = change > 0 ? '+' : ''; // 음수는 이미 '-' 기호가 포함됨
     
-    return `${valueStr} (${sign}${percentChange.toFixed(2)}%)`;
+    return {
+      value: valueStr,
+      percent1d: percent1d.toFixed(2),
+      percent5d: percent5d.toFixed(2),
+      history: last5 // 미니 차트용 배열
+    };
   } catch (e) {
     console.error(`Yahoo Finance 에러 (${ticker}):`, e);
-    return "데이터 없음";
+    return null;
   }
 }
 
