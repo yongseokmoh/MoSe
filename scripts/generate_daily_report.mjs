@@ -104,7 +104,20 @@ async function main() {
   
   console.log("Generating Section 1: Macro Summary & Indices...");
   const macroNews = await fetchGoogleNews("미국 증시 마감 OR 글로벌 경제");
-  const macroSummary = await callGemini(`다음 뉴스를 바탕으로 오늘 글로벌 거시 경제와 증시 전반의 흐름을 3문장으로 요약해줘.\n${macroNews.map(n=>n.title).join('\n')}`);
+  
+  const macroPrompt = `
+  너는 글로벌 매크로 경제를 전문으로 분석하는 수석 이코노미스트야.
+  다음 수집된 뉴스를 바탕으로 오늘 글로벌 거시 경제와 증시 전반의 흐름을 매우 조리 있고 상세하게 분석해줘.
+  
+  [작성 지침]
+  1. 단순한 사실 나열이 아닌, 인과 관계(원인과 결과)가 뚜렷하고 논리적인 흐름으로 문장을 구성할 것.
+  2. 주요 경제 지표(금리, 물가, 고용 등), 연준(Fed)의 스탠스, 또는 증시 전체를 움직인 핵심 테마(트리거)를 구체적으로 포함할 것.
+  3. 전체 분량은 4~5문장 내외로, 단편적이지 않고 충분한 인사이트를 담아서 전문가다운 어조로 작성할 것.
+  
+  [뉴스 데이터]
+  ${macroNews.map(n=>n.title).join('\n')}
+  `;
+  const macroSummary = await callGemini(macroPrompt);
 
   console.log("Generating Section 2: Sector Summary...");
   const sectorNews = await fetchGoogleNews("미국 증시 특징주 OR 나스닥 특징주");
