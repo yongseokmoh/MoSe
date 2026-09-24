@@ -70,7 +70,7 @@ const IndexCard = ({ title, data, highlight = false }: { title: string, data: an
 
 function getReportData(isDeepSeek: boolean) {
   try {
-    const filePath = path.join(process.cwd(), 'src', 'data', 'latest_report.json');
+    const filePath = path.join(process.cwd(), 'src', 'data', isDeepSeek ? 'deepseek_report.json' : 'latest_report.json');
     return JSON.parse(fs.readFileSync(filePath, 'utf8'));
   } catch (error) {
     return null;
