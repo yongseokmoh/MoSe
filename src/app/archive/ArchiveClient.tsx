@@ -40,8 +40,8 @@ export default function ArchiveClient({ initialScraps }: { initialScraps: any[] 
   return (
     <div className="min-h-screen bg-[var(--muted)]/20 max-w-[600px] mx-auto pb-20">
       <div className="flex justify-between items-center px-5 py-4 border-b border-[var(--border)] bg-[var(--background)] sticky top-0 shadow-sm z-10">
-        <Link href="/" className="text-2xl">⬅️</Link>
-        <span className="font-extrabold text-lg tracking-tight">💾 나의 보관함</span>
+        <Link href="/" className="text-[2.2rem]">⬅️</Link>
+        <span className="font-extrabold text-[1.8rem] tracking-tight">💾 나의 보관함</span>
         <div className="w-8"></div>
       </div>
 
@@ -49,7 +49,7 @@ export default function ArchiveClient({ initialScraps }: { initialScraps: any[] 
         {scraps.length > 0 ? (
           scraps.map((scrap: any, i: number) => (
              <div key={scrap.scrapedAt || i} className="bg-[var(--card)] p-5 rounded-3xl border border-[var(--border)] shadow-sm relative">
-                <h3 className="font-bold text-[15px] mb-3 leading-tight pr-8">{scrap.title}</h3>
+                <h3 className="font-bold text-[22px] mb-3 leading-tight pr-8">{scrap.title}</h3>
                 
                 {/* 보관해제(삭제) 버튼 추가 */}
                 <button 
@@ -62,14 +62,14 @@ export default function ArchiveClient({ initialScraps }: { initialScraps: any[] 
                 </button>
 
                 <div className="flex justify-between items-end mt-4">
-                  <span className="text-[11px] text-[var(--muted-foreground)] bg-[var(--muted)] px-2 py-1 rounded-md">
+                  <span className="text-[16px] text-[var(--muted-foreground)] bg-[var(--muted)] px-2 py-1 rounded-md">
                     스크랩: {formatTime(scrap.scrapedAt)}
                   </span>
                   <a 
                     href={scrap.link || scrap.content || '#'} 
                     target="_blank" 
                     rel="noreferrer" 
-                    className="text-[var(--primary)] text-xs font-bold border border-[var(--primary)]/30 px-3 py-1.5 rounded-lg active:bg-[var(--primary)]/10"
+                    className="text-[var(--primary)] text-[1.2rem] font-bold border border-[var(--primary)]/30 px-3 py-1.5 rounded-lg active:bg-[var(--primary)]/10"
                   >
                     원문 보기 🔗
                   </a>

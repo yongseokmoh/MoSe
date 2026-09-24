@@ -4,12 +4,12 @@ import { useState } from 'react';
 export default function MacroSummaryClient({ summaryData }: { summaryData: any }) {
   const [selectedKeyword, setSelectedKeyword] = useState<any>(null);
 
-  if (!summaryData) return <p className="text-[13px] p-3">요약 데이터가 없습니다.</p>;
+  if (!summaryData) return <p className="text-[20px] p-3">요약 데이터가 없습니다.</p>;
 
   // 문자열 형태인 경우 (구버전 호환)
   if (typeof summaryData === 'string') {
     return (
-      <p className="text-[13px] text-[var(--foreground)] leading-relaxed bg-[var(--background)] p-3 rounded-xl border border-[var(--border)]/50">
+      <p className="text-[20px] text-[var(--foreground)] leading-relaxed bg-[var(--background)] p-3 rounded-xl border border-[var(--border)]/50">
         {summaryData}
       </p>
     );
@@ -54,10 +54,10 @@ export default function MacroSummaryClient({ summaryData }: { summaryData: any }
 
   return (
     <>
-      <div className="text-[14px] text-[var(--foreground)] leading-[1.8] bg-[var(--background)] p-4 rounded-xl border border-[var(--border)]/50 shadow-inner font-medium">
+      <div className="text-[21px] text-[var(--foreground)] leading-[1.8] bg-[var(--background)] p-4 rounded-xl border border-[var(--border)]/50 shadow-inner font-medium">
         {renderText()}
         {keywords && keywords.length > 0 && (
-          <div className="text-[11px] text-[var(--muted-foreground)] mt-4 flex items-center gap-1.5 font-bold bg-[var(--muted)]/50 p-2 rounded-lg w-fit">
+          <div className="text-[16px] text-[var(--muted-foreground)] mt-4 flex items-center gap-1.5 font-bold bg-[var(--muted)]/50 p-2 rounded-lg w-fit">
             <span>👆</span> 파란색 단어를 누르면 배경이 된 뉴스를 볼 수 있습니다.
           </div>
         )}
@@ -79,10 +79,10 @@ export default function MacroSummaryClient({ summaryData }: { summaryData: any }
             >
               ✕
             </button>
-            <h3 className="font-extrabold text-[15px] mb-4 pr-8 text-blue-600 bg-blue-50 dark:bg-blue-950 inline-block px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900">
+            <h3 className="font-extrabold text-[22px] mb-4 pr-8 text-blue-600 bg-blue-50 dark:bg-blue-950 inline-block px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900">
               "{selectedKeyword.word}"
             </h3>
-            <p className="text-[15px] leading-relaxed font-medium mb-6">
+            <p className="text-[22px] leading-relaxed font-medium mb-6">
               {selectedKeyword.newsSummary}
             </p>
             {selectedKeyword.originalLink && (
@@ -90,7 +90,7 @@ export default function MacroSummaryClient({ summaryData }: { summaryData: any }
                 href={selectedKeyword.originalLink} 
                 target="_blank" 
                 rel="noreferrer" 
-                className="block w-full text-center py-3.5 bg-[var(--foreground)] text-[var(--background)] rounded-xl font-bold text-sm hover:opacity-90 active:scale-95 transition-all shadow-md"
+                className="block w-full text-center py-3.5 bg-[var(--foreground)] text-[var(--background)] rounded-xl font-bold text-[1.4rem] hover:opacity-90 active:scale-95 transition-all shadow-md"
               >
                 원문 기사 보러가기 🔗
               </a>

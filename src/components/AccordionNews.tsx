@@ -35,15 +35,15 @@ export default function AccordionNews({ news }: { news: any }) {
         className="p-3 flex justify-between items-center cursor-pointer active:bg-[var(--muted)]/50 transition-colors"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className="font-semibold text-[13px] leading-tight flex-1 pr-2">{cleanTitle}</span>
-        <span className="text-[var(--muted-foreground)] text-[10px] bg-[var(--muted)] p-1 rounded-full px-2">
+        <span className="font-semibold text-[20px] leading-tight flex-1 pr-2">{cleanTitle}</span>
+        <span className="text-[var(--muted-foreground)] text-[22px] bg-[var(--muted)] p-1 rounded-full px-2">
           {isOpen ? '닫기 ▲' : '열기 ▼'}
         </span>
       </div>
       
       {/* 아코디언 바디 (상세 원문 링크 및 스크랩) */}
       {isOpen && (
-        <div className="p-4 bg-[var(--muted)]/20 border-t border-[var(--border)] text-[13px] leading-relaxed relative">
+        <div className="p-4 bg-[var(--muted)]/20 border-t border-[var(--border)] text-[20px] leading-relaxed relative">
           <div className="mb-4 text-[var(--muted-foreground)]">
             자세한 내용은 아래 원문 링크를 통해 확인하실 수 있습니다.
             <a 
@@ -60,7 +60,7 @@ export default function AccordionNews({ news }: { news: any }) {
             <button 
               onClick={handleScrap}
               disabled={isScraping}
-              className="text-xs bg-[var(--primary)] text-[var(--primary-foreground)] px-4 py-2 rounded-lg font-bold shadow-sm active:scale-95 transition-transform disabled:opacity-50"
+              className="text-[1.2rem] bg-[var(--primary)] text-[var(--primary-foreground)] px-4 py-2 rounded-lg font-bold shadow-sm active:scale-95 transition-transform disabled:opacity-50"
             >
               {isScraping ? '저장중 ⏳' : '💾 보관함에 스크랩'}
             </button>

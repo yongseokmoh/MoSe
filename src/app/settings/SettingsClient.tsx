@@ -69,8 +69,8 @@ export default function SettingsClient({ initialProfile }: { initialProfile: any
   return (
     <div className="min-h-screen bg-[var(--muted)]/20 max-w-[600px] mx-auto pb-20">
       <div className="flex justify-between items-center px-5 py-4 border-b border-[var(--border)] bg-[var(--background)] sticky top-0 shadow-sm z-10">
-        <Link href="/" className="text-2xl">⬅️</Link>
-        <span className="font-extrabold text-lg tracking-tight">⚙️ 종목 설정</span>
+        <Link href="/" className="text-[2.2rem]">⬅️</Link>
+        <span className="font-extrabold text-[1.8rem] tracking-tight">⚙️ 종목 설정</span>
         <button onClick={handleSave} disabled={isSaving} className="font-bold text-[var(--primary)] bg-[var(--primary)]/10 px-4 py-2 rounded-full">
           {isSaving ? '저장중...' : '💾 저장'}
         </button>
@@ -79,7 +79,7 @@ export default function SettingsClient({ initialProfile }: { initialProfile: any
       <div className="p-4 space-y-4">
         {/* 추가 폼 */}
         <div className="bg-[var(--card)] p-5 rounded-3xl border border-[var(--border)] shadow-sm">
-          <h3 className="font-bold mb-4 text-base">새 종목 추가</h3>
+          <h3 className="font-bold mb-4 text-[1.6rem]">새 종목 추가</h3>
           <div className="flex gap-2 mb-2">
             <select className="p-3 rounded-xl border border-[var(--border)] bg-[var(--background)] font-medium" value={newType} onChange={e => setNewType(e.target.value)}>
               <option value="major">주요 종목</option>
@@ -97,12 +97,12 @@ export default function SettingsClient({ initialProfile }: { initialProfile: any
 
         {/* 주요 종목 */}
         <div className="bg-[var(--card)] p-5 rounded-3xl border border-[var(--border)] shadow-sm border-t-4 border-t-[var(--primary)]">
-          <h3 className="font-bold mb-3 text-base">🌟 주요 종목 ({majorStocks.length})</h3>
+          <h3 className="font-bold mb-3 text-[1.6rem]">🌟 주요 종목 ({majorStocks.length})</h3>
           <div className="divide-y divide-[var(--border)]">
             {majorStocks.map((stock: any) => (
               <div key={stock.name} className="flex justify-between items-center py-3">
-                <span className="font-bold text-[15px]">{stock.name}</span> 
-                <button onClick={() => handleDemote(stock)} className="text-[var(--muted-foreground)] font-bold px-3 py-1 bg-[var(--muted)] rounded-lg text-sm active:scale-95">
+                <span className="font-bold text-[22px]">{stock.name}</span> 
+                <button onClick={() => handleDemote(stock)} className="text-[var(--muted-foreground)] font-bold px-3 py-1 bg-[var(--muted)] rounded-lg text-[1.4rem] active:scale-95">
                   해제 ⬇️
                 </button>
               </div>
@@ -112,16 +112,16 @@ export default function SettingsClient({ initialProfile }: { initialProfile: any
 
         {/* 관심 종목 */}
         <div className="bg-[var(--card)] p-5 rounded-3xl border border-[var(--border)] shadow-sm">
-          <h3 className="font-bold mb-3 text-base text-[var(--muted-foreground)]">👀 관심 종목 ({interestStocks.length})</h3>
+          <h3 className="font-bold mb-3 text-[1.6rem] text-[var(--muted-foreground)]">👀 관심 종목 ({interestStocks.length})</h3>
           <div className="divide-y divide-[var(--border)]">
             {interestStocks.map((stock: any) => (
               <div key={stock.name} className="flex justify-between items-center py-3">
-                <span className="font-bold text-[15px] text-[var(--muted-foreground)]">{stock.name}</span> 
+                <span className="font-bold text-[22px] text-[var(--muted-foreground)]">{stock.name}</span> 
                 <div className="flex gap-2">
-                  <button onClick={() => handlePromote(stock)} className="text-[var(--primary)] font-bold px-3 py-1 bg-[var(--primary)]/10 rounded-lg text-sm active:scale-95">
+                  <button onClick={() => handlePromote(stock)} className="text-[var(--primary)] font-bold px-3 py-1 bg-[var(--primary)]/10 rounded-lg text-[1.4rem] active:scale-95">
                     승급 ⬆️
                   </button>
-                  <button onClick={() => handleDemote(stock)} className="text-[var(--muted-foreground)] font-bold px-3 py-1 bg-[var(--muted)] rounded-lg text-sm active:scale-95">
+                  <button onClick={() => handleDemote(stock)} className="text-[var(--muted-foreground)] font-bold px-3 py-1 bg-[var(--muted)] rounded-lg text-[1.4rem] active:scale-95">
                     해제 ⬇️
                   </button>
                 </div>
@@ -132,16 +132,16 @@ export default function SettingsClient({ initialProfile }: { initialProfile: any
 
         {/* (구) 관심종목 (이력 관리) */}
         <div className="bg-[var(--card)]/50 p-5 rounded-3xl border border-[var(--border)] border-dashed shadow-sm opacity-70">
-          <h3 className="font-bold mb-3 text-sm text-[var(--muted-foreground)]">🗄️ (구) 관심 종목 (이력 보관) ({archivedStocks.length})</h3>
+          <h3 className="font-bold mb-3 text-[1.4rem] text-[var(--muted-foreground)]">🗄️ (구) 관심 종목 (이력 보관) ({archivedStocks.length})</h3>
           <div className="divide-y divide-[var(--border)]">
             {archivedStocks.map((stock: any) => (
               <div key={stock.name} className="flex justify-between items-center py-3">
-                <span className="font-medium text-sm text-[var(--muted-foreground)] strike-through">{stock.name}</span> 
+                <span className="font-medium text-[1.4rem] text-[var(--muted-foreground)] strike-through">{stock.name}</span> 
                 <div className="flex gap-2">
-                  <button onClick={() => handlePromote(stock)} className="text-[var(--primary)] font-bold px-3 py-1 bg-[var(--primary)]/10 rounded-lg text-xs active:scale-95">
+                  <button onClick={() => handlePromote(stock)} className="text-[var(--primary)] font-bold px-3 py-1 bg-[var(--primary)]/10 rounded-lg text-[1.2rem] active:scale-95">
                     관심으로 복귀 ⬆️
                   </button>
-                  <button onClick={() => handleRemove(stock.name)} className="text-red-500 font-bold px-3 py-1 bg-red-100/50 rounded-lg text-xs active:scale-95">
+                  <button onClick={() => handleRemove(stock.name)} className="text-red-500 font-bold px-3 py-1 bg-red-100/50 rounded-lg text-[1.2rem] active:scale-95">
                     영구삭제
                   </button>
                 </div>
