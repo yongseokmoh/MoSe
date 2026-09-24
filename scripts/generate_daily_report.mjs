@@ -107,17 +107,32 @@ async function main() {
   
   const macroPrompt = `
   너는 글로벌 매크로 경제를 전문으로 분석하는 수석 이코노미스트야.
-  다음 수집된 뉴스를 바탕으로 오늘 글로벌 거시 경제와 증시 전반의 흐름을 매우 조리 있고 상세하게 분석해줘.
+  다음 수집된 뉴스를 바탕으로 오늘 글로벌 거시 경제와 증시 전반의 흐름을 조리 있게 분석해.
   
   [작성 지침]
   1. 단순한 사실 나열이 아닌, 인과 관계(원인과 결과)가 뚜렷하고 논리적인 흐름으로 문장을 구성할 것.
-  2. 주요 경제 지표(금리, 물가, 고용 등), 연준(Fed)의 스탠스, 또는 증시 전체를 움직인 핵심 테마(트리거)를 구체적으로 포함할 것.
-  3. 전체 분량은 4~5문장 내외로, 단편적이지 않고 충분한 인사이트를 담아서 전문가다운 어조로 작성할 것.
+  2. 전체 분량은 4~5문장 내외로, 충분한 인사이트를 담아서 전문가다운 어조로 작성할 것.
+  
+  [⭐특수 기능 지시사항 (가장 중요)⭐]
+  생성한 요약 텍스트 안에서 가장 핵심이 되는 중요한 단어나 어구(키워드) 3~5개를 선정해.
+  각 키워드에 대해, 그 배경이 된 원본 뉴스의 '한국어 요약본(2문장 내외)'과 '원본 링크'를 매핑해서 JSON 형식으로 출력해.
   
   [뉴스 데이터]
-  ${macroNews.map(n=>n.title).join('\n')}
+  ${macroNews.map(n=>`제목: ${n.title}, 링크: ${n.link}`).join('\n')}
+  
+  [출력 형식 (반드시 JSON)]
+  {
+    "summaryText": "여기에 4~5문장 분량의 전체 매크로 시황 요약글을 작성. (이 글 안에 아래 keywords의 word들이 정확히 똑같이 포함되어 있어야 함)",
+    "keywords": [
+      {
+        "word": "글 안에 있는 핵심 단어/어구",
+        "newsSummary": "해당 단어의 배경이 된 뉴스의 구체적인 한국어 친화적 요약",
+        "originalLink": "해당 뉴스의 링크"
+      }
+    ]
+  }
   `;
-  const macroSummary = await callGemini(macroPrompt);
+  const macroSummary = await callGemini(macroPrompt, true);
 
   console.log("Generating Section 2: Sector Summary...");
   const sectorNews = await fetchGoogleNews("미국 증시 특징주 OR 나스닥 특징주");

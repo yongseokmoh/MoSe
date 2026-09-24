@@ -1,4 +1,5 @@
 import AccordionNews from '@/components/AccordionNews';
+import MacroSummaryClient from '@/components/MacroSummaryClient';
 import fs from 'fs';
 import path from 'path';
 import Link from 'next/link';
@@ -77,9 +78,7 @@ export default function Home() {
               <span className={s1.exchangeRate?.includes('-') ? 'text-blue-500' : 'text-red-500'}>{s1.exchangeRate || '대기중'}</span>
             </div>
           </div>
-          <p className="text-[13px] text-[var(--foreground)] leading-relaxed bg-[var(--background)] p-3 rounded-xl border border-[var(--border)]/50">
-            {s1.summary || s1.aiSummary || '요약 데이터가 없습니다.'}
-          </p>
+          <MacroSummaryClient summaryData={s1.summary || s1.aiSummary} />
         </section>
 
         {/* Section 2: 선행 정보 (미국 증시 주요 섹터 변화) */}
