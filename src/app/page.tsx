@@ -57,10 +57,10 @@ const IndexCard = ({ title, data, highlight = false }: { title: string, data: an
       </div>
       <div className="flex justify-between items-center text-[21px] font-bold">
         <span className={`${color1d} bg-[var(--background)] px-1 py-0.5 rounded border border-[var(--border)] flex-1 text-center mr-0.5`}>
-          1D {is1dPos ? '+' : ''}{data.percent1d}%
+          1일 {is1dPos ? '+' : ''}{data.percent1d}%
         </span>
         <span className={`${color5d} bg-[var(--background)] px-1 py-0.5 rounded border border-[var(--border)] flex-1 text-center ml-0.5`}>
-          5D {is5dPos ? '+' : ''}{data.percent5d}%
+          5일 {is5dPos ? '+' : ''}{data.percent5d}%
         </span>
       </div>
     </div>
@@ -215,4 +215,5 @@ export default function Home() {
     </div>
   );
 }
+
 
