@@ -2,7 +2,6 @@ import AccordionNews from '@/components/AccordionNews';
 import fs from 'fs';
 import path from 'path';
 import Link from 'next/link';
-import path from 'path';
 
 // 서버에서 JSON 파일을 읽어오는 함수
 function getReportData() {
