@@ -27,7 +27,7 @@ export default function MacroSummaryClient({ summaryData }: { summaryData: any }
     
     const parts = [];
     let currentIndex = 0;
-    let match;
+    let match: RegExpExecArray | null;
 
     while ((match = regex.exec(summaryText)) !== null) {
       if (match.index > currentIndex) {
