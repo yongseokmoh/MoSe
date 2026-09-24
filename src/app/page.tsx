@@ -77,8 +77,10 @@ function getReportData() {
   }
 }
 
-export default function Home() {
-  const report = getReportData();
+export default async function Home({ searchParams }: { searchParams: Promise<{ ai?: string }> }) {
+  const resolvedParams = await searchParams;
+  const isDeepSeek = resolvedParams?.ai === 'ds';
+  const report = getReportData(isDeepSeek);
 
   const formatDate = (isoString: string) => {
     if (!isoString) return '업데이트 대기중';
