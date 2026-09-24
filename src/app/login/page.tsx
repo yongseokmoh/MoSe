@@ -11,7 +11,7 @@ export default function Login() {
     // 공통 PIN 번호
     if (pin === '1655') {
       // 1년(31536000)에서 하루(86400초)로 변경하여 매일 아침 1번씩 PIN 입력 유도
-      document.cookie = "mose_auth=authenticated; path=/; max-age=86400"; 
+      document.cookie = "mose_auth_v2=authenticated; path=/; max-age=86400"; 
       router.push('/');
       router.refresh();
     } else {

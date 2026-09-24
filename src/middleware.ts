@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const authCookie = request.cookies.get('mose_auth');
+  const authCookie = request.cookies.get('mose_auth_v2');
   const { pathname } = request.nextUrl;
 
   // 로그인 페이지, API, 정적 파일 등은 통과
