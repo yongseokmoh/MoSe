@@ -42,9 +42,9 @@ export default function Home() {
            <span className="text-xl cursor-pointer">☰</span>
            <span className="font-extrabold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-500">MoSe News</span>
         </div>
-        <div className="flex gap-4 text-lg">
+        <div className="flex gap-4 text-xl">
+          <Link href="/archive" className="cursor-pointer" title="보관함">💾</Link>
           <Link href="/settings" className="cursor-pointer" title="종목 설정">⚙️</Link>
-          <span className="cursor-pointer" title="테마 변경">🌙</span>
         </div>
       </div>
 

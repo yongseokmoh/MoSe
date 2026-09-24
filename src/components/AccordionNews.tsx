@@ -1,48 +1,72 @@
 'use client';
-
 import { useState } from 'react';
 
-interface NewsItem {
-  id: string;
-  title: string;
-  summary: string;
-  content: string;
-}
-
-export default function AccordionNews({ news }: { news: NewsItem }) {
+export default function AccordionNews({ news }: { news: any }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScraping, setIsScraping] = useState(false);
+
+  const handleScrap = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // 아코디언이 닫히지 않도록 이벤트 전파 중단
+    setIsScraping(true);
+    try {
+      const res = await fetch('/api/scrap', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(news)
+      });
+      if (res.ok) {
+        alert('💾 보관함에 성공적으로 저장되었습니다!');
+      } else {
+        alert('❌ 저장 실패 (Vercel 환경변수 확인)');
+      }
+    } catch(e) {
+      alert('오류 발생');
+    }
+    setIsScraping(false);
+  };
+
+  // 뉴스 제목을 조금 더 깔끔하게 다듬는 로직 (번호나 특수문자 등)
+  const cleanTitle = news.title.replace(/<\/?[^>]+(>|$)/g, "");
 
   return (
-    <div className="border border-[var(--border)] rounded-xl overflow-hidden mt-3 bg-[var(--background)] shadow-sm">
-      <button 
-        className="w-full text-left p-3.5 text-sm font-semibold hover:bg-[var(--muted)]/30 flex justify-between items-center transition-colors"
+    <div className="border border-[var(--border)] rounded-xl mb-2 overflow-hidden bg-[var(--background)] shadow-sm">
+      {/* 아코디언 헤더 (제목) */}
+      <div 
+        className="p-3 flex justify-between items-center cursor-pointer active:bg-[var(--muted)]/50 transition-colors"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className="truncate pr-2">{news.title}</span>
-        <span className="text-[var(--muted-foreground)] text-xs bg-[var(--muted)] px-2 py-1 rounded-full whitespace-nowrap">
-          {isOpen ? '접기 🔺' : '펼치기 ⬇️'}
+        <span className="font-semibold text-[13px] leading-tight flex-1 pr-2">{cleanTitle}</span>
+        <span className="text-[var(--muted-foreground)] text-[10px] bg-[var(--muted)] p-1 rounded-full px-2">
+          {isOpen ? '닫기 ▲' : '열기 ▼'}
         </span>
-      </button>
+      </div>
       
-      <div 
-        className={`bg-[var(--muted)]/20 px-3.5 text-[13px] text-[var(--foreground)] leading-relaxed transition-all duration-300 ease-in-out overflow-hidden ${isOpen ? 'max-h-[800px] opacity-100 py-3' : 'max-h-0 opacity-0 py-0'}`}
-      >
-        <div className="border-t border-[var(--border)] space-y-3 pt-3">
-          <p>
-            <strong className="text-[var(--primary)] block mb-1">🤖 AI 핵심 요약</strong>
-            {news.summary}
-          </p>
-          <div className="text-[var(--muted-foreground)] text-xs border-l-2 border-[var(--muted)] pl-2">
-            {news.content}
+      {/* 아코디언 바디 (상세 원문 링크 및 스크랩) */}
+      {isOpen && (
+        <div className="p-4 bg-[var(--muted)]/20 border-t border-[var(--border)] text-[13px] leading-relaxed relative">
+          <div className="mb-4 text-[var(--muted-foreground)]">
+            자세한 내용은 아래 원문 링크를 통해 확인하실 수 있습니다.
+            <a 
+              href={news.link || news.content || '#'} 
+              target="_blank" 
+              rel="noreferrer" 
+              className="text-blue-500 underline font-bold block mt-2"
+            >
+              기사 원문 보기 🔗
+            </a>
           </div>
           
-          <div className="flex justify-end gap-2 mt-2 pt-3 border-t border-[var(--border)] border-dashed">
-            <button className="px-4 py-1.5 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full text-xs font-bold shadow-sm hover:opacity-90 active:scale-95 transition-all">
-              💾 보관함에 저장
+          <div className="flex justify-end mt-2">
+            <button 
+              onClick={handleScrap}
+              disabled={isScraping}
+              className="text-xs bg-[var(--primary)] text-[var(--primary-foreground)] px-4 py-2 rounded-lg font-bold shadow-sm active:scale-95 transition-transform disabled:opacity-50"
+            >
+              {isScraping ? '저장중 ⏳' : '💾 보관함에 스크랩'}
             </button>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
