@@ -108,7 +108,7 @@ async function fetchYahooFinance(ticker) {
   }
 }
 
-async function main() {
+async function main() { try {
   console.log("🚀 Daily News Batch Started...");
   
   const majorNames = MAJOR_STOCKS.map(s => s.name);
@@ -221,8 +221,6 @@ async function main() {
 
   const outPath = path.join(process.cwd(), 'src', 'data', 'latest_report.json');
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
-  fs.writeFileSync(outPath, JSON.stringify(report, null, 2), 'utf-8');
-  console.log(`✅ Report generated at ${outPath}`);
-}
+  fs.writeFileSync(outPath, JSON.stringify(report, null, 2), "utf-8"); } catch(err) { console.error(err); const fs = await import("fs"); fs.writeFileSync(outPath, JSON.stringify({date: new Date().toISOString(), section1: {summary: "ERROR: " + err.message}})); process.exit(0); } } main();
 
-main();
+
