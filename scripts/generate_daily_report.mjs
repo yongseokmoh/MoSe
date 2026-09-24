@@ -25,7 +25,7 @@ async function fetchGoogleNews(query) {
   return items;
 }
 
-async function callGemini(prompt, isJson = false) {
+async function callGemini(prompt, isJson = false, retries = 3) {
   if (!GEMINI_API_KEY) return isJson ? { summary: 'API 키 누락', topNewsIndex: [0, 1] } : 'API 키 누락 데이터입니다.';
   
   const callModel = async (model, version, useJsonMode) => {
@@ -47,20 +47,28 @@ async function callGemini(prompt, isJson = false) {
     return isJson ? JSON.parse(text) : text;
   };
 
-  try {
-    return await callModel('gemini-3.6-flash', 'v1beta', isJson);
-  } catch (e1) {
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+  
+  let lastErrMsg = "";
+  for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      return await callModel('gemini-3.1-pro-preview', 'v1beta', isJson);
-    } catch (e2) {
+      return await callModel('gemini-flash-latest', 'v1beta', isJson);
+    } catch (e1) {
       try {
-        return await callModel('gemini-3.8-flash', 'v1beta', isJson);
-      } catch (e3) {
-        const errMsg = '[e1] ' + e1.message + ' [e2] ' + e2.message + ' [e3] ' + e3.message;
-        return isJson ? { summary: '요약 에러 (' + errMsg + ')', topNewsIndex: [0] } : '요약 에러 (' + errMsg + ')';
+        return await callModel('gemini-3.6-flash', 'v1beta', isJson);
+      } catch (e2) {
+        lastErrMsg = '[e1] ' + e1.message + ' [e2] ' + e2.message;
+        if (e1.message.includes('high demand') || e2.message.includes('high demand') || e1.message.includes('Quota') || e2.message.includes('Quota')) {
+           console.log(`High demand or quota hit on attempt ${attempt}. Waiting 10s...`);
+           await sleep(10000);
+           continue;
+        }
+        break; // If it's a different error, break and fail
       }
     }
   }
+  
+  return isJson ? { summary: '현재 구글 서버 트래픽 폭주로 일시적으로 요약을 가져올 수 없습니다. (' + lastErrMsg + ')', topNewsIndex: [0, 1] } : '현재 구글 서버 트래픽 폭주로 요약 실패';
 }
 
 // 섹션 2
