@@ -26,22 +26,44 @@ async function fetchGoogleNews(query) {
 }
 
 async function callGemini(prompt, isJson = false) {
-  if (!GEMINI_API_KEY) return isJson ? { summary: "API 키 누락", topNewsIndex: [0, 1] } : "API 키 누락으로 인한 더미 데이터입니다.";
+  if (!GEMINI_API_KEY) return isJson ? { summary: 'API 키 누락', topNewsIndex: [0, 1] } : 'API 키 누락 데이터입니다.';
   
-  try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+  const callModel = async (model, version, useJsonMode) => {
+    const res = await fetch('https://generativelanguage.googleapis.com/' + version + '/models/' + model + ':generateContent?key=' + GEMINI_API_KEY, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        ...(isJson && { generationConfig: { responseMimeType: "application/json" } })
+        ...(useJsonMode && { generationConfig: { responseMimeType: 'application/json' } })
       })
     });
-    const data = await res.json(); if(data.error) throw new Error(data.error.message); if(!data.candidates || !data.candidates[0].content) throw new Error("No content: " + JSON.stringify(data)); const text = data.candidates[0].content.parts[0].text; return isJson ? JSON.parse(text) : text; } catch (e) { console.error("Gemini Error:", e.message); const errMsg = e.message || "Unknown"; return isJson ? { summary: "요약 에러 (" + errMsg + ")", topNewsIndex: [0] } : "요약 에러 (" + errMsg + ")";
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    if (!data.candidates || !data.candidates[0].content) throw new Error('No content');
+    let text = data.candidates[0].content.parts[0].text;
+    if (isJson && !useJsonMode) {
+      text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    }
+    return isJson ? JSON.parse(text) : text;
+  };
+
+  try {
+    return await callModel('gemini-1.5-flash', 'v1', isJson);
+  } catch (e1) {
+    try {
+      return await callModel('gemini-1.5-pro', 'v1', isJson);
+    } catch (e2) {
+      try {
+        return await callModel('gemini-pro', 'v1beta', false);
+      } catch (e3) {
+        const errMsg = '[e1] ' + e1.message + ' [e2] ' + e2.message + ' [e3] ' + e3.message;
+        return isJson ? { summary: '요약 에러 (' + errMsg + ')', topNewsIndex: [0] } : '요약 에러 (' + errMsg + ')';
+      }
+    }
   }
 }
 
-// 개별 종목 요약
+// 섹션 2
 async function summarizeStock(stockName, newsItems, maxNewsCount) {
   if (newsItems.length === 0) return { summary: "최신 뉴스가 없습니다.", news: [] };
   
