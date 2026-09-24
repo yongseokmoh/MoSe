@@ -48,13 +48,13 @@ async function callGemini(prompt, isJson = false) {
   };
 
   try {
-    return await callModel('gemini-2.5-flash', 'v1beta', isJson);
+    return await callModel('gemini-3.6-flash', 'v1beta', isJson);
   } catch (e1) {
     try {
-      return await callModel('gemini-2.5-pro', 'v1beta', isJson);
+      return await callModel('gemini-3.1-pro-preview', 'v1beta', isJson);
     } catch (e2) {
       try {
-        return await callModel('gemini-3.5-flash', 'v1beta', isJson);
+        return await callModel('gemini-3.8-flash', 'v1beta', isJson);
       } catch (e3) {
         const errMsg = '[e1] ' + e1.message + ' [e2] ' + e2.message + ' [e3] ' + e3.message;
         return isJson ? { summary: '요약 에러 (' + errMsg + ')', topNewsIndex: [0] } : '요약 에러 (' + errMsg + ')';
