@@ -22,7 +22,6 @@ jobs:
           node-version: '20'
           
       - name: 3. Run script
-        working-directory: ./mose-app
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: node scripts/generate_daily_report.mjs
@@ -33,6 +32,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add mose-app/src/data/latest_report.json
+          git add src/data/latest_report.json
           git diff --quiet && git diff --staged --quiet || git commit -m "✅ Auto-update daily news report"
           git push
