@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import AccordionNews from '@/components/AccordionNews';
 import MacroSummaryClient from '@/components/MacroSummaryClient';
 import fs from 'fs';
@@ -215,5 +216,6 @@ export default function Home() {
     </div>
   );
 }
+
 
 
