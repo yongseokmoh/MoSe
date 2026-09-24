@@ -86,28 +86,51 @@ export default function SettingsClient({ initialProfile }: { initialProfile: any
           </button>
         </div>
 
-        {/* 현재 목록 */}
-        <div className="bg-[var(--card)] p-5 rounded-3xl border border-[var(--border)] shadow-sm">
-          <h3 className="font-bold mb-4 text-base">나의 종목 리스트</h3>
-          {profile.stocks.length === 0 ? (
-            <p className="text-center text-[var(--muted-foreground)] py-4 text-sm">등록된 종목이 없습니다.</p>
-          ) : (
-            <div className="divide-y divide-[var(--border)]">
-              {profile.stocks.map((stock: any) => (
-                <div key={stock.name} className="flex justify-between items-center py-4">
-                  <div>
-                    <span className="font-bold text-base">{stock.name}</span> 
-                    <span className="text-[11px] text-[var(--primary)] bg-[var(--primary)]/10 px-2 py-1 rounded-md ml-2 font-semibold">
-                      {stock.type === 'major' ? '주요' : '관심'}
-                    </span>
+        {/* 현재 목록 (그룹화) */}
+        <div className="space-y-4">
+          {/* 주요 종목 */}
+          <div className="bg-[var(--card)] p-5 rounded-3xl border border-[var(--border)] shadow-sm">
+            <h3 className="font-bold mb-3 text-base flex justify-between items-center">
+              <span>🌟 주요 종목</span>
+              <span className="text-xs bg-[var(--primary)] text-white px-2 py-1 rounded-full">{profile.stocks.filter((s: any) => s.type === 'major').length}개</span>
+            </h3>
+            {profile.stocks.filter((s: any) => s.type === 'major').length === 0 ? (
+              <p className="text-center text-[var(--muted-foreground)] py-4 text-sm">등록된 주요 종목이 없습니다.</p>
+            ) : (
+              <div className="divide-y divide-[var(--border)]">
+                {profile.stocks.filter((s: any) => s.type === 'major').map((stock: any) => (
+                  <div key={stock.name} className="flex justify-between items-center py-3">
+                    <span className="font-bold text-[15px]">{stock.name}</span> 
+                    <button onClick={() => handleRemove(stock.name)} className="text-red-500 font-bold px-3 py-1 bg-red-100/50 rounded-lg text-sm active:scale-95 transition-transform">
+                      삭제 🗑️
+                    </button>
                   </div>
-                  <button onClick={() => handleRemove(stock.name)} className="text-red-500 font-bold px-3 py-1 bg-red-100 rounded-lg text-sm active:scale-95">
-                    삭제 🗑️
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* 관심 종목 */}
+          <div className="bg-[var(--card)] p-5 rounded-3xl border border-[var(--border)] shadow-sm">
+            <h3 className="font-bold mb-3 text-base flex justify-between items-center">
+              <span className="text-[var(--muted-foreground)]">👀 관심 종목</span>
+              <span className="text-xs bg-[var(--muted)] text-[var(--muted-foreground)] px-2 py-1 rounded-full">{profile.stocks.filter((s: any) => s.type === 'interest').length}개</span>
+            </h3>
+            {profile.stocks.filter((s: any) => s.type === 'interest').length === 0 ? (
+              <p className="text-center text-[var(--muted-foreground)] py-4 text-sm">등록된 관심 종목이 없습니다.</p>
+            ) : (
+              <div className="divide-y divide-[var(--border)]">
+                {profile.stocks.filter((s: any) => s.type === 'interest').map((stock: any) => (
+                  <div key={stock.name} className="flex justify-between items-center py-3">
+                    <span className="font-bold text-[15px]">{stock.name}</span> 
+                    <button onClick={() => handleRemove(stock.name)} className="text-red-500 font-bold px-3 py-1 bg-red-100/50 rounded-lg text-sm active:scale-95 transition-transform">
+                      삭제 🗑️
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
