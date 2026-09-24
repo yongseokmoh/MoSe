@@ -166,27 +166,32 @@ async function main() { try {
   console.log("Generating Section 2: Sector Summary...");
   const sectorNews = await fetchGoogleNews("미국 증시 특징주 OR 나스닥 특징주");
   const sectorPrompt = `
-  너는 수석 글로벌 투자 전략가야. 
+  너는 수석 글로벌 투자 전략가야.
   현재 나의 주요 투자 종목은 [${majorNames.join(', ')}] 이야.
   이 종목들을 바탕으로 나의 '핵심 관심 섹터 3개'를 도출해.
-  그리고 다음 미국장 뉴스를 바탕으로 각 섹터별로 아래 JSON 양식에 맞춰 분석을 제공해.
+  각 섹터별로 아래 JSON 양식에 맞춰 충분하고 풍부한 분석을 제공해.
   
   [분석 지침]
-  1. 간밤 동향(overnightTrend): 미국 대장주의 간밤 움직임과 그 원인(Driver)을 구체적이고 상세하게 2~3문장으로 작성할 것.
-  2. 과거 패턴(historicalImpact): 과거 비슷한 원인으로 미국 대장주가 유사한 움직임을 보였을 때, 한국 증시의 해당 섹터는 보통 어떻게 반응했었는지 1문장으로 짧고 간결하게 작성할 것.
+  1. overnightTrend: 미국 대장주 간밤 움직임과 Driver를 수치 포함 3~4문장. 관련 매크로(금리/환율/원자재)도 언급.
+  2. historicalImpact: 과거 유사 상황에서 한국 해당 섹터 반응을 사례/퍼센트로 2~3문장.
+  3. outlook: 오늘 한국 시장 개장 시 해당 섹터·보유 종목 영향 2~3문장.
+  4. keywords: 전체 내용 핵심 키워드 3~5개 (키워드만 읽어도 내용 파악 가능하도록).
   
   [미국장 뉴스]
-  ${sectorNews.map(n=>n.title).join('\n')}
+  ${sectorNews.map(n=>n.title).join("\n")}
   
-  [출력 형식 (반드시 JSON 배열로 응답)]
+  [출력 형식 - 반드시 JSON 배열만 출력]
   [
     {
-      "weather": "☀️ 맑음",
+      "weather": "☀️ 맑음 OR ⛅ 구름 OR 🌧️ 흐림 OR ⛈️ 폭풍",
       "sectorName": "반도체/AI",
       "usPeer": "엔비디아",
-      "overnightTrend": "간밤 동향 2문장...",
-      "historicalImpact": "과거 패턴 1문장..."
+      "overnightTrend": "간밤 동향 3~4문장...",
+      "historicalImpact": "과거 패턴 2~3문장...",
+      "outlook": "오늘 전망 2~3문장...",
+      "keywords": ["키워드1", "키워드2", "키워드3"]
     }
+  ]
   ]
   `;
   const sectorSummary = await callGemini(sectorPrompt, true);
@@ -200,6 +205,7 @@ async function main() { try {
       kospi: await fetchYahooFinance('^KS11'),
       kosdaq: await fetchYahooFinance('^KQ11'),
       exchangeRate: await fetchYahooFinance('KRW=X'), // 원/달러 환율
+      wti: await fetchYahooFinance('CL=F'), // WTI 원유
       summary: macroSummary
     },
     section2: {
