@@ -1,40 +1,40 @@
 {
-  "date": "2026-09-24T15:16:56.099Z",
+  "date": "2026-09-24T15:41:54.470Z",
   "section1": {
     "sp500": {
-      "value": "7669.72",
-      "percent1d": "-0.47",
-      "percent5d": "0.42",
+      "value": "7666.32",
+      "percent1d": "-0.52",
+      "percent5d": "0.37",
       "history": [
         7637.759765625,
         7650.5,
         7764.7001953125,
         7706.02978515625,
-        7669.72021484375
+        7666.31982421875
       ]
     },
     "nasdaq": {
-      "value": "26731.23",
-      "percent1d": "-0.76",
-      "percent5d": "1.18",
+      "value": "26722.75",
+      "percent1d": "-0.79",
+      "percent5d": "1.15",
       "history": [
         26418.30078125,
         26522.5390625,
         27122.08984375,
         26936.0390625,
-        26731.232421875
+        26722.74609375
       ]
     },
     "sox": {
-      "value": "12303.74",
-      "percent1d": "-1.84",
-      "percent5d": "6.07",
+      "value": "12311.66",
+      "percent1d": "-1.78",
+      "percent5d": "6.14",
       "history": [
         11599.490234375,
         11921.6904296875,
         12433.169921875,
         12534.2802734375,
-        12303.7431640625
+        12311.6591796875
       ]
     },
     "kospi": {
@@ -62,19 +62,19 @@
       ]
     },
     "exchangeRate": {
-      "value": "1369.2",
-      "percent1d": "1.40",
-      "percent5d": "-0.75",
+      "value": "1368.7",
+      "percent1d": "1.36",
+      "percent5d": "-0.79",
       "history": [
         1379.530029296875,
         1384.8599853515625,
         1373.6800537109375,
         1350.3599853515625,
-        1369.239990234375
+        1368.699951171875
       ]
     },
     "summary": {
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "topNewsIndex": [
         0
       ]
@@ -82,7 +82,7 @@
   },
   "section2": {
     "summary": {
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "topNewsIndex": [
         0
       ]
@@ -93,11 +93,11 @@
         "link": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE5pOGI2V0lFd2gyd3pwbnEtZHhnTkxfcGw3N2c3NXBMN3ZBQmN1MTgycDBKQzlycl9sd0UtQVNLakhDMERLU1VRRHZjNVBwWm9Qc2d6U2hqTFFaZzTSAWBBVV95cUxOQkp6VVVrN0YtQUlxOWJRN083bkE1U1d0dXYyQ0h6azN5bW45aVZWcEQzeG1xaGkyeVFKS1FFMGpEeHlpcDNMUVdHR1lCZUFDT0liNFhScWlKajI4R010dTM?oc=5"
       },
       {
-        "title": "[미국 특징주] 엔비디아·MS 손잡은 엔스케일, 뉴욕증시 IPO 추진 - 뉴스핌",
+        "title": "[미국 특징주] 엔비디아·MS 손잡은 엔스케일, 뉴욕증시 IPO 추진 - newspim.com",
         "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBaTmh2a0RZUHVTVHpsWFU2STlzaWNwUmROdDZSazBHRC1YYW9zd29nRWZPZ05IeFI3cDlvLVNpeUVsRExNZzY1aS1aY28ydlBNOVA2a29EcWZ3SWdC?oc=5"
       },
       {
-        "title": "[ET특징주] 미국발 'CPU' 훈풍… 코리아써키트 등 PCB株 강세 - 전자신문",
+        "title": "[ET특징주] 미국발 'CPU' 훈풍… 코리아써키트 등 PCB株 강세 - etnews.com",
         "link": "https://news.google.com/rss/articles/CBMiTkFVX3lxTE5BR1VvVkdNYm5JaGxIRDhPdXJ1cnNKMUczd1ZnTTlsVU9sZklheUx1MURvMEtiN09Nc0duM3pxQzBxQWNpT3FMR19scFdRQQ?oc=5"
       }
     ]
@@ -107,7 +107,7 @@
       "name": "클로봇",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "특징주, 클로봇-피지컬 AI/휴머노이드 로봇 테마 상승세에 5.56% ↑ - 매일경제",
@@ -119,10 +119,10 @@
       "name": "현대건설",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[리포트 브리핑]현대건설, '높은 변동성에도 반드시 보유해야 할 이유' 목표가 170,000원 - KB증권 - 뉴스핌",
+          "title": "[리포트 브리핑]현대건설, '높은 변동성에도 반드시 보유해야 할 이유' 목표가 170,000원 - KB증권 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE0zNTFlTkM5eGk1Vk5mb2xtRVRkUzdqdTBwNzd3T1JyQ3B2SnRRQ0tjdmdHTW5UTy1faWFTUGVLT0M4YU9ORnBSVkVYcExESXFkaEtGeURPcnlHRERE?oc=5"
         }
       ]
@@ -131,7 +131,7 @@
       "name": "삼성SDI",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "\"삼성SDI, 전력 인프라株로 재평가돼야\"…해성디에스, 1900억 증설 투자로 성장 한계 해소 [株토피아] - v.daum.net",
@@ -143,10 +143,10 @@
       "name": "KBI메탈",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[특징주] KBI메탈 상한가…4755조 메가 투자에 전선주 동반 급등 - 뉴스핌",
+          "title": "[특징주] KBI메탈 상한가…4755조 메가 투자에 전선주 동반 급등 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9XTXI5LUNncktFeU5nLVhPalUzOFprX0hERU5PNENsSU1xVVJHV2Z4S3JWMUtTUFJGaXQzN0hESXBld2l5ZDdTVXkyMGVNY0FJWm85czI2S3U0eWh4?oc=5"
         }
       ]
@@ -155,7 +155,7 @@
       "name": "주성엔지니어링",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "주성엔지니어링(036930)밀릴때마다 물량 모아둘 기회로 보이며 이후 전망 및 대응전략. - ThinkPool",
@@ -167,7 +167,7 @@
       "name": "롯데케미칼",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "[실적 후] 롯데케미칼, 10개 분기 만에 흑자전환… 목표가 줄상향에도 투자의견은 엇갈려 By 인포스탁데일리 - Investing.com 한국어",
@@ -179,10 +179,10 @@
       "name": "비에이치아이",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[리포트 브리핑]비에이치아이, ''대미투자 1호' 수혜 가능성에 주목' Not Rated - 리딩투자증권 - 뉴스핌",
+          "title": "[리포트 브리핑]비에이치아이, ''대미투자 1호' 수혜 가능성에 주목' Not Rated - 리딩투자증권 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9kTnVOblQtWmVfTGFISWZxaGE4VmdhdG1sV2ZxU1M0emx0SVRNMjBTTXVXczZ0SFgwZlM2SnlEWnN6TU1HZzVIUFB1YXEzSjgzbXJ0akNyRVc3NUxn?oc=5"
         }
       ]
@@ -191,10 +191,10 @@
       "name": "씨메스",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[모닝 리포트] \"씨메스로보틱스, 로봇 넘어 피지컬AI SW로…내년 흑자전환 기대\" - 뉴스핌",
+          "title": "[모닝 리포트] \"씨메스로보틱스, 로봇 넘어 피지컬AI SW로…내년 흑자전환 기대\" - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9WcERjdXEzTHpFQktVVTJuek9mM3I2My11dFFOSzhvRjlOTERWMWpsWkZBd0t4S2xiV0NkVWN2ZGMtUFYzSjJDZ0YzaEtsay11UmZtU0gtOThhdHVq?oc=5"
         }
       ]
@@ -203,7 +203,7 @@
       "name": "유일로보틱스",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "[파워 e종목] 유일로보틱스, 대규모 CAPEX 투자로 내년 본격 턴어라운드? - 데일리인베스트",
@@ -215,7 +215,7 @@
       "name": "코세스",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "코세스(089890)밀릴때마다 물량 모아둘 기회로 보이며 이후 전망 및 대응전략. - ThinkPool",
@@ -227,7 +227,7 @@
       "name": "원익IPS",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "[Hot 종목 체크] 원익IPS, 수주잔고 급증으로 3분기 증익폭↑전망…주가 동력? - 데일리인베스트",
@@ -239,7 +239,7 @@
       "name": "원익홀딩스",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "원익홀딩스 투자분석 - 주달",
@@ -251,10 +251,10 @@
       "name": "SFA반도체",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[특징주] 美 반도체주 강세에 소부장株 '들썩'…'시그네틱스·SFA반도체' 급등 - 뉴스핌",
+          "title": "[특징주] 美 반도체주 강세에 소부장株 '들썩'…'시그네틱스·SFA반도체' 급등 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE5PSXZxN3RGRDdkcWFjQjI3N3NRSmF3WFo3Zl9qYmdPSU4zYmdhSE1fQWhuWVpmdDJlLTlTYTlJNzJwNUZ6N2d2cGxua2JrbGpiRExrSmhSRE5mOFBp?oc=5"
         }
       ]
@@ -263,7 +263,7 @@
       "name": "심텍",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "대신증권 \"심텍, 3분기 실적 컨센서스 상회…성장 기반 확보\" - 연합뉴스",
@@ -275,7 +275,7 @@
       "name": "카페24",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "유튜브 기대가 컸나?…카페24, 주가 흘러내리는 이유 [정답은 TSR] - 한국금융신문",
@@ -287,10 +287,10 @@
       "name": "삼화콘덴서",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[리포트 브리핑]삼화콘덴서, '탐방 Take aways: 가격 인상이 가능한 환경 조성 중' Not Rated - 삼성증권 - 뉴스핌",
+          "title": "[리포트 브리핑]삼화콘덴서, '탐방 Take aways: 가격 인상이 가능한 환경 조성 중' Not Rated - 삼성증권 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE1mZWtqNnJDc0lSbkNRVUhGVVVZV2lQZnJsd3lRQkFZTlhnVnpuRzJBUnpmNlUtaDc2MXFYRzlFdy1aMWtkZEhSdW9Ld2ZGQURMOFdIVEJjSXRad2k1?oc=5"
         }
       ]
@@ -299,7 +299,7 @@
       "name": "예스티",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "예스티(122640)제목밀릴때마다 물량 모아둘 기회로 보이며 이후 전망 및 대응전략. - ThinkPool",
@@ -311,7 +311,7 @@
       "name": "오킨스전자",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "오킨스전자(080580)눌릴때마다 물량 모아둘 기회로 보이며 이후 전망 및 대응전략. - ThinkPool",
@@ -323,7 +323,7 @@
       "name": "삼성에스디에스",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "한화증권 \"삼성SDS, 새 데이터센터로 성장확대 기대…목표가↑\" - 연합뉴스",
@@ -335,7 +335,7 @@
       "name": "삼성전자",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "\"65만전자 간다?\"…심상찮은 증권가 전망에 개미들 '들썩' [종목+] - 한국경제",
@@ -347,7 +347,7 @@
       "name": "SK하이닉스",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "[특징주] 삼성전자, 장초반 2.4% 급등…SK하이닉스는 3% 뛰어 - 연합뉴스",
@@ -359,10 +359,10 @@
       "name": "덕산하이메탈",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[리포트 브리핑]덕산하이메탈, '고객사의 증설이 성장으로 이어진다' 목표가 23,000원 - 하나증권 - 뉴스핌",
+          "title": "[리포트 브리핑]덕산하이메탈, '고객사의 증설이 성장으로 이어진다' 목표가 23,000원 - 하나증권 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE5KYVByN1g0NFpLbTJad0Q4cmJTT0ZQakVaQkgzb1dXaldwdmFWSnFoS29hYjFGUzZwVGlraldKNnJPN2ZydGhWQmpfaVNqVzdKZHdfTXlCV0VXUk41?oc=5"
         }
       ]
@@ -371,10 +371,10 @@
       "name": "LG전자",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[인도 특징주] \"높은 인지도, 제품 다각화, 현지화가 LG전자 인도 성장 견인...'매수'\" - 뉴스핌",
+          "title": "[인도 특징주] \"높은 인지도, 제품 다각화, 현지화가 LG전자 인도 성장 견인...'매수'\" - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE5MSVJPaEJCNXVvdWF1NzZkTUloNVRVeU55S2FJSTd5WWVoaHd5TDdrUF9MVHNiUko0ZjdLNGxiVmxkOUp1RXdsSzVCNERPcEg5RXBmckFYbVp3Mk16?oc=5"
         }
       ]
@@ -383,10 +383,10 @@
       "name": "인텍플러스",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[리포트 브리핑]인텍플러스, '수주 급증·믹스 개선·비용 감소 삼박자' 목표가 84,000원 - iM증권 - 뉴스핌",
+          "title": "[리포트 브리핑]인텍플러스, '수주 급증·믹스 개선·비용 감소 삼박자' 목표가 84,000원 - iM증권 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9MeHlQQ3lyWFRfd3BaMTdMWFNSZEx0bkEycVRwTGZpT0FtbThtNVFfYnRRLWo0RUt5N24xUjk4YnFvdUQ4SGZlOWJUVldicWJ1Q2thZGFubVFtSWlW?oc=5"
         }
       ]
@@ -395,11 +395,11 @@
       "name": "SKC",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "SKC (011790) - ThinkPool",
-          "link": "https://news.google.com/rss/articles/CBMiS0FVX3lxTFBLX2dGc2J6WlBfMGxDYUhMclJvQzFOQXJocW42UXJDeHBoaXh1Q0hCZjN5MVMzVUhBWVJKX0ZKQWxjd1FNTUVrdDUzWQ?oc=5"
+          "title": "특징주, SKC-유리 기판 테마 상승세에 4.69% ↑ - 매일경제 마켓",
+          "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTFBCWFpQMVBPbXA0eHIzallrYWpOM2FiTGptY0t2UnE0MXpJbUNmdTlLeE9yTDgxbloyNXpCX04yV2VraXhvVkMtRTc2djF5T2trbHc?oc=5"
         }
       ]
     },
@@ -407,10 +407,10 @@
       "name": "코리아써키트",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[특징주] 美 CPU주 급등에 기판株 동반 강세…코리아써키트 28%↑ - 뉴스핌",
+          "title": "[특징주] 美 CPU주 급등에 기판株 동반 강세…코리아써키트 28%↑ - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE15endBbTF4cDU4RDFISXJlal9BbDl4SmpVOWJCcDJFZUdMNkFwZWllaEVXaW56V3gzUGh6NFFlY1hfNC1Qa3hSVjhNeTVsUzVpNmpEblRUcFlEOHFP?oc=5"
         }
       ]
@@ -419,7 +419,7 @@
       "name": "에브리봇",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "특징주, 에브리봇-로봇(산업용/협동로봇 등) 테마 상승세에 2.32% ↑ - 매일경제 마켓",
@@ -431,7 +431,7 @@
       "name": "HD현대일렉트릭",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "HD현대일렉트릭 투자분석 2026. 09. 20 - 주달",
@@ -443,7 +443,7 @@
       "name": "현대차",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "[증시다트] 현대차·기아 목표가 동반 상향…실적 온도차에도 ‘로봇 프리미엄’ 커졌다 - :: 위즈경제 ::",
@@ -455,7 +455,7 @@
       "name": "현대제철",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "[뉴스락 주식네비] 현대제철, 美 제철소서 연 3000억 지분법익 기대 - 뉴스락",
@@ -467,7 +467,7 @@
       "name": "현대로템",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "[특징주] 현대로템, 공시 속 보합권 등락... 시장 관망세 짙어져 : 기업주식정보 - 재경일보",
@@ -479,10 +479,10 @@
       "name": "현대모비스",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[리포트 브리핑]현대모비스, 'Atlas 가장 먼저 매출로 연결될 기업' 목표가 750,000원 - LS증권 - 뉴스핌",
+          "title": "[리포트 브리핑]현대모비스, 'Atlas 가장 먼저 매출로 연결될 기업' 목표가 750,000원 - LS증권 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9lRnhrMnk1WkRoYUVlTjJUaFdSbGctMlJ1QzMyNmdxdlNSRHJnbmdXbGZVZk9MUXRYNE5KY0lTcGgwT09qYUFuM3ZFTkJQNlhPUnRSblp1VGdfNHhF?oc=5"
         }
       ]
@@ -491,7 +491,7 @@
       "name": "기아",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "[증시다트] 현대차·기아 목표가 동반 상향…실적 온도차에도 ‘로봇 프리미엄’ 커졌다 - :: 위즈경제 ::",
@@ -503,7 +503,7 @@
       "name": "한미반도체",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "한미반도체, 독보적 기술력으로 AI 패키징 장비 라인업 확대 - 증권일보",
@@ -515,10 +515,10 @@
       "name": "아모텍",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[리포트 브리핑]아모텍, '고객들 줄서기가 시작되었다' 목표가 30,000원 - IBK투자증권 - 뉴스핌",
+          "title": "[리포트 브리핑]아모텍, '고객들 줄서기가 시작되었다' 목표가 30,000원 - IBK투자증권 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFA4OVExcXduei1XVXZRRHJGb2J4aVcwOVRZYnFnYW9OR1czck9IZloxdVAzU0VRUzBPcU1LSkRNYUlhV0xjUUxSSXZ0eTBwX0l2cW9zWmxldDVPN3lM?oc=5"
         }
       ]
@@ -527,10 +527,10 @@
       "name": "대주전자재료",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "\"실적은 뛰는데 주가는 소외…중소형주 재평가 기대\" - 그로쓰리서치 - 뉴스핌",
+          "title": "\"실적은 뛰는데 주가는 소외…중소형주 재평가 기대\" - 그로쓰리서치 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9Pa1MySGdKM2paY1dmS3RHcVRGMllHZ3gxaXZmRmJkOGpCR2JjUzg0WWRYT0JEb29UMWZNQ3dJWU1lbkZJaVlxZlo4b2lzZlFtUnpBeUFMNlc1Ujc5?oc=5"
         }
       ]
@@ -539,10 +539,10 @@
       "name": "현대글로비스",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[리포트 브리핑]현대글로비스, '본업 가치만으로도 설명되는 매력' 목표가 330,000원 - 흥국증권 - 뉴스핌",
+          "title": "[리포트 브리핑]현대글로비스, '본업 가치만으로도 설명되는 매력' 목표가 330,000원 - 흥국증권 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBBSldLWG1zdDItU0QzTHVndWRZYl9jcFg0Zk1RYk5RcU9WTEFscE8xVkM3NHA0ckRlNzdmSFZ6aFZOeVFCclJRQUVoM05VSnFMRlVsQzRISFhGTlVh?oc=5"
         }
       ]
@@ -551,7 +551,7 @@
       "name": "로보스타",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "로보스타 투자분석 2026. 09. 20 - 주달",
@@ -563,10 +563,10 @@
       "name": "아모레퍼시픽",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[모닝 리포트] \"아모레퍼시픽, 글로벌 확장 본격화\" - 뉴스핌",
+          "title": "[모닝 리포트] \"아모레퍼시픽, 글로벌 확장 본격화\" - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBJU1FuWkt1d05YVFZaVFowTDJQLVZzSjJtc1Vfb0pMeWhQMTBrb3lmUEMtN1MwN0U0dXpubVJNaWNoQVk1OFNPeHlkQ3JiQjZ5cXBlbVAyOWx3Wmg3?oc=5"
         }
       ]
@@ -575,7 +575,7 @@
       "name": "셀바스AI",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "[실적속보]셀바스AI, 올해 1Q 매출액 266억(+0.8%) 영업이익 -3.7억(적자지속) (연결) - ThinkPool",
@@ -587,10 +587,10 @@
       "name": "HL만도",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[리포트 브리핑]HL만도, '미-중 로보택시 주도권 경쟁 확대의 수혜' 목표가 83,000원 - 한화투자증권 - 뉴스핌",
+          "title": "[리포트 브리핑]HL만도, '미-중 로보택시 주도권 경쟁 확대의 수혜' 목표가 83,000원 - 한화투자증권 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFA5REthRmlHQUhmZ1FhWDdKM3FTcXVMVUFIMEpiLVZLNTJKeFBhZGNvRDREUXJFY1drMXAyOWM4NG4zTHJwRFhlaV9zR2lTS19wWng0YVJXMnpIRkQ1?oc=5"
         }
       ]
@@ -599,10 +599,10 @@
       "name": "솔트룩스",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[특징주] AI 챗봇株 강세…솔트룩스 22%↑·NAVER 10%↑ - 뉴스핌",
+          "title": "[특징주] AI 챗봇株 강세…솔트룩스 22%↑·NAVER 10%↑ - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE0waXBDM0U5X05vNTNNeFBJZUtBUkVQUTQtd1I5MDZNdVRZamUzVGdZZDVIcVdXcGNFeG5jTTFIY3pERjBZRmJ0alAxMmxkZkI1dnlCQkZUOGx6VTlC?oc=5"
         }
       ]
@@ -611,7 +611,7 @@
       "name": "두산로보틱스",
       "type": "major",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "[특징주] 두산로보틱스, 로봇주 강세 속 7만원대 안착 시도 : 기업주식정보 - 재경일보",
@@ -625,7 +625,7 @@
       "name": "SK스퀘어",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "\"앞으로 더 오른다\"…외국인 9월 순매수 1위는 이 종목 - 한국경제",
@@ -637,7 +637,7 @@
       "name": "LS전선",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "반년 만에 1년치 다 벌었다 … 글로벌 존재감 키우는 LS - 매일경제",
@@ -649,7 +649,7 @@
       "name": "두산퓨얼셀",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "[특징주] 두산퓨얼셀, 5014억원 규모 美데이터센터 연료전지 수주 소식에…급등 - 조선비즈 - Chosunbiz",
@@ -661,10 +661,10 @@
       "name": "가온전선",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[특징주] 美 전력망 수주 기대 전선株 동반 상승…가온전선 12%↑ - 뉴스핌",
+          "title": "[특징주] 美 전력망 수주 기대 전선株 동반 상승…가온전선 12%↑ - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBfVWxqQWFvcFZibXB0TEg2Xzl2THdSQWJINFRBVWJPaUlXQlZ6N1NnS0FZSzczRlMtNmN3dUVYdkpEYmVMcldmdE92VDJuWjRVT2dTV24yUG9ibjBw?oc=5"
         }
       ]
@@ -673,7 +673,7 @@
       "name": "범한퓨얼셀",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "[특징주] 범한퓨얼셀, 두산퓨얼셀발 대규모 수주 영향.. '강세' - 글로벌이코노믹",
@@ -685,7 +685,7 @@
       "name": "대원전선",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "‘실적 대박’ 대원전선, 최대주주가 고점 매수 나선 까닭 - 딜사이트",
@@ -697,7 +697,7 @@
       "name": "덕산네오룩스",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "IBK증권, 덕산네오룩스 목표가↑…\"하반기 최대 실적 전망\" - 연합뉴스",
@@ -709,7 +709,7 @@
       "name": "두산에너빌리티",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "갑자기 고꾸라진 두산에너빌 주가…현 시점 전략 세워보니 - 한국경제",
@@ -721,10 +721,10 @@
       "name": "애경케미칼",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "애경케미칼 주가 장중 25%대 급등, 국내 최초 'TPC' 국산화 기대에 강세 - businesspost.co.kr",
+          "title": "애경케미칼 주가 장중 25%대 급등, 국내 최초 'TPC' 국산화 기대에 강세 - 비즈니스포스트",
           "link": "https://news.google.com/rss/articles/CBMic0FVX3lxTFA0WXdiT1hoSThPU0RsdFNKLUVTX01CRC0xbDNVNVhoY2FkbW05eWxIQy1fWnV3WGpDRUVUS0d5WkxUMDBvalhpQUNqQk56YkFCY2RYazF4RlItNzBoRGdIUFRsNWpEc0dmNTNpQjQ2bmEtM3M?oc=5"
         }
       ]
@@ -733,7 +733,7 @@
       "name": "코스모로보틱스",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "[특징주] 웨어러블 로봇 전문 코스모로보틱스 , 상장 첫날 '따따블' - 글로벌이코노믹",
@@ -745,7 +745,7 @@
       "name": "싸이맥스",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "[서치 e종목] 싸이맥스, 전공정·후공정 동반 확대 사이클로 주가 동력 얻을까 - 데일리인베스트",
@@ -757,7 +757,7 @@
       "name": "한전산업",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "특징주, 한전산업-원자력발전 테마 상승세에 9.43% ↑ - 매일경제 마켓",
@@ -769,7 +769,7 @@
       "name": "알테오젠",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "주가 내려도 개인 순매수 2위···알테오젠 저력은 ‘중장기 실적 기대감’ - 시사저널e",
@@ -781,10 +781,10 @@
       "name": "대우건설",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[특징주] 대우건설, '주거 뉴딜' 기대감에 7%↑…건설주 동반 강세 - 뉴스핌",
+          "title": "[특징주] 대우건설, '주거 뉴딜' 기대감에 7%↑…건설주 동반 강세 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE1zendWN0VnQ3E3YXY5QnNhVUNfYmRHNkR2bVJOZV9LYTVRQ2ZLemFYTnowNGdTWUpmM2xubHRNRW9KckxCYXdlc18xdW44R0kxT1VnZHFZTUtjenEw?oc=5"
         }
       ]
@@ -793,7 +793,7 @@
       "name": "SK이노베이션",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "유안타증권 \"SK이노베이션 목표가 상향…실적개선 전망\" - 연합뉴스",
@@ -805,7 +805,7 @@
       "name": "한국콜마",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "‘선케어 성수기’ 한국콜마 분기 최대 실적...2분기 영업익 50% 증가한 1013억 - 매일경제 마켓",
@@ -817,10 +817,10 @@
       "name": "효성중공업",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[리포트 브리핑]효성중공업, '북미 초고압, AI 전력수요가 여는 성장' 목표가 4,200,000원 - 리딩투자증권 - 뉴스핌",
+          "title": "[리포트 브리핑]효성중공업, '북미 초고압, AI 전력수요가 여는 성장' 목표가 4,200,000원 - 리딩투자증권 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE1jbHJYdnFzUFByUnZEWUY5ZVE4Z254Z2tCM2p2RDdiLThFSXJYcHB2LTVNendTWjRSUXBuRmgtc2VUeGhEU2hHY3ZCb3FSRTltalRIQUJNZklTcTRK?oc=5"
         }
       ]
@@ -829,10 +829,10 @@
       "name": "에코프로",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[특징주] 에코프로머티, 특별한 호재 없이 장중 2%대 상승세 유지 : 기업주식정보 - 재경일보",
+          "title": "[특징주] 에코프로머티, 특별한 호재 없이 장중 2%대 상승세 유지 : 기업주식정보 - jkn.co.kr",
           "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTFB1OWJJUFFWSWhuRGRFZ2RuMnhrMWYyZ2dyOHgxdWx0eWc3dm40MzF5NFdEdVJ4NU55YW05OTBfUElJeUVQTTVNT2tMRHBpZkdwX0RsMk0tWkY?oc=5"
         }
       ]
@@ -841,7 +841,7 @@
       "name": "에코프로비엠",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "IBK증권, 에코프로비엠 목표가↓…\"2분기 실적 컨센서스 하회\" - 연합뉴스",
@@ -853,10 +853,10 @@
       "name": "LG화학",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[모닝 리포트] LG화학, 3분기 '래깅 효과' 소멸에 수익성 급랭…담합 과징금 변수 - 뉴스핌",
+          "title": "[모닝 리포트] LG화학, 3분기 '래깅 효과' 소멸에 수익성 급랭…담합 과징금 변수 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE5Rc1E1clZpXzI4aEVETTdlS05ORUtVb3FVOUpkZllZc091UzdGRFVxZ244Q3ptb1BUSl9TTVZUa3Fhc0NmZUxnc0RNTUFIUmlERW9Bdm93akpNSVd1?oc=5"
         }
       ]
@@ -865,7 +865,7 @@
       "name": "포스코퓨처엠",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "포스코퓨처엠(003670) - 매일경제 마켓",
@@ -877,11 +877,11 @@
       "name": "PS일렉트로닉스",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[적중! 대박 예감] 'PS일렉트로닉스, 빛샘전자' 내일장 예감 좋은 대박 종목은? - 머니투데이 - 머니투데이",
-          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE9NQzZ0eUJCcDRBemE1TmwxbUlXOGdYSHc3LTJCVnNPY3M1NEItd09jYUVCQmdMOHRJUGlLNHRsQnFxdm9ZYksyd2VPcEVnS0xkMXI1ZEd0RXM4TmJMNjJDUUFxZDl4V01w0gFuQVVfeXFMTlFzSVV6Tk1mWXR0ZHVBZk56RkJqTUo4ZE5rT2NUS0JUQndLa2dMYlppY0VDVldXTWpzS3RkVG4wTUxGbmRTem5uc2xad3ZtSndoT05jTDB1a3RzTm0tTHl6WVlBMGZkSV9HMHphbnc?oc=5"
+          "title": "[리포트 브리핑]PS일렉트로닉스, 'Corp.day후기: AI서버 사업, 고성장 초입' Not Rated - 신한투자증권 - newspim.com",
+          "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE5VRTVUM2ZBSUZMSVpwY1NQbnVmdEVwUGQteVdWSWdxd190WU53bWEzOWVDMDJHSncwNzF6dV9xWkFaVWN3QmVzZ2swSW04MWRPWTR2cmhNbDM4dHNO?oc=5"
         }
       ]
     },
@@ -889,7 +889,7 @@
       "name": "NHN",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "김동훈 NHN클라우드 대표, NHN 주식 1.4억원 매수…AI 인프라 성장 자신감 - 지디넷코리아",
@@ -901,10 +901,10 @@
       "name": "샘씨엔에스",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[리포트 브리핑]샘씨엔에스, 'Probe Card 고성장 수혜' 목표가 25,000원 - LS증권 - 뉴스핌",
+          "title": "[리포트 브리핑]샘씨엔에스, 'Probe Card 고성장 수혜' 목표가 25,000원 - LS증권 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE44Mm42MVU5WU1JQlZxU3FwNmlXVENZYzg1NXNWeTlUcVpBSjlvN28xZ25JeEJMRXJfRUNpc3d3UWw4VWY1LVB5MFktM0dtTUdXaU51dTRKeHp0TlA5?oc=5"
         }
       ]
@@ -913,10 +913,10 @@
       "name": "현대오토에버",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[리포트 브리핑]현대오토에버, 'AI 전환점, 새만금 데이터센터가 온다' 목표가 500,000원 - 삼성증권 - 뉴스핌",
+          "title": "[리포트 브리핑]현대오토에버, 'AI 전환점, 새만금 데이터센터가 온다' 목표가 500,000원 - 삼성증권 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE1HSjZZLWxzQ1A1U090R0FSNHJjMVI0YWhnS1hoQ1ptMHhsejJuRE1ialhzQXpRNFpDQTBiZUs3enVVSXV6NmJTalpXNE9VdWRXVGNYZXlvaXNQak4x?oc=5"
         }
       ]
@@ -925,7 +925,7 @@
       "name": "삼성E&A",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "[증권言言] 유안타증권 \"삼성E&amp;A, 첨단산업 수주가 실적 성장 이끈다\" - 마일드경제",
@@ -937,10 +937,10 @@
       "name": "GS건설",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
-          "title": "[리포트 브리핑]GS건설, '삼박자: 증익 + DC + 원전 ' 목표가 48,000원 - KB증권 - 뉴스핌",
+          "title": "[리포트 브리핑]GS건설, '삼박자: 증익 + DC + 원전 ' 목표가 48,000원 - KB증권 - newspim.com",
           "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE1PR0ZUS2cwdXhIcmlBc21EbHJ1cGVVd3RFSl83c19GT29WNkdUS1hvOUtGanNMYUV2RFZFS0dfSHQ5Tm0zT3NTMkRacno3aElkMmxkeF90RzNOQlR6?oc=5"
         }
       ]
@@ -949,7 +949,7 @@
       "name": "자람테크놀로지",
       "type": "interest",
       "currentPrice": "장전",
-      "summary": "요약 에러 ([e1] models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e2] models/gemini-1.5-pro is not found for API version v1, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. [e3] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.)",
+      "summary": "요약 에러 ([e1] This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e2] This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started). [e3] Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. )",
       "news": [
         {
           "title": "[실적속보]자람테크놀로지, 올해 1Q 매출액 51.9억(+67%) 영업이익 -15.5억(적자지속) (개별) - ThinkPool",
