@@ -62,17 +62,19 @@ export default function AccordionNews({ news, category }: { news: any, category?
       <div className={`border rounded-xl mb-2 overflow-hidden shadow-sm ${category === 'sudden' ? 'border-red-400 dark:border-red-800 bg-red-50/50 dark:bg-red-950/20' : category === 'most_viewed' ? 'border-blue-400 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20' : 'border-[var(--border)] bg-[var(--background)]'}`}>
         {/* 아코디언 헤더 */}
         <div
-          className="p-3 flex justify-between items-center cursor-pointer active:bg-[var(--muted)]/50 transition-colors"
+          className="p-3 flex flex-col gap-2 cursor-pointer active:bg-[var(--muted)]/50 transition-colors"
           onClick={() => setIsOpen(!isOpen)}
         >
-          <span className="font-semibold text-[1.5rem] leading-snug flex-1 pr-2">
+          <span className="font-semibold text-[1.5rem] leading-snug w-full">
             {category === 'sudden' && <span className="inline-block text-[1rem] bg-red-100 text-red-700 dark:bg-red-900/80 dark:text-red-300 px-2 py-0.5 rounded mr-2 align-middle font-extrabold mb-1">🔥 급상승</span>}
             {category === 'most_viewed' && <span className="inline-block text-[1rem] bg-blue-100 text-blue-700 dark:bg-blue-900/80 dark:text-blue-300 px-2 py-0.5 rounded mr-2 align-middle font-extrabold mb-1">👀 많이 본</span>}
             {cleanTitle}
           </span>
-          <span className="text-[var(--muted-foreground)] text-[1.5625rem] bg-[var(--muted)] p-1 rounded-full px-2 shrink-0">
-            {isOpen ? '닫기 ▲' : '열기 ▼'}
-          </span>
+          <div className="w-full flex justify-end">
+            <span className="text-[var(--muted-foreground)] text-[1.2rem] bg-[var(--muted)] p-1 rounded-full px-3">
+              {isOpen ? '닫기 ▲' : '열기 ▼'}
+            </span>
+          </div>
         </div>
 
         {/* 아코디언 바디 */}

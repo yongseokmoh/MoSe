@@ -58,7 +58,7 @@ const IndexCard = ({ title, data, highlight = false }: { title: React.ReactNode,
         {data.value}
       </div>
       
-      <div className="flex justify-between items-center text-[1.1rem] font-bold mb-2">
+      <div className="flex justify-between items-center text-[0.85rem] font-bold mb-2">
         <span className={`${color1d} bg-[var(--background)] px-1 py-1 rounded border border-[var(--border)] flex-1 text-center mr-0.5`}>
           1일 {is1dPos ? '+' : ''}{data.percent1d}%
         </span>
