@@ -141,6 +141,22 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
             <IndexCard title="🇰🇷 코스닥" data={s1.kosdaq} />
             <IndexCard title="💱 원/달러 환율" data={s1.exchangeRate} />
             <IndexCard title="🛢️ WTI 원유" data={s1.wti} />
+            {s1.foreignFutures && (() => {
+              const ff = s1.foreignFutures;
+              const isPos = ff.rawNetBuy >= 0;
+              const color = isPos ? 'text-red-500' : 'text-blue-500';
+              return (
+                <div className="bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-between border border-[var(--border)]/30">
+                  <span className="text-[var(--muted-foreground)] text-[26px] font-bold leading-tight mb-1">🌏 외국인 선물</span>
+                  <div className={`text-[22px] font-extrabold tracking-tight ${color} mb-1`}>
+                    {ff.netBuy}
+                  </div>
+                  <span className={`text-[20px] font-bold px-2 py-0.5 rounded border text-center ${isPos ? 'text-red-500 border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20' : 'text-blue-500 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/20'}`}>
+                    KOSPI200 {ff.direction}
+                  </span>
+                </div>
+              );
+            })()}
           </div>
           <MacroSummaryClient summaryData={s1.summary || s1.aiSummary} />
         </section>

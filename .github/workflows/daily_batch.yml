@@ -25,6 +25,8 @@ jobs:
       - name: 3. Run DeepSeek script (Primary Engine)
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
+          KIS_APP_SECRET: ${{ secrets.KIS_APP_SECRET }}
         run: node scripts/generate_deepseek_report.mjs
         
       - name: 4. Commit & Push

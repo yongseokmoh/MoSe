@@ -126,10 +126,96 @@ async function fetchYahooFinance(ticker) {
   }
 }
 
+// 한국투자증권 OpenAPI: OAuth 토큰 발급
+async function getKisToken() {
+  const appKey = process.env.KIS_APP_KEY;
+  const appSecret = process.env.KIS_APP_SECRET;
+  if (!appKey || !appSecret) return null;
+  try {
+    const res = await fetch('https://openapi.koreainvestment.com:9443/oauth2/tokenP', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ grant_type: 'client_credentials', appkey: appKey, appsecret: appSecret })
+    });
+    const data = await res.json();
+    if (!data.access_token) { console.error('KIS 토큰 발급 실패:', JSON.stringify(data)); return null; }
+    console.log('✅ KIS 토큰 발급 성공 (만료:', data.access_token_token_expired, ')');
+    return data.access_token;
+  } catch (e) {
+    console.error('KIS 토큰 발급 에러:', e.message);
+    return null;
+  }
+}
+
+// 한국투자증권 OpenAPI: 외국인 KOSPI200 선물 순매수 조회
+async function fetchKisForeignFutures(token) {
+  const appKey = process.env.KIS_APP_KEY;
+  const appSecret = process.env.KIS_APP_SECRET;
+  if (!token || !appKey || !appSecret) return null;
+  try {
+    // 오늘/어제 날짜 계산
+    const today = new Date();
+    const yyyymmdd = (d) => d.toISOString().slice(0, 10).replace(/-/g, '');
+    const todayStr = yyyymmdd(today);
+    const yesterday = new Date(today); yesterday.setDate(today.getDate() - 1);
+    const yesterdayStr = yyyymmdd(yesterday);
+
+    const params = new URLSearchParams({
+      FID_COND_MRKT_DIV_CODE: 'F',   // 선물
+      FID_INPUT_ISCD: '101V3000',     // KOSPI200 선물 근월물 코드
+      FID_INPUT_DATE_1: yesterdayStr, // 시작일
+      FID_INPUT_DATE_2: todayStr,     // 종료일
+    });
+    const res = await fetch(`https://openapi.koreainvestment.com:9443/uapi/domestic-futureoption/v1/quotations/investor-trend-estimate?${params}`, {
+      headers: {
+        'content-type': 'application/json',
+        'authorization': `Bearer ${token}`,
+        'appkey': appKey,
+        'appsecret': appSecret,
+        'tr_id': 'FHPIF060000',
+        'custtype': 'P'
+      }
+    });
+    const data = await res.json();
+    console.log('KIS 외국인 선물 원본 응답:', JSON.stringify(data).slice(0, 300));
+
+    if (data.rt_cd !== '0') {
+      console.error('KIS API 오류:', data.msg1);
+      return null;
+    }
+
+    // output 배열에서 외국인(invst_cd: '8000') 찾기
+    const list = data.output || data.output1 || [];
+    const foreignRow = list.find(r => r.invst_cd === '8000' || r.invst_nm?.includes('외국'));
+    if (!foreignRow) {
+      console.warn('KIS 응답에서 외국인 행 미발견. 첫 번째 행:', JSON.stringify(list[0]));
+      return null;
+    }
+
+    const netBuy = parseInt(foreignRow.futs_seln_tr_pbmn || foreignRow.net_qty || 0, 10);
+    const isPositive = netBuy >= 0;
+    const formatted = (isPositive ? '+' : '') + netBuy.toLocaleString('ko-KR') + ' 계약';
+    return { netBuy: formatted, direction: isPositive ? '순매수' : '순매도', rawNetBuy: netBuy };
+  } catch (e) {
+    console.error('KIS 외국인 선물 조회 에러:', e.message);
+    return null;
+  }
+}
+
 async function main() { try {
   console.log("🚀 Daily News Batch Started...");
   
   const majorNames = MAJOR_STOCKS.map(s => s.name);
+
+  // 한국투자증권 OpenAPI: 외국인 선물 순매수 (API 키 없으면 null)
+  console.log("Fetching KIS Foreign Futures data...");
+  const kisToken = await getKisToken();
+  const foreignFutures = await fetchKisForeignFutures(kisToken);
+  if (foreignFutures) {
+    console.log(`✅ 외국인 KOSPI200 선물: ${foreignFutures.direction} ${foreignFutures.netBuy}`);
+  } else {
+    console.log("⚠️ KIS 외국인 선물 데이터 없음 (API 키 미설정 또는 오류)");
+  }
   
   console.log("Generating Section 1: Macro Summary & Indices...");
   const macroNews = await fetchGoogleNews("미국 증시 마감 OR 글로벌 경제");
@@ -225,6 +311,7 @@ async function main() { try {
       kosdaq: await fetchYahooFinance('^KQ11'),
       exchangeRate: await fetchYahooFinance('KRW=X'), // 원/달러 환율
       wti: await fetchYahooFinance('CL=F'), // WTI 원유
+      foreignFutures: foreignFutures, // 외국인 KOSPI200 선물 순매수 (KIS API)
       summary: macroSummary
     },
     section2: {
