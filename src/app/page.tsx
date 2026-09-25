@@ -159,8 +159,16 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                       <span className="text-[2.0rem]">{sector.weather?.split(' ')[0]}</span>
                       <span>{sector.sectorName}</span>
                       <span className="text-[19px] font-normal text-[var(--muted-foreground)] bg-[var(--muted)] px-2 py-0.5 rounded-md border border-[var(--border)]">
-                        미국 대장주: {sector.usPeer}
+                        {sector.usPeer}
                       </span>
+                      {sector.usPeerChange && sector.usPeerChange !== 'N/A' && (() => {
+                        const isPos = !sector.usPeerChange.startsWith('-');
+                        return (
+                          <span className={`text-[20px] font-extrabold px-2 py-0.5 rounded-md border ${isPos ? 'text-red-500 bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800' : 'text-blue-500 bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800'}`}>
+                            {sector.usPeerChange}
+                          </span>
+                        );
+                      })()}
                     </h3>
                     <div className="text-[23px] leading-relaxed mb-3">
                       <span className="font-bold text-blue-600 dark:text-blue-400">간밤 동향: </span>
