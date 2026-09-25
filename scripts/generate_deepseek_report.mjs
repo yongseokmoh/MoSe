@@ -9,6 +9,13 @@ const MAJOR_STOCKS = userProfile.stocks.filter(s => s.type === 'major');
 const INTEREST_STOCKS = userProfile.stocks.filter(s => s.type === 'interest');
 const ARCHIVED_STOCKS = userProfile.stocks.filter(s => s.type === 'archived');
 
+function formatToYYMMDD(dateObj) {
+  const yy = String(dateObj.getFullYear()).slice(-2);
+  const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const dd = String(dateObj.getDate()).padStart(2, '0');
+  return `${yy}/${mm}/${dd}`;
+}
+
 async function fetchGoogleNews(query) {
   const url = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=ko&gl=KR&ceid=KR:ko`;
   const response = await fetch(url);
@@ -20,7 +27,6 @@ async function fetchGoogleNews(query) {
   const itemRegex = /<item>([\s\S]*?)<\/item>/g;
   let match;
   
-  // 2개월 전 시점 계산
   const twoMonthsAgo = new Date();
   twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
 
@@ -29,16 +35,21 @@ async function fetchGoogleNews(query) {
     const titleMatch = itemContent.match(/<title>(.*?)<\/title>/);
     const linkMatch = itemContent.match(/<link>(.*?)<\/link>/);
     const pubDateMatch = itemContent.match(/<pubDate>(.*?)<\/pubDate>/);
+    const descMatch = itemContent.match(/<description>([\s\S]*?)<\/description>/);
     
     if (!titleMatch || !linkMatch) continue;
     
     let formattedDate = '';
     if (pubDateMatch) {
       const pubDate = new Date(pubDateMatch[1]);
-      if (pubDate < twoMonthsAgo) {
-        continue; // 2개월 이상 지난 뉴스 필터링
-      }
-      formattedDate = `${pubDate.getFullYear()}.${String(pubDate.getMonth() + 1).padStart(2, '0')}.${String(pubDate.getDate()).padStart(2, '0')}`;
+      if (pubDate < twoMonthsAgo) continue;
+      formattedDate = formatToYYMMDD(pubDate);
+    }
+    
+    let description = '';
+    if (descMatch) {
+      description = descMatch[1].replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      description = description.substring(0, 300);
     }
     
     const sourceMatch = itemContent.match(/<source[^>]*>(.*?)<\/source>/);
@@ -60,11 +71,11 @@ async function fetchGoogleNews(query) {
       title: finalTitle, 
       link: linkMatch[1],
       pubDate: formattedDate,
+      description,
       isTrusted
     });
   }
   
-  // 신뢰 언론사 기사가 배열 앞쪽에 오도록 강력히 정렬 (AI에게 가중치)
   items.sort((a, b) => (b.isTrusted ? 1 : 0) - (a.isTrusted ? 1 : 0));
   
   return items;
@@ -123,9 +134,10 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
      - most_viewed: 최근에 많이 노출된 기사
      - sudden: 과거 언급 없다가 갑자기 올라오는 뉴스
   4. 산업 분류: 이 종목이 속한 시장(코스피 또는 코스닥)과 공식 산업분류명(예: 코스피 전기전자, 코스닥 제약 등)을 'industry'에 기재해.
+  5. 절대 제공된 뉴스 목록(제목 및 미리보기)에 없는 내용을 상상해서 작성하거나 지어내지 마라.
   
   뉴스 목록:
-  ${newsItems.map((n, i) => `${i}. ${n.title}`).join('\n')}
+  ${newsItems.map((n, i) => `[인덱스: ${i}] 제목: ${n.title}\n미리보기: ${n.description}`).join('\n\n')}
   
   [출력 형식 (반드시 JSON 객체로 응답, 모든 필드 필수 포함)]
   {
@@ -135,8 +147,8 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
       {
         "index": 0,
         "category": "most_viewed 또는 sudden",
-        "newTitle": "기사 내용을 드러내는 짧고 깔끔한 요약 제목 (원본 제목에 있는 [언론사] 태그는 반드시 그대로 유지할 것. 제목 끝에 임의의 날짜를 추가하지 말 것)",
-        "articleSummary": "해당 개별 기사에 대한 상세한 요약 (수치, 인과관계, 비즈니스 임팩트 등을 포함하여 3~5문장 내외로 깊이 있게 작성)"
+        "newTitle": "기사 내용을 드러내는 짧고 깔끔한 요약 제목 (원본 제목에 있는 [언론사] 태그는 반드시 그대로 유지할 것. 제목 끝에 임의의 날짜를 절대 추가하지 말 것)",
+        "articleSummary": "해당 개별 기사에 대한 요약 (반드시 제공된 '미리보기' 내용 내에서만 팩트 기반으로 2~3문장 작성. 절대 배경지식을 동원해 지어내지 말 것)"
       }
     ]
   }
@@ -147,16 +159,17 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
     const newsItem = newsItems[item.index];
     if (!newsItem) return null;
     
-    let summaryWithDate = item.articleSummary || '';
-    if (newsItem.pubDate && !summaryWithDate.includes(newsItem.pubDate)) {
-      summaryWithDate += ` (${newsItem.pubDate})`;
+    // 우선선택 마커를 제거하고, 스크립트 단에서 날짜를 정확하게 접미사로 붙여줍니다.
+    let cleanTitle = item.newTitle ? item.newTitle.replace(/\[★우선선택\]\s*/g, '') : newsItem.title.replace(/\[★우선선택\]\s*/g, '');
+    if (newsItem.pubDate && !cleanTitle.includes(newsItem.pubDate)) {
+      cleanTitle += ` (${newsItem.pubDate})`;
     }
 
     return {
       ...newsItem,
-      title: item.newTitle ? item.newTitle.replace(/\[★우선선택\]\s*/g, '') : newsItem.title.replace(/\[★우선선택\]\s*/g, ''), // 우선선택 마커는 표시할 때 제거
+      title: cleanTitle,
       category: item.category,
-      articleSummary: summaryWithDate
+      articleSummary: item.articleSummary || ''
     };
   }).filter(Boolean);
   
@@ -182,6 +195,7 @@ async function fetchYahooRSSNews(tickers) {
         const titleMatch = itemContent.match(/<title>(.*?)<\/title>/);
         const linkMatch = itemContent.match(/<link>(.*?)<\/link>/);
         const pubDateMatch = itemContent.match(/<pubDate>(.*?)<\/pubDate>/);
+        const descMatch = itemContent.match(/<description>([\s\S]*?)<\/description>/);
         
         if (!titleMatch || !linkMatch || !pubDateMatch) continue;
         
@@ -189,11 +203,18 @@ async function fetchYahooRSSNews(tickers) {
         if (pubDate < threeDaysAgo) continue;
         
         let title = titleMatch[1].replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1');
+        let description = '';
+        if (descMatch) {
+          description = descMatch[1].replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+          description = description.substring(0, 400);
+        }
+
         items.push({
           ticker,
           title,
           link: linkMatch[1],
-          pubDate: pubDate.toISOString()
+          pubDate: formatToYYMMDD(pubDate),
+          description
         });
       }
     } catch (e) {
@@ -259,11 +280,13 @@ async function fetchForeignFuturesFromNews() {
     ${newsItems.map((n, i) => `${i}. ${n.title}`).join('\n')}
     
     위 뉴스들을 분석하여, 가장 최근의 외국인 코스피200 선물 매매 동향(순매수 또는 순매도)과 그 규모(금액 또는 계약 수)를 추출해줘.
+    [주의 사항]
+    절대 임의의 수치를 상상해서 지어내지 말고, 기사 제목에 명시된 수치만 정확히 추출하라. 기사에 명확한 수치가 없다면 '알 수 없음'으로 처리하라.
     
     출력 형식 (반드시 JSON):
     {
       "direction": "순매수 또는 순매도 (알 수 없으면 '알 수 없음')",
-      "amount": "규모 (예: 1조 2000억원, 5000계약 등. 수치와 단위를 포함. 알 수 없으면 '알 수 없음')",
+      "amount": "규모 (예: 1조 2000억원, 5000계약 등. 수치와 단위를 포함. 기사에 명시된 수치가 없으면 '알 수 없음')",
       "isPositive": true (순매수일 때) 또는 false (순매도일 때)
     }
     `;
@@ -308,10 +331,10 @@ async function main() { try {
   
   [⭐특수 기능 지시사항 (가장 중요)⭐]
   생성한 요약 텍스트 안에서 가장 핵심이 되는 중요한 단어나 어구(키워드) 3~5개를 선정해.
-  각 키워드에 대해, 그 배경이 된 원본 뉴스의 '한국어 요약본(2문장 내외)'과 '원본 링크'를 매핑해서 JSON 형식으로 출력해.
+  각 키워드에 대해, 그 배경이 된 원본 뉴스의 '한국어 요약본(2문장 내외)'과 해당 뉴스의 인덱스 번호(newsIndex)를 매핑해서 JSON 형식으로 출력해.
   
   [뉴스 데이터]
-  ${macroNews.map(n=>`제목: ${n.title}, 링크: ${n.link}`).join('\n')}
+  ${macroNews.map((n, i)=>`[인덱스: ${i}] 제목: ${n.title}\n미리보기: ${n.description}`).join('\n\n')}
   
   [출력 형식 (반드시 JSON)]
   {
@@ -320,12 +343,20 @@ async function main() { try {
       {
         "word": "글 안에 있는 핵심 단어/어구",
         "newsSummary": "해당 단어의 배경이 된 뉴스의 구체적인 한국어 친화적 요약",
-        "originalLink": "해당 뉴스의 링크"
+        "newsIndex": 매핑할 뉴스 데이터의 정수형 인덱스 숫자 (지어내지 말 것)
       }
     ]
   }
   `;
   const macroSummary = await callGemini(macroPrompt, true);
+  
+  if (macroSummary.keywords) {
+    macroSummary.keywords.forEach(kw => {
+      if (typeof kw.newsIndex === 'number' && macroNews[kw.newsIndex]) {
+        kw.originalLink = macroNews[kw.newsIndex].link;
+      }
+    });
+  }
 
   console.log("Generating Section 2: Sector Summary & News...");
   // 미국 주요 종목 간밤 등락률 실제 데이터 수집
@@ -364,13 +395,13 @@ async function main() { try {
   2. historicalImpact: 과거 유사 상황에서 한국 해당 섹터 반응을 사례/퍼센트로 2~3문장.
   3. outlook: 오늘 한국 시장 개장 시 영향 2~3문장.
   4. keywords: 핵심 키워드 3~5개 (키워드만 읽어도 내용 파악 가능하도록).
-  5. usPeers: 해당 섹터를 대표하거나 뉴스에서 주로 언급된 미국 대장주 이름들을 배열로 나열해라. (예: ["엔비디아", "AMD", "TSMC"])
+  5. usPeers: 해당 섹터와 연관된 미국 대장주를 반드시 아래 [미국장 대장주 목록]에 명시된 이름 중에서만 골라서 배열로 나열하라. (예: ["엔비디아", "AMD"]). 목록에 없는 기업은 절대 상상해서 추가하지 마라.
 
-  [실제 등락률]
+  [미국장 대장주 목록 및 등락률]
   ${peerChangeLine}
 
   [미국장 뉴스]
-  ${rawYahooNews.map(n=>`[${n.ticker}] ${n.title}`).join("\n").substring(0, 8000)}
+  ${rawYahooNews.map(n=>`[${n.ticker}] ${n.title}\n미리보기: ${n.description}`).join("\n\n").substring(0, 10000)}
 
   [출력 형식 - 반드시 JSON 객체로 응답]
   {
@@ -395,12 +426,13 @@ async function main() { try {
   앞서 분석한 3개의 핵심 섹터는 다음과 같아: ${(sectorSummary.sectors || []).map(s => s.sectorName).join(', ')}.
 
   [지시사항]
-  1. 앞서 분석한 3개의 핵심 섹터 각각에 대해, 가장 중요하고 임팩트 있는 기사를 딱 3개씩 선별해라. (총 9개의 기사가 나와야 함)
+  1. 앞서 분석한 3개의 핵심 섹터 각각에 대해, 아래 제공된 [뉴스 목록]에서 가장 중요하고 임팩트 있는 기사를 딱 3개씩 선별해라. (총 9개)
   2. 선별된 9개 기사에 대해, '제목(title)'과 '핵심 요약(articleSummary)'을 한국어로 완벽하고 자연스럽게 번역해라.
-  3. 반드시 아래 JSON 배열 형식으로 반환해라.
+  3. 반드시 제공된 [뉴스 목록]의 미리보기 내용만을 바탕으로 번역 및 요약해야 하며, 배경지식을 동원해 없는 내용을 지어내지 마라.
+  4. 반드시 아래 JSON 배열 형식으로 반환해라.
 
   [뉴스 목록]
-  ${rawYahooNews.map((n, i) => `[${i}] ${n.ticker}: ${n.title}`).join('\n')}
+  ${rawYahooNews.map((n, i) => `[인덱스: ${i}] ${n.ticker}: ${n.title}\n미리보기: ${n.description}`).join('\n\n')}
 
   [출력 형식 - 반드시 JSON 객체로 응답]
   {
@@ -409,7 +441,7 @@ async function main() { try {
         "index": 뉴스목록에서의인덱스숫자,
         "category": "most_viewed 또는 sudden",
         "title": "한국어로 번역된 기사 제목",
-        "articleSummary": "한국어로 번역된 3~4문장 분량의 상세한 핵심 요약",
+        "articleSummary": "기사의 핵심 요약 (제공된 미리보기 내용을 바탕으로 완벽하게 번역 및 요약. 없는 내용 지어내기 엄격히 금지)",
         "sectorName": "매칭된 정확한 섹터명"
       }
     ]
