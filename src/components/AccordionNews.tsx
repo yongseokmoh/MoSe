@@ -9,6 +9,7 @@ export default function AccordionNews({ news, category }: { news: any, category?
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReading, setIsReading] = useState(false);
   const [articleData, setArticleData] = useState<{title?: string, content?: string, error?: string} | null>(null);
+  const [useIframeFallback, setUseIframeFallback] = useState(false);
 
   const handleScrap = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -30,28 +31,30 @@ export default function AccordionNews({ news, category }: { news: any, category?
     setIsScraping(false);
   };
 
+  const cleanTitle = news.title.replace(/<\/?[^>]+(>|$)/g, "");
+  const articleUrl = news.link || news.content || '#';
+
   const handleReadArticle = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsModalOpen(true);
-    if (articleData) return; // Already fetched
+    if (articleData || useIframeFallback) return; // Already fetched
     
     setIsReading(true);
     try {
       const res = await fetch(`/api/read?url=${encodeURIComponent(articleUrl)}`);
       const data = await res.json();
-      if (res.ok) {
+      if (res.ok && data.content) {
         setArticleData(data);
       } else {
-        setArticleData({ error: data.error || '기사를 불러오지 못했습니다.' });
+        console.warn('Reader API returned error, falling back to iframe', data);
+        setUseIframeFallback(true);
       }
     } catch (err) {
-      setArticleData({ error: '네트워크 오류로 기사를 불러오지 못했습니다.' });
+      console.warn('Network error during Reader API call, falling back to iframe', err);
+      setUseIframeFallback(true);
     }
     setIsReading(false);
   };
-
-  const cleanTitle = news.title.replace(/<\/?[^>]+(>|$)/g, "");
-  const articleUrl = news.link || news.content || '#';
 
   return (
     <>
@@ -111,8 +114,8 @@ export default function AccordionNews({ news, category }: { news: any, category?
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-[var(--background)] w-full max-w-2xl h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden relative border border-[var(--border)]">
             <div className="p-4 border-b border-[var(--border)] flex justify-between items-center bg-[var(--muted)]/30">
-              <h3 className="font-bold text-[1.5rem] truncate pr-4 text-[var(--foreground)]">
-                {articleData?.title || '기사 읽기'}
+              <h3 className="font-bold text-[1.3rem] truncate pr-4 text-[var(--foreground)]">
+                {useIframeFallback ? '원문 브라우저' : (articleData?.title || '기사 읽기')}
               </h3>
               <button 
                 onClick={() => setIsModalOpen(false)}
@@ -121,22 +124,23 @@ export default function AccordionNews({ news, category }: { news: any, category?
                 &times;
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto p-5 text-[1.25rem] leading-relaxed">
+            <div className="flex-1 overflow-y-auto bg-white dark:bg-black text-[1.25rem] leading-relaxed relative">
               {isReading ? (
-                <div className="flex justify-center items-center h-full text-[var(--muted-foreground)]">
+                <div className="flex justify-center items-center h-full text-[var(--muted-foreground)] p-5">
                   기사 본문을 불러오는 중입니다... ⏳
                 </div>
-              ) : articleData?.error ? (
-                <div className="text-red-500 text-center mt-10">
-                  {articleData.error}
-                  <div className="mt-4">
-                    <a href={articleUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-                      원문 링크로 직접 이동하기
+              ) : useIframeFallback ? (
+                <div className="flex flex-col h-full w-full">
+                  <div className="bg-yellow-50 dark:bg-yellow-900/30 p-3 text-[1rem] text-yellow-800 dark:text-yellow-200 text-center flex flex-col gap-2 border-b border-yellow-200 dark:border-yellow-800 shrink-0">
+                    <span>자체 뷰어 변환이 지원되지 않는 언론사입니다. 원문 웹페이지를 직접 띄웁니다.</span>
+                    <a href={articleUrl} target="_blank" rel="noopener noreferrer" className="bg-white dark:bg-black px-3 py-1.5 rounded border border-yellow-300 dark:border-yellow-700 font-bold shadow-sm inline-block mx-auto hover:bg-gray-50">
+                      🚀 새 창에서 열기 (화면이 잘렸거나 안 보일 경우 클릭)
                     </a>
                   </div>
+                  <iframe src={articleUrl} className="flex-1 w-full border-none bg-white" sandbox="allow-scripts allow-same-origin allow-popups" title="Article Original Viewer" />
                 </div>
               ) : articleData?.content ? (
-                <div className="prose dark:prose-invert max-w-none text-[1.25rem]" dangerouslySetInnerHTML={{ __html: articleData.content }} />
+                <div className="prose dark:prose-invert max-w-none text-[1.25rem] p-5" dangerouslySetInnerHTML={{ __html: articleData.content }} />
               ) : null}
             </div>
           </div>
