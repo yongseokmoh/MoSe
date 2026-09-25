@@ -396,14 +396,23 @@ async function main() { try {
   console.log("Generating Section 2: Sector Summary & News...");
   // 미국 주요 종목 간밤 등락률 실제 데이터 수집
   const usPeerTickers = {
-    NVDA: '엔비디아', TSM: 'TSMC', AMD: 'AMD', INTC: '인텔',
-    AAPL: '애플', MSFT: '마이크로소프트', GOOGL: '알파벳',
-    META: '메타', AMZN: '아마존', TSLA: '테슬라',
-    ASML: 'ASML', AMAT: 'AMAT', QCOM: '퀄컴',
-    LLY: '일라이릴리', JPM: 'JP모건', XOM: '엑손모빌'
+    // 반도체 및 장비
+    NVDA: '엔비디아(AI반도체)', TSM: 'TSMC(파운드리)', AMD: 'AMD(반도체)', INTC: '인텔(반도체)', ASML: 'ASML(반도체장비)', AMAT: 'AMAT(반도체장비)', QCOM: '퀄컴(팹리스)', MU: '마이크론(메모리)',
+    // 빅테크 플랫폼
+    AAPL: '애플(IT기기)', MSFT: '마이크로소프트(SW)', GOOGL: '알파벳(플랫폼)', META: '메타(SNS)', AMZN: '아마존(상거래)',
+    // 모빌리티 / 2차전지
+    TSLA: '테슬라(전기차)',
+    // 헬스케어 / 바이오
+    LLY: '일라이릴리(제약)', JNJ: '존슨앤존슨(헬스케어)',
+    // 금융
+    JPM: 'JP모건(금융)', BAC: '뱅크오브아메리카(금융)',
+    // 화학 / 소재 / 에너지
+    XOM: '엑손모빌(에너지)', LIN: '린데(화학가스)', ALB: '알버말(리튬)', FCX: '프리포트-맥모란(구리)'
   };
   const peerData = {};
-  for (const [ticker, name] of Object.entries(usPeerTickers)) {
+  
+  // 병렬 수집으로 속도 대폭 향상
+  const peerPromises = Object.entries(usPeerTickers).map(async ([ticker, name]) => {
     const d = await fetchYahooFinance(ticker);
     if (d) {
       const isPos = parseFloat(d.percent1d) >= 0;
@@ -414,7 +423,9 @@ async function main() { try {
         change: (isPos ? '+' : '') + d.percent1d + '%' 
       };
     }
-  }
+  });
+  await Promise.all(peerPromises);
+
   const peerChangeLine = Object.values(peerData).map(p => `${p.name} ${p.change}`).join(', ');
 
   console.log("Fetching Yahoo Finance RSS News for US Peers...");
@@ -430,9 +441,9 @@ async function main() { try {
   2. historicalImpact: 과거 유사 상황에서 한국 해당 섹터 반응을 사례/퍼센트로 2~3문장.
   3. outlook: 오늘 한국 시장 개장 시 영향 2~3문장.
   4. keywords: 핵심 키워드 3~5개 (키워드만 읽어도 내용 파악 가능하도록).
-  5. usPeers: 해당 섹터와 연관된 미국 대장주를 반드시 아래 [미국장 대장주 목록]에 명시된 이름 중에서만 골라서 배열로 나열하라. (예: ["엔비디아", "AMD"]). 목록에 없는 기업은 절대 상상해서 추가하지 마라.
+  5. usPeers: 해당 섹터와 연관된 미국 대장주를 반드시 아래 [미국장 대장주 목록]에서 가장 논리적으로 적합한 종목만 골라 배열로 나열하라. (예: ["엔비디아(AI반도체)"]). 종목명 뒤의 괄호 안 섹터 힌트(예: 화학, 금융 등)를 반드시 참고하여, 전혀 엉뚱한 산업의 기업(예: 2차전지 소재 섹터에 JP모건)을 매핑하는 치명적인 실수를 절대 하지 마라. 만약 도출한 국내 섹터와 매칭되는 미국 종목이 목록에 단 하나도 없다면 억지로 끼워 맞추지 말고 빈 배열 [] 을 반환하라.
 
-  [미국장 대장주 목록 및 등락률]
+  [미국장 대장주 목록 및 간밤 등락률]
   ${peerChangeLine}
 
   [미국장 뉴스]
