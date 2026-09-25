@@ -84,7 +84,7 @@ async function fetchGoogleNews(query) {
   return items;
 }
 
-async function callGemini(prompt, isJson = false, retries = 3) {
+async function callGemini(prompt, isJson = false, retries = 3, useReasoner = false) {
   const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
   if (!DEEPSEEK_API_KEY) return isJson ? { summary: 'DeepSeek API 키 누락', topNewsIndex: [0, 1] } : 'DeepSeek API 키 누락 데이터입니다.';
   
@@ -96,15 +96,22 @@ async function callGemini(prompt, isJson = false, retries = 3) {
         'Authorization': 'Bearer ' + DEEPSEEK_API_KEY
       },
       body: JSON.stringify({
-        model: "deepseek-chat",
+        model: useReasoner ? "deepseek-reasoner" : "deepseek-chat",
         messages: [{ role: "user", content: prompt }],
-        ...(isJson && { response_format: { type: "json_object" } })
+        ...(isJson && !useReasoner && { response_format: { type: "json_object" } })
       })
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error.message);
     if (!data.choices || !data.choices[0].message) throw new Error('No content');
-    return isJson ? JSON.parse(data.choices[0].message.content) : data.choices[0].message.content;
+    
+    let content = data.choices[0].message.content;
+    if (isJson) {
+      // Reasoner 모델이 마크다운(```json)으로 감싸서 보낼 경우를 대비해 껍데기 제거
+      content = content.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim();
+      return JSON.parse(content);
+    }
+    return content;
   };
 
   const sleep = (ms) => new Promise(r => setTimeout(r, ms));
@@ -347,14 +354,15 @@ async function main() { try {
   const macroNews = await fetchGoogleNews("미국 증시 마감 OR 글로벌 경제");
   
   const macroPrompt = `
-  너는 글로벌 매크로 경제를 전문으로 분석하는 수석 이코노미스트야.
-  다음 수집된 뉴스를 바탕으로 오늘 글로벌 거시 경제와 증시 전반의 흐름을 조리 있게 분석해.
+  당신은 여의도 최고의 거시경제 및 시황 전문 수석 애널리스트입니다.
+  수집된 국내외 주요 언론사들의 시황 분석 기사들을 단순한 정보가 아닌 '가설의 출발점'으로 삼아, 오늘 글로벌 거시 경제와 증시 전반의 흐름을 심도 있게 연구하고 보완하십시오.
   
   [작성 지침]
-  1. "최근 글로벌 증시는..." 같은 뻔하고 영양가 없는 서론(허공에 버리는 어휘)은 절대 사용하지 말고, 첫 문장부터 곧바로 핵심 이슈와 구체적인 팩트(원인과 결과)로 진입할 것.
-  2. 동일한 주제를 단어만 바꿔서 돌려막기 하지 마라. 수집된 뉴스들에서 서로 다른 핵심 이슈(금리, 경제지표, 기업 실적, 지정학적 리스크 등)를 최소 3가지 이상 발굴하여 다각도로 분석할 것.
-  3. 어머님이 모바일에서 읽기 편하도록 가독성과 호흡을 극대화하라. 한 가지 주제나 흐름이 끝날 때마다 반드시 줄바꿈(\\n\\n)을 두 번씩 넣어서 문단을 명확히 분리할 것. (전체 글을 3~4개의 짧고 굵은 문단으로 구성)
-  4. 단순 사실 나열을 넘어, "A지표 발표로 인해 B섹터가 상승했다"는 식의 입체적인 인과관계를 전문가다운 어조로 서술할 것.
+  1. "최근 글로벌 증시는..." 같은 뻔하고 영양가 없는 서론은 절대 사용하지 마라.
+  2. 단순 사실이나 지표를 앵무새처럼 나열하며 결론 없는 이야기만 양산하는 '똑똑한 바보'가 되지 마라. 
+  3. 반드시 수집된 정보들을 종합하여, **"그래서 오늘 국내/글로벌 시장이 어떤 방향(상승/하락/보합/섹터차별화 등)으로 흘러갈 것인가?"**에 대한 명확한 결론적 지향점(Market Direction)을 확신에 찬 어조로 제시하라.
+  4. 어머님이 모바일에서 읽기 편하도록, 한 가지 주제나 흐름이 끝날 때마다 반드시 줄바꿈(\\n\\n)을 두 번씩 넣어서 3~4개의 굵직한 문단으로 구성하라.
+  5. 할루시네이션(거짓 정보)을 철저히 배제하고, 제공된 뉴스 데이터와 실제 지표에 입각하여 논리적으로 서술하라.
   
   [⭐특수 기능 지시사항 (가장 중요)⭐]
   생성한 요약 텍스트 안에서 가장 핵심이 되는 중요한 단어나 어구(키워드) 3~5개를 선정해.
@@ -365,17 +373,17 @@ async function main() { try {
   
   [출력 형식 (반드시 JSON)]
   {
-    "summaryText": "여기에 4~5문장 분량의 전체 매크로 시황 요약글을 작성. (이 글 안에 아래 keywords의 word들이 정확히 똑같이 포함되어 있어야 함)",
+    "summaryText": "위 지침에 따라 3~4개 문단(\\n\\n 포함)으로 작성된 거시 경제 요약 및 명확한 방향성 결론",
     "keywords": [
       {
-        "word": "글 안에 있는 핵심 단어/어구",
+        "word": "summaryText 안에 실제로 존재하는 정확히 일치하는 단어/어구",
         "newsSummary": "해당 단어의 배경이 된 뉴스의 구체적인 한국어 친화적 요약",
         "newsIndex": 매핑할 뉴스 데이터의 정수형 인덱스 숫자 (지어내지 말 것)
       }
     ]
   }
   `;
-  const macroSummary = await callGemini(macroPrompt, true);
+  const macroSummary = await callGemini(macroPrompt, true, 3, true); // 1회 한정 최상위 추론 모델(deepseek-reasoner) 가동!
   
   if (macroSummary.keywords) {
     macroSummary.keywords.forEach(kw => {
