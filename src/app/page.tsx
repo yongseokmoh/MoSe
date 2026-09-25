@@ -6,23 +6,35 @@ import path from 'path';
 import Link from 'next/link';
 import { USFlag, KRFlag } from '@/components/Flags';
 
-// 미니 차트 (Sparkline) 컴포넌트 - 크기 확대
+// 미니 차트 (Sparkline) - 카드 배경을 가득 채우는 Area Chart 형태로 업그레이드
 const Sparkline = ({ data, isPositive }: { data: number[], isPositive: boolean }) => {
-  if (!data || data.length < 2) return <div className="w-[60px] h-[24px]"></div>;
+  if (!data || data.length < 2) return null;
   const min = Math.min(...data);
   const max = Math.max(...data);
   const range = max - min || 1;
-  const width = 60;
-  const height = 24;
   const points = data.map((d, i) => {
-    const x = (i / (data.length - 1)) * width;
-    const y = height - ((d - min) / range) * height;
+    const x = (i / (data.length - 1)) * 100;
+    const y = 100 - ((d - min) / range) * 100;
     return `${x},${y}`;
   }).join(' ');
+  
+  const fillPoints = `0,100 ${points} 100,100`;
   const color = isPositive ? '#ef4444' : '#3b82f6';
+  
   return (
-    <svg width={width} height={height} className="overflow-visible opacity-80">
-      <polyline fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" points={points} />
+    <svg 
+      className="absolute bottom-0 left-0 w-full h-[65%] opacity-20 pointer-events-none" 
+      preserveAspectRatio="none" 
+      viewBox="0 -10 100 120"
+    >
+      <defs>
+        <linearGradient id={`gradient-${isPositive ? 'pos' : 'neg'}`} x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.8" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <polygon fill={`url(#gradient-${isPositive ? 'pos' : 'neg'})`} points={fillPoints} />
+      <polyline fill="none" stroke={color} strokeWidth="3" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" points={points} />
     </svg>
   );
 };
@@ -31,45 +43,44 @@ const Sparkline = ({ data, isPositive }: { data: number[], isPositive: boolean }
 const IndexCard = ({ title, data, highlight = false }: { title: React.ReactNode, data: any, highlight?: boolean }) => {
   if (!data || typeof data === 'string') {
     return (
-      <div className={`bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-center border ${highlight ? 'border-[var(--primary)]/30 shadow-inner' : 'border-transparent'}`}>
-        <span className={`text-[var(--muted-foreground)] text-[1.2rem] mb-0.5 ${highlight ? 'font-extrabold' : ''}`}>{title}</span>
-        <span className="text-[var(--muted-foreground)] text-[1.375rem] font-bold">데이터 없음</span>
+      <div className={`bg-[var(--muted)]/60 p-3 md:p-4 rounded-xl flex flex-col justify-center border ${highlight ? 'border-[var(--primary)]/30 shadow-inner' : 'border-transparent'}`}>
+        <span className={`text-[var(--muted-foreground)] text-sm md:text-base mb-0.5 ${highlight ? 'font-extrabold' : ''}`}>{title}</span>
+        <span className="text-[var(--muted-foreground)] text-lg md:text-xl font-bold">데이터 없음</span>
       </div>
     );
   }
   const is1dPos = parseFloat(data.percent1d) >= 0;
   const is5dPos = parseFloat(data.percent5d) >= 0;
-  const color1d = is1dPos ? 'text-red-500' : 'text-blue-500';
-  const color5d = is5dPos ? 'text-red-500' : 'text-blue-500';
+  const color1d = is1dPos ? 'text-red-500 dark:text-red-400' : 'text-blue-500 dark:text-blue-400';
+  const color5d = is5dPos ? 'text-red-500 dark:text-red-400' : 'text-blue-500 dark:text-blue-400';
   
   return (
-    <div className={`bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-between border transition-all ${highlight ? 'border-[var(--primary)]/30 shadow-inner bg-[var(--primary)]/5' : 'border-[var(--border)]/30'}`}>
+    <div className={`relative overflow-hidden bg-[var(--card)] p-3 md:p-4 rounded-xl flex flex-col justify-between border transition-all ${highlight ? 'border-[var(--primary)]/40 shadow-md bg-blue-50/30 dark:bg-blue-900/10' : 'border-[var(--border)] shadow-sm'}`}>
       
-      <div className="mb-2">
-        <span className={`text-[var(--muted-foreground)] text-[1.2rem] leading-snug break-keep block mb-1 ${highlight ? 'font-extrabold' : 'font-bold'}`}>
+      <Sparkline data={data.history} isPositive={is1dPos} />
+
+      <div className="relative z-10 mb-1.5 md:mb-2">
+        <span className={`text-[var(--foreground)] text-sm md:text-[1.1rem] leading-snug break-keep block ${highlight ? 'font-extrabold text-[var(--primary)]' : 'font-bold'}`}>
           {title}
         </span>
-        <div className="w-full flex justify-end">
-          <Sparkline data={data.history} isPositive={is1dPos} />
-        </div>
       </div>
       
-      <div className={`text-[1.5rem] font-extrabold tracking-tight ${color1d} mb-1.5`}>
+      <div className={`relative z-10 text-xl md:text-[1.6rem] font-extrabold tracking-tight ${color1d} mb-2.5 md:mb-3`}>
         {data.value}
       </div>
       
-      <div className="flex justify-between items-center text-[0.85rem] font-bold mb-2">
-        <span className={`${color1d} bg-[var(--background)] px-1 py-1 rounded border border-[var(--border)] flex-1 text-center mr-0.5`}>
+      <div className="relative z-10 flex justify-between items-center text-xs md:text-[0.95rem] font-bold mb-2">
+        <span className={`${color1d} bg-[var(--background)]/80 backdrop-blur-sm px-1.5 py-1 rounded border border-[var(--border)] flex-1 text-center mr-1 shadow-sm`}>
           1일 {is1dPos ? '+' : ''}{data.percent1d}%
         </span>
-        <span className={`${color5d} bg-[var(--background)] px-1 py-1 rounded border border-[var(--border)] flex-1 text-center ml-0.5`}>
+        <span className={`${color5d} bg-[var(--background)]/80 backdrop-blur-sm px-1.5 py-1 rounded border border-[var(--border)] flex-1 text-center ml-1 shadow-sm`}>
           5일 {is5dPos ? '+' : ''}{data.percent5d}%
         </span>
       </div>
       
       {data.timestamp && (
-        <div className="text-right text-[0.8rem] text-[var(--muted-foreground)] font-medium">
-          {new Date(data.timestamp).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })} 기준
+        <div className="relative z-10 text-right text-[10px] md:text-xs text-[var(--muted-foreground)] font-medium">
+          {new Date(data.timestamp).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
         </div>
       )}
     </div>
