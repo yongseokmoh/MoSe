@@ -133,7 +133,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
         {/* Section 1: 거시/증시 정보 */}
         <section className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm">
           <h2 className="font-bold text-[1.9rem] mb-3 text-[var(--primary)]">섹션 1: 거시 및 글로벌 지수</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            <IndexCard title="🇺🇸 다우존스" data={s1.dowJones} />
             <IndexCard title="🇺🇸 S&P 500" data={s1.sp500} />
             <IndexCard title="🇺🇸 나스닥" data={s1.nasdaq} />
             <IndexCard title="🇺🇸 필라델피아 반도체" data={s1.sox} highlight={true} />
@@ -171,21 +172,27 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                 const keywords: string[] = sector.keywords || [];
                 return (
                   <div key={idx} className="bg-[var(--card)] p-4 rounded-xl border border-[var(--border)] shadow-sm">
-                    <h3 className="font-bold text-[25px] mb-2 flex items-center gap-2 flex-wrap">
+                    <h3 className="font-bold text-[25px] mb-3 flex items-center gap-2 flex-wrap">
                       <span className="text-[2.0rem]">{sector.weather?.split(' ')[0]}</span>
                       <span>{sector.sectorName}</span>
-                      <span className="text-[19px] font-normal text-[var(--muted-foreground)] bg-[var(--muted)] px-2 py-0.5 rounded-md border border-[var(--border)]">
-                        {sector.usPeer}
-                      </span>
-                      {sector.usPeerChange && sector.usPeerChange !== 'N/A' && (() => {
-                        const isPos = !sector.usPeerChange.startsWith('-');
-                        return (
-                          <span className={`text-[20px] font-extrabold px-2 py-0.5 rounded-md border ${isPos ? 'text-red-500 bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800' : 'text-blue-500 bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800'}`}>
-                            {sector.usPeerChange}
-                          </span>
-                        );
-                      })()}
                     </h3>
+                    {sector.usPeer && sector.usPeer !== 'N/A' && (
+                      <div className="flex gap-2 mb-3">
+                        <div className="flex flex-col bg-[var(--muted)]/40 border border-[var(--border)] rounded-lg px-3 py-1.5 min-w-[120px] shadow-sm">
+                          <span className="text-[16px] text-[var(--muted-foreground)] font-bold">{sector.usPeer}</span>
+                          {sector.usPeerChange && sector.usPeerChange !== 'N/A' ? (() => {
+                            const isPos = !sector.usPeerChange.startsWith('-');
+                            return (
+                              <span className={`text-[20px] font-extrabold ${isPos ? 'text-red-500' : 'text-blue-500'}`}>
+                                {sector.usPeerChange}
+                              </span>
+                            );
+                          })() : (
+                            <span className="text-[20px] font-bold text-[var(--muted-foreground)]">-</span>
+                          )}
+                        </div>
+                      </div>
+                    )}
                     <div className="text-[23px] leading-relaxed mb-3">
                       <span className="font-bold text-blue-600 dark:text-blue-400">간밤 동향: </span>
                       <HighlightedText text={sector.overnightTrend} keywords={keywords} />
@@ -196,8 +203,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                     </div>
                     {sector.outlook && (
                       <div className="text-[21px] leading-relaxed bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
-                        <span className="font-bold text-blue-700 dark:text-blue-300">오늘 전망: </span>
-                        <HighlightedText text={sector.outlook} keywords={keywords} />
+                        <span className="font-bold text-gray-900 dark:text-gray-100">오늘 전망: </span>
+                        <span className="text-gray-800 dark:text-gray-200"><HighlightedText text={sector.outlook} keywords={keywords} /></span>
                       </div>
                     )}
                     {keywords.length > 0 && (
@@ -237,7 +244,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                  {stock.summary}
               </div>
               {stock.news?.map((newsItem: any, index: number) => (
-                <AccordionNews key={index} news={{ id: `${stock.name}-${index}`, title: `${index + 1}. ${newsItem.title}`, content: newsItem.link }} />
+                <AccordionNews key={index} category={newsItem.category} news={{ id: `${stock.name}-${index}`, title: `${index + 1}. ${newsItem.title}`, content: newsItem.link }} />
               ))}
             </section>
           )) : <p className="text-[1.4rem] text-[var(--muted-foreground)] px-2">등록된 주요 종목이 없습니다.</p>}
@@ -256,7 +263,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                  {stock.summary}
               </div>
               {stock.news?.map((newsItem: any, index: number) => (
-                <AccordionNews key={index} news={{ id: `${stock.name}-${index}`, title: `${index + 1}. ${newsItem.title}`, content: newsItem.link }} />
+                <AccordionNews key={index} category={newsItem.category} news={{ id: `${stock.name}-${index}`, title: `${index + 1}. ${newsItem.title}`, content: newsItem.link }} />
               ))}
             </section>
           )) : <p className="text-[1.4rem] text-[var(--muted-foreground)] px-2">등록된 관심 종목이 없습니다.</p>}

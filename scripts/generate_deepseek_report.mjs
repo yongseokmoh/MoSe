@@ -64,7 +64,7 @@ async function callGemini(prompt, isJson = false, retries = 3) {
   return isJson ? { summary: '딥시크 요약 에러 (' + lastErrMsg + ')', topNewsIndex: [0, 1] } : '딥시크 요약 실패';
 }
 
-// 섹션 2
+// 섹션 2, 3, 4
 async function summarizeStock(stockName, newsItems, maxNewsCount) {
   if (newsItems.length === 0) return { summary: "최신 뉴스가 없습니다.", news: [] };
   
@@ -74,15 +74,23 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
   뉴스 목록:
   ${newsItems.map((n, i) => `${i}. ${n.title}`).join('\n')}
   
+  뉴스 헤드라인들을 분석하여 두 가지로 분류해줘:
+  1. 사람들이 많이 본 뉴스 (최대 5개)
+  2. 과거 언급 없다가 갑자기 올라오는 뉴스 (최대 2개)
+  
   출력 형식 (반드시 JSON):
   {
     "summary": "3문장 요약",
-    "topNewsIndex": [가장 중요한 뉴스 인덱스 번호 배열 (최대 ${maxNewsCount}개)]
+    "mostViewedIndex": [사람들이 많이 본 뉴스 인덱스 번호 배열 (최대 5개)],
+    "suddenIndex": [갑자기 올라온 뉴스 인덱스 번호 배열 (최대 2개)]
   }
   `;
   const result = await callGemini(prompt, true);
-  const selectedNews = (result.topNewsIndex || []).slice(0, maxNewsCount).map(idx => newsItems[idx]).filter(Boolean);
-  return { summary: result.summary, news: selectedNews };
+  
+  const mostViewedNews = (result.mostViewedIndex || []).slice(0, 5).map(idx => newsItems[idx]).filter(Boolean).map(n => ({...n, category: 'most_viewed'}));
+  const suddenNews = (result.suddenIndex || []).slice(0, 2).map(idx => newsItems[idx]).filter(Boolean).map(n => ({...n, category: 'sudden'}));
+  
+  return { summary: result.summary || '요약 생성 실패', news: [...mostViewedNews, ...suddenNews] };
 }
 
 // Yahoo Finance API를 활용한 실시간 지수 수집 (1일/5일 트렌드 및 차트용 데이터 포함)
@@ -126,78 +134,38 @@ async function fetchYahooFinance(ticker) {
   }
 }
 
-// 한국투자증권 OpenAPI: OAuth 토큰 발급
-async function getKisToken() {
-  const appKey = process.env.KIS_APP_KEY;
-  const appSecret = process.env.KIS_APP_SECRET;
-  if (!appKey || !appSecret) return null;
+
+
+// 외국인 코스피200 선물 순매수 조회 (뉴스 크롤링 기반)
+async function fetchForeignFuturesFromNews() {
   try {
-    const res = await fetch('https://openapi.koreainvestment.com:9443/oauth2/tokenP', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ grant_type: 'client_credentials', appkey: appKey, appsecret: appSecret })
-    });
-    const data = await res.json();
-    if (!data.access_token) { console.error('KIS 토큰 발급 실패:', JSON.stringify(data)); return null; }
-    console.log('✅ KIS 토큰 발급 성공 (만료:', data.access_token_token_expired, ')');
-    return data.access_token;
-  } catch (e) {
-    console.error('KIS 토큰 발급 에러:', e.message);
-    return null;
-  }
-}
-
-// 한국투자증권 OpenAPI: 외국인 KOSPI200 선물 순매수 조회
-async function fetchKisForeignFutures(token) {
-  const appKey = process.env.KIS_APP_KEY;
-  const appSecret = process.env.KIS_APP_SECRET;
-  if (!token || !appKey || !appSecret) return null;
-  try {
-    // 오늘/어제 날짜 계산
-    const today = new Date();
-    const yyyymmdd = (d) => d.toISOString().slice(0, 10).replace(/-/g, '');
-    const todayStr = yyyymmdd(today);
-    const yesterday = new Date(today); yesterday.setDate(today.getDate() - 1);
-    const yesterdayStr = yyyymmdd(yesterday);
-
-    const params = new URLSearchParams({
-      FID_COND_MRKT_DIV_CODE: 'F',   // 선물
-      FID_INPUT_ISCD: '101V3000',     // KOSPI200 선물 근월물 코드
-      FID_INPUT_DATE_1: yesterdayStr, // 시작일
-      FID_INPUT_DATE_2: todayStr,     // 종료일
-    });
-    const res = await fetch(`https://openapi.koreainvestment.com:9443/uapi/domestic-futureoption/v1/quotations/investor-trend-estimate?${params}`, {
-      headers: {
-        'content-type': 'application/json',
-        'authorization': `Bearer ${token}`,
-        'appkey': appKey,
-        'appsecret': appSecret,
-        'tr_id': 'FHPIF060000',
-        'custtype': 'P'
-      }
-    });
-    const data = await res.json();
-    console.log('KIS 외국인 선물 원본 응답:', JSON.stringify(data).slice(0, 300));
-
-    if (data.rt_cd !== '0') {
-      console.error('KIS API 오류:', data.msg1);
-      return null;
+    const newsItems = await fetchGoogleNews("외국인 코스피200 선물 순매수");
+    if (newsItems.length === 0) return null;
+    
+    const prompt = `
+    다음은 '외국인 코스피200 선물 순매수' 관련 최신 뉴스 헤드라인들이야.
+    뉴스 목록:
+    ${newsItems.map((n, i) => `${i}. ${n.title}`).join('\n')}
+    
+    위 뉴스들을 분석하여, 가장 최근의 외국인 코스피200 선물 매매 동향(순매수 또는 순매도)과 그 규모(금액 또는 계약 수)를 추출해줘.
+    
+    출력 형식 (반드시 JSON):
+    {
+      "direction": "순매수 또는 순매도 (알 수 없으면 '알 수 없음')",
+      "amount": "규모 (예: 1조 2000억원, 5000계약 등. 수치와 단위를 포함. 알 수 없으면 '알 수 없음')",
+      "isPositive": true (순매수일 때) 또는 false (순매도일 때)
     }
-
-    // output 배열에서 외국인(invst_cd: '8000') 찾기
-    const list = data.output || data.output1 || [];
-    const foreignRow = list.find(r => r.invst_cd === '8000' || r.invst_nm?.includes('외국'));
-    if (!foreignRow) {
-      console.warn('KIS 응답에서 외국인 행 미발견. 첫 번째 행:', JSON.stringify(list[0]));
-      return null;
-    }
-
-    const netBuy = parseInt(foreignRow.futs_seln_tr_pbmn || foreignRow.net_qty || 0, 10);
-    const isPositive = netBuy >= 0;
-    const formatted = (isPositive ? '+' : '') + netBuy.toLocaleString('ko-KR') + ' 계약';
-    return { netBuy: formatted, direction: isPositive ? '순매수' : '순매도', rawNetBuy: netBuy };
+    `;
+    const result = await callGemini(prompt, true);
+    if (!result || !result.direction || result.direction === '알 수 없음' || !result.amount) return null;
+    
+    return {
+      netBuy: result.amount,
+      direction: result.direction,
+      rawNetBuy: result.isPositive === true ? 1 : -1
+    };
   } catch (e) {
-    console.error('KIS 외국인 선물 조회 에러:', e.message);
+    console.error('뉴스 기반 외국인 선물 조회 에러:', e.message);
     return null;
   }
 }
@@ -207,14 +175,13 @@ async function main() { try {
   
   const majorNames = MAJOR_STOCKS.map(s => s.name);
 
-  // 한국투자증권 OpenAPI: 외국인 선물 순매수 (API 키 없으면 null)
-  console.log("Fetching KIS Foreign Futures data...");
-  const kisToken = await getKisToken();
-  const foreignFutures = await fetchKisForeignFutures(kisToken);
+  // 외국인 선물 순매수 (뉴스 크롤링 기반)
+  console.log("Fetching Foreign Futures data from News...");
+  const foreignFutures = await fetchForeignFuturesFromNews();
   if (foreignFutures) {
     console.log(`✅ 외국인 KOSPI200 선물: ${foreignFutures.direction} ${foreignFutures.netBuy}`);
   } else {
-    console.log("⚠️ KIS 외국인 선물 데이터 없음 (API 키 미설정 또는 오류)");
+    console.log("⚠️ 외국인 선물 데이터 없음");
   }
   
   console.log("Generating Section 1: Macro Summary & Indices...");
@@ -273,7 +240,7 @@ async function main() { try {
   핵심 관심 섹터 3개를 도출하고, JSON 배열 형식으로 분석을 제공해.
 
   [분석 지침]
-  1. overnightTrend: 아래 [실제 등락률] 데이터를 반드시 활용해 대장주의 정확한 등락률을 첫 문장에 명시. 원인과 매크로 포함 3~4문장.
+  1. overnightTrend: 아래 [미국장 뉴스]를 중심으로 해당 섹터의 기업 동향과 주요 이슈를 서술. [실제 등락률] 수치보다는 비즈니스 맥락과 뉴스 위주로 3~4문장.
   2. historicalImpact: 과거 유사 상황에서 한국 해당 섹터 반응을 사례/퍼센트로 2~3문장.
   3. outlook: 오늘 한국 시장 개장 시 영향 2~3문장.
   4. keywords: 핵심 키워드 3~5개 (키워드만 읽어도 내용 파악 가능하도록).
@@ -304,6 +271,7 @@ async function main() { try {
   const report = {
     date: new Date().toISOString(),
     section1: {
+      dowJones: await fetchYahooFinance('^DJI'),
       sp500: await fetchYahooFinance('^GSPC'),
       nasdaq: await fetchYahooFinance('^IXIC'),
       sox: await fetchYahooFinance('^SOX'), // 필라델피아 반도체
