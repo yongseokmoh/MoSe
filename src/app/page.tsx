@@ -126,8 +126,15 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
       </div>
 
       <div className="px-4 py-5 space-y-6">
-        <div className="text-[1.6rem] font-bold text-[var(--foreground)] px-1 flex items-center gap-2">
-          📅 {formatDate(report?.date)}
+        <div className="flex justify-between items-end mb-2 px-1">
+          <div className="text-[1.6rem] font-bold text-[var(--foreground)] flex items-center gap-2">
+            📅 {formatDate(report?.date)}
+          </div>
+          {report?.date && (
+            <div className="text-[1.2rem] text-[var(--muted-foreground)] font-medium">
+              기준일시: {new Date(report.date).toLocaleString('ko-KR', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+            </div>
+          )}
         </div>
 
         {/* Section 1: 거시/증시 정보 */}
@@ -236,7 +243,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
           {major.length > 0 ? major.map((stock: any) => (
             <section key={stock.id || stock.name} className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm mb-4 border-l-4 border-l-blue-500">
               <div className="flex justify-between items-center mb-3">
-                <h3 className="font-bold text-[26px]">{stock.name}</h3>
+                <h3 className="font-bold text-[26px]">
+                  {stock.name}
+                  {stock.industry && <span className="text-[1.8rem] text-[var(--muted-foreground)] font-normal ml-2">/ {stock.industry}</span>}
+                </h3>
                 <span className="text-[1.6rem] font-bold text-[var(--muted-foreground)]">{stock.currentPrice}</span>
               </div>
               <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-[23px] leading-relaxed">
@@ -244,7 +254,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                  {stock.summary}
               </div>
               {stock.news?.map((newsItem: any, index: number) => (
-                <AccordionNews key={index} category={newsItem.category} news={{ id: `${stock.name}-${index}`, title: `${index + 1}. ${newsItem.title}`, content: newsItem.link }} />
+                <AccordionNews key={index} category={newsItem.category} news={{ id: `${stock.name}-${index}`, title: `${index + 1}. ${newsItem.title}`, content: newsItem.link, articleSummary: newsItem.articleSummary }} />
               ))}
             </section>
           )) : <p className="text-[1.4rem] text-[var(--muted-foreground)] px-2">등록된 주요 종목이 없습니다.</p>}
@@ -256,14 +266,17 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
           {interest.length > 0 ? interest.map((stock: any) => (
             <section key={stock.id || stock.name} className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm mb-4 border-l-4 border-l-gray-400">
               <div className="flex justify-between items-center mb-3">
-                <h3 className="font-bold text-[26px]">{stock.name}</h3>
+                <h3 className="font-bold text-[26px]">
+                  {stock.name}
+                  {stock.industry && <span className="text-[1.8rem] text-[var(--muted-foreground)] font-normal ml-2">/ {stock.industry}</span>}
+                </h3>
                 <span className="text-[1.6rem] font-bold text-[var(--muted-foreground)]">{stock.currentPrice}</span>
               </div>
               <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-[23px] leading-relaxed">
                  {stock.summary}
               </div>
               {stock.news?.map((newsItem: any, index: number) => (
-                <AccordionNews key={index} category={newsItem.category} news={{ id: `${stock.name}-${index}`, title: `${index + 1}. ${newsItem.title}`, content: newsItem.link }} />
+                <AccordionNews key={index} category={newsItem.category} news={{ id: `${stock.name}-${index}`, title: `${index + 1}. ${newsItem.title}`, content: newsItem.link, articleSummary: newsItem.articleSummary }} />
               ))}
             </section>
           )) : <p className="text-[1.4rem] text-[var(--muted-foreground)] px-2">등록된 관심 종목이 없습니다.</p>}

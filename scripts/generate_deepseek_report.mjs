@@ -66,31 +66,48 @@ async function callGemini(prompt, isJson = false, retries = 3) {
 
 // 섹션 2, 3, 4
 async function summarizeStock(stockName, newsItems, maxNewsCount) {
-  if (newsItems.length === 0) return { summary: "최신 뉴스가 없습니다.", news: [] };
+  if (newsItems.length === 0) return { summary: "최신 뉴스가 없습니다.", news: [], industry: "분류 불가" };
   
   const prompt = `
   다음은 '${stockName}'에 대한 최신 뉴스 헤드라인들이야.
-  [특별 지시사항]: 애널리스트 리포트(목표가), 실적 발표, 전일/장외 거래 변동 내용이 있다면 무조건 우선적으로 포함해서 요약해.
+  
+  [분석 및 작성 지침]
+  1. 전체 요약(summary): 주가 변화 및 전망에 대한 내용은 50%로 제한하고, 나머지 50%는 기업에 대한 뉴스 내용(실적, 계약, 신제품, 경영 동향 등) 자체에 할당해. 기존보다 분량을 1.5배 늘려서 작성하고, 간결하고 읽기 쉬운 개조식(Bullet point) 어법으로 작성해.
+  2. 뉴스 기사 중복 제거: 내용이 사실상 동일하거나 중복되는 기사는 후보에서 탈락시키고 다음 순위의 기사를 선택해.
+  3. 뉴스 분류: 중복이 제거된 기사들 중에서 다음을 선택해.
+     - 사람들이 많이 본 뉴스 (최대 5개)
+     - 과거 언급 없다가 갑자기 올라오는 뉴스 (최대 2개)
+  4. 산업 분류: 이 종목이 속한 시장(코스피 또는 코스닥)과 공식 산업분류명(예: 코스피 전기전자, 코스닥 제약 등)을 'industry'에 기재해.
+  
   뉴스 목록:
   ${newsItems.map((n, i) => `${i}. ${n.title}`).join('\n')}
   
-  뉴스 헤드라인들을 분석하여 두 가지로 분류해줘:
-  1. 사람들이 많이 본 뉴스 (최대 5개)
-  2. 과거 언급 없다가 갑자기 올라오는 뉴스 (최대 2개)
-  
   출력 형식 (반드시 JSON):
   {
-    "summary": "3문장 요약",
-    "mostViewedIndex": [사람들이 많이 본 뉴스 인덱스 번호 배열 (최대 5개)],
-    "suddenIndex": [갑자기 올라온 뉴스 인덱스 번호 배열 (최대 2개)]
+    "summary": "개조식 요약 내용 (기존보다 1.5배 분량, 기업 뉴스 내용 50% 포함)\\n- 내용1\\n- 내용2...",
+    "industry": "코스피 전기전자 (이런 형식의 소속 시장 및 산업명)",
+    "selectedNews": [
+      {
+        "index": "선택된 뉴스의 원래 인덱스 번호 (정수)",
+        "category": "most_viewed 또는 sudden",
+        "articleSummary": "해당 개별 기사에 대한 1~2줄 핵심 요약"
+      }
+    ]
   }
   `;
   const result = await callGemini(prompt, true);
   
-  const mostViewedNews = (result.mostViewedIndex || []).slice(0, 5).map(idx => newsItems[idx]).filter(Boolean).map(n => ({...n, category: 'most_viewed'}));
-  const suddenNews = (result.suddenIndex || []).slice(0, 2).map(idx => newsItems[idx]).filter(Boolean).map(n => ({...n, category: 'sudden'}));
+  const selectedNews = (result.selectedNews || []).map(item => {
+    const newsItem = newsItems[item.index];
+    if (!newsItem) return null;
+    return {
+      ...newsItem,
+      category: item.category,
+      articleSummary: item.articleSummary
+    };
+  }).filter(Boolean);
   
-  return { summary: result.summary || '요약 생성 실패', news: [...mostViewedNews, ...suddenNews] };
+  return { summary: result.summary || '요약 생성 실패', industry: result.industry || '분류 불가', news: selectedNews };
 }
 
 // Yahoo Finance API를 활용한 실시간 지수 수집 (1일/5일 트렌드 및 차트용 데이터 포함)
@@ -294,18 +311,18 @@ async function main() { try {
   // 섹션 3: 주요 종목 (Top 7 뉴스 목표)
   console.log("Processing Section 3: Major Stocks...");
   for (const stock of MAJOR_STOCKS) {
-    const news = await fetchGoogleNews(`${stock.name} 주식 (특징주 OR 리포트 OR 실적 OR 장외)`);
+    const news = await fetchGoogleNews(`${stock.name} (특징주 OR 실적 OR 뉴스 OR 공시 OR 리포트 OR 신제품 OR 계약 OR 경영)`);
     const aiResult = await summarizeStock(stock.name, news, 7);
-    report.section3_major.push({ ...stock, currentPrice: "장전", summary: aiResult.summary, news: aiResult.news });
+    report.section3_major.push({ ...stock, currentPrice: "장전", summary: aiResult.summary, industry: aiResult.industry, news: aiResult.news });
     
   }
 
   // 섹션 4: 관심 종목 (Top 5 뉴스 목표)
   console.log("Processing Section 4: Interest Stocks...");
   for (const stock of INTEREST_STOCKS) {
-    const news = await fetchGoogleNews(`${stock.name} 주식 (특징주 OR 리포트 OR 실적)`);
+    const news = await fetchGoogleNews(`${stock.name} (특징주 OR 실적 OR 뉴스 OR 공시 OR 리포트 OR 신제품 OR 계약 OR 경영)`);
     const aiResult = await summarizeStock(stock.name, news, 5);
-    report.section4_interest.push({ ...stock, currentPrice: "장전", summary: aiResult.summary, news: aiResult.news });
+    report.section4_interest.push({ ...stock, currentPrice: "장전", summary: aiResult.summary, industry: aiResult.industry, news: aiResult.news });
     
   }
 

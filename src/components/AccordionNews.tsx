@@ -86,25 +86,32 @@ export default function AccordionNews({ news, category }: { news: any, category?
         {/* 아코디언 바디 */}
         {isOpen && (
           <div className="p-4 bg-[var(--muted)]/20 border-t border-[var(--border)] leading-relaxed">
-            <button
-              onClick={() => setShowModal(true)}
-              className="w-full text-[22px] font-bold bg-blue-500 hover:bg-blue-600 active:scale-95 text-white py-3 px-4 rounded-xl shadow transition-all mb-2"
-            >
-              📰 기사 원문 보기
-            </button>
-            <p className="text-[18px] text-[var(--muted-foreground)] text-center mb-4">
-              ※ 일부 기사는 외부 정책으로 표시되지 않을 수 있습니다.
-            </p>
-
-            <div className="flex justify-end">
+            {news.articleSummary && (
+              <div className="mb-4 text-[21px] text-[var(--foreground)] bg-[var(--background)] p-3 rounded-lg border border-[var(--border)] shadow-inner">
+                <strong className="text-[var(--primary)] mb-1 block">💡 핵심 요약</strong>
+                {news.articleSummary}
+              </div>
+            )}
+            
+            <div className="flex justify-between gap-3 mb-2">
+              <button
+                onClick={() => setShowModal(true)}
+                className="flex-1 text-[21px] font-bold bg-blue-500 hover:bg-blue-600 active:scale-95 text-white py-3 rounded-xl shadow transition-all"
+              >
+                📰 기사 원문 보기
+              </button>
               <button
                 onClick={handleScrap}
                 disabled={isScraping}
-                className="text-[21px] bg-[var(--primary)] text-[var(--primary-foreground)] px-4 py-2 rounded-lg font-bold shadow-sm active:scale-95 transition-transform disabled:opacity-50"
+                className="flex-1 text-[21px] bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-[var(--primary-foreground)] py-3 rounded-xl font-bold shadow transition-all active:scale-95 disabled:opacity-50"
               >
-                {isScraping ? '저장중 ⏳' : '💾 보관함에 스크랩'}
+                {isScraping ? '저장중 ⏳' : '💾 보관함 스크랩'}
               </button>
             </div>
+            
+            <p className="text-[17px] text-[var(--muted-foreground)] text-center mt-2">
+              ※ 일부 기사는 외부 정책으로 원문 뷰어에 표시되지 않을 수 있습니다.
+            </p>
           </div>
         )}
       </div>
