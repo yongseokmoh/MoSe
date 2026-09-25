@@ -14,12 +14,32 @@ async function fetchGoogleNews(query) {
   const response = await fetch(url);
   const text = await response.text();
   const items = [];
-  const itemRegex = /<item>[\s\S]*?<title>(.*?)<\/title>[\s\S]*?<link>(.*?)<\/link>[\s\S]*?<\/item>/g;
+  
+  const itemRegex = /<item>([\s\S]*?)<\/item>/g;
   let match;
-  while ((match = itemRegex.exec(text)) !== null && items.length < 50) { // 최대 50개까지 확보
+  
+  // 2개월 전 시점 계산
+  const twoMonthsAgo = new Date();
+  twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
+
+  while ((match = itemRegex.exec(text)) !== null && items.length < 50) {
+    const itemContent = match[1];
+    const titleMatch = itemContent.match(/<title>(.*?)<\/title>/);
+    const linkMatch = itemContent.match(/<link>(.*?)<\/link>/);
+    const pubDateMatch = itemContent.match(/<pubDate>(.*?)<\/pubDate>/);
+    
+    if (!titleMatch || !linkMatch) continue;
+    
+    if (pubDateMatch) {
+      const pubDate = new Date(pubDateMatch[1]);
+      if (pubDate < twoMonthsAgo) {
+        continue; // 2개월 이상 지난 뉴스 필터링
+      }
+    }
+    
     items.push({ 
-      title: match[1].replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1').replace(/&quot;/g, '"'), 
-      link: match[2] 
+      title: titleMatch[1].replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1').replace(/&quot;/g, '"'), 
+      link: linkMatch[1] 
     });
   }
   return items;
