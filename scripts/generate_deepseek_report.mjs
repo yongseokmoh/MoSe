@@ -165,33 +165,52 @@ async function main() { try {
 
   console.log("Generating Section 2: Sector Summary...");
   const sectorNews = await fetchGoogleNews("미국 증시 특징주 OR 나스닥 특징주");
+
+  // 미국 주요 종목 간밤 등락률 실제 데이터 수집
+  const usPeerTickers = {
+    NVDA: '엔비디아', TSM: 'TSMC', AMD: 'AMD', INTC: '인텔',
+    AAPL: '애플', MSFT: '마이크로소프트', GOOGL: '알파벳',
+    META: '메타', AMZN: '아마존', TSLA: '테슬라',
+    ASML: 'ASML', AMAT: 'AMAT', QCOM: '퀄컴',
+    LLY: '일라이릴리', JPM: 'JP모건', XOM: '엑손모빌'
+  };
+  const peerChanges = {};
+  for (const [ticker, name] of Object.entries(usPeerTickers)) {
+    const d = await fetchYahooFinance(ticker);
+    if (d) peerChanges[name] = (parseFloat(d.percent1d) >= 0 ? '+' : '') + d.percent1d + '%';
+  }
+  const peerChangeLine = Object.entries(peerChanges).map(([n, v]) => n + ' ' + v).join(', ');
+
   const sectorPrompt = `
   너는 수석 글로벌 투자 전략가야.
   현재 나의 주요 투자 종목은 [${majorNames.join(', ')}] 이야.
-  이 종목들을 바탕으로 나의 '핵심 관심 섹터 3개'를 도출해.
-  각 섹터별로 아래 JSON 양식에 맞춰 충분하고 풍부한 분석을 제공해.
-  
+  핵심 관심 섹터 3개를 도출하고, JSON 배열 형식으로 분석을 제공해.
+
   [분석 지침]
-  1. overnightTrend: 미국 대장주 간밤 움직임과 Driver를 수치 포함 3~4문장. 관련 매크로(금리/환율/원자재)도 언급.
+  1. overnightTrend: 아래 [실제 등락률] 데이터를 반드시 활용해 대장주의 정확한 등락률을 첫 문장에 명시. 원인과 매크로 포함 3~4문장.
   2. historicalImpact: 과거 유사 상황에서 한국 해당 섹터 반응을 사례/퍼센트로 2~3문장.
-  3. outlook: 오늘 한국 시장 개장 시 해당 섹터·보유 종목 영향 2~3문장.
-  4. keywords: 전체 내용 핵심 키워드 3~5개 (키워드만 읽어도 내용 파악 가능하도록).
-  
+  3. outlook: 오늘 한국 시장 개장 시 영향 2~3문장.
+  4. keywords: 핵심 키워드 3~5개 (키워드만 읽어도 내용 파악 가능하도록).
+  5. usPeerChange: 해당 대장주(usPeer)의 실제 등락률을 [실제 등락률] 에서 찾아 기입. 없으면 "N/A".
+
+  [실제 등락률]
+  ${peerChangeLine}
+
   [미국장 뉴스]
   ${sectorNews.map(n=>n.title).join("\n")}
-  
+
   [출력 형식 - 반드시 JSON 배열만 출력]
   [
     {
       "weather": "☀️ 맑음 OR ⛅ 구름 OR 🌧️ 흐림 OR ⛈️ 폭풍",
       "sectorName": "반도체/AI",
       "usPeer": "엔비디아",
-      "overnightTrend": "간밤 동향 3~4문장...",
+      "usPeerChange": "+2.35%",
+      "overnightTrend": "간밤 동향 3~4문장 (반드시 실제 등락률 포함)...",
       "historicalImpact": "과거 패턴 2~3문장...",
       "outlook": "오늘 전망 2~3문장...",
       "keywords": ["키워드1", "키워드2", "키워드3"]
     }
-  ]
   ]
   `;
   const sectorSummary = await callGemini(sectorPrompt, true);
