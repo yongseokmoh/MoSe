@@ -4,12 +4,12 @@ import { useState } from 'react';
 export default function MacroSummaryClient({ summaryData }: { summaryData: any }) {
   const [selectedKeyword, setSelectedKeyword] = useState<any>(null);
 
-  if (!summaryData) return <p className="text-[1.5rem] p-3">요약 데이터가 없습니다.</p>;
+  if (!summaryData) return <p className="text-[1.2rem] p-3">요약 데이터가 없습니다.</p>;
 
   // 문자열 형태인 경우 (구버전 호환)
   if (typeof summaryData === 'string') {
     return (
-      <p className="text-[1.5rem] text-[var(--foreground)] leading-relaxed bg-[var(--background)] p-3 rounded-xl border border-[var(--border)]/50">
+      <p className="text-[1.2rem] text-[var(--foreground)] leading-relaxed bg-[var(--background)] p-3 rounded-xl border border-[var(--border)]/50">
         {summaryData}
       </p>
     );
@@ -54,11 +54,11 @@ export default function MacroSummaryClient({ summaryData }: { summaryData: any }
 
   return (
     <>
-      <div className="text-[1.5rem] text-[var(--foreground)] leading-[1.8] bg-[var(--background)] p-4 rounded-xl border border-[var(--border)]/50 shadow-inner font-medium">
+      <div className="text-base md:text-[1.2rem] text-[var(--foreground)] leading-relaxed md:leading-[1.8] bg-[var(--background)] p-3 md:p-4 rounded-xl border border-[var(--border)]/50 shadow-inner font-medium whitespace-pre-line">
         {renderText()}
         {keywords && keywords.length > 0 && (
-          <div className="text-[1.1rem] text-[var(--muted-foreground)] mt-4 flex items-center gap-1.5 font-bold bg-[var(--muted)]/50 p-2 rounded-lg w-fit">
-            <span>👆</span> 파란색 단어를 누르면 배경이 된 뉴스를 볼 수 있습니다.
+          <div className="text-sm md:text-[1.1rem] text-[var(--muted-foreground)] mt-3 md:mt-4 flex items-center gap-1.5 font-bold bg-[var(--muted)]/50 p-2 rounded-lg w-fit">
+            <span>👆</span> 파란색 단어를 누르면 배경 뉴스를 볼 수 있습니다.
           </div>
         )}
       </div>
@@ -66,11 +66,11 @@ export default function MacroSummaryClient({ summaryData }: { summaryData: any }
       {/* 팝업 모달 */}
       {selectedKeyword && (
         <div 
-          className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" 
+          className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm" 
           onClick={() => setSelectedKeyword(null)}
         >
           <div 
-            className="bg-[var(--background)] rounded-3xl p-6 max-w-sm w-full shadow-2xl relative border border-[var(--border)]" 
+            className="bg-[var(--background)] rounded-2xl md:rounded-3xl p-5 md:p-6 max-w-sm w-full shadow-2xl relative border border-[var(--border)]" 
             onClick={e => e.stopPropagation()}
           >
             <button 
@@ -79,10 +79,10 @@ export default function MacroSummaryClient({ summaryData }: { summaryData: any }
             >
               ✕
             </button>
-            <h3 className="font-extrabold text-[1.5rem] mb-4 pr-8 text-blue-600 bg-blue-50 dark:bg-blue-950 inline-block px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900">
+            <h3 className="font-extrabold text-lg md:text-[1.3rem] mb-3 md:mb-4 pr-8 text-blue-600 bg-blue-50 dark:bg-blue-950 inline-block px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900">
               "{selectedKeyword.word}"
             </h3>
-            <p className="text-[1.5rem] leading-relaxed font-medium mb-6">
+            <p className="text-base md:text-[1.2rem] leading-relaxed font-medium mb-5 md:mb-6 whitespace-pre-line">
               {selectedKeyword.newsSummary}
             </p>
             {selectedKeyword.originalLink && (
@@ -90,7 +90,7 @@ export default function MacroSummaryClient({ summaryData }: { summaryData: any }
                 href={selectedKeyword.originalLink} 
                 target="_blank" 
                 rel="noreferrer" 
-                className="block w-full text-center py-3.5 bg-[var(--foreground)] text-[var(--background)] rounded-xl font-bold text-[1.4rem] hover:opacity-90 active:scale-95 transition-all shadow-md"
+                className="block w-full text-center py-3 bg-[var(--foreground)] text-[var(--background)] rounded-xl font-bold text-base md:text-[1.125rem] hover:opacity-90 active:scale-95 transition-all shadow-md"
               >
                 원문 기사 보러가기 🔗
               </a>
