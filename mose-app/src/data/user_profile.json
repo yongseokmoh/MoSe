@@ -285,5 +285,13 @@
       "type": "interest"
     }
   ],
-  "scraps": []
+  "scraps": [
+    {
+      "id": "현대모비스-0",
+      "title": "1. [현대차그룹] 현대모비스, 2026 R&D 테크데이서 차세대 신기술 60여 종 공개",
+      "content": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPV3dETE85dFBqN2c4QkdubVF1dkNQVDZMSHMzR3FDSmdWUzdiaU1jSmdxM1V4dWlybXV5cDlJTTBCNThKUGJHeUZubkY5cGJVbjY5QWJlblpDNGplY3YyV3pCMkRISGV2MU96akg0WnhMQlh0ZHhWZGRHY2pzMXF5NUVlRUZmc1RZVTB4UE16SFlEdkg5d1hRcnhGbUVkTUY1?oc=5",
+      "articleSummary": "현대모비스가 '2026 R&D 테크데이'를 개최하고 로보틱스, SDV, 자율주행 등 차세대 신기술 60여 종을 대거 공개했다. 이는 미래 모빌리티 시장에서 기술 리더십을 강화하려는 전략의 일환이다. 특히 로보틱스와 자율주행을 아우르는 피지컬 AI 핵심 부품사로의 전환을 가속화하겠다는 의지를 드러냈다.",
+      "scrapedAt": "2026-09-25T06:53:09.287Z"
+    }
+  ]
 }
