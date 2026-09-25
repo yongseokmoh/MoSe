@@ -87,6 +87,36 @@ const IndexCard = ({ title, data, highlight = false }: { title: React.ReactNode,
   );
 };
 
+// 종목 요약 불릿 렌더링 컴포넌트
+const SummaryList = ({ text }: { text: string }) => {
+  if (!text) return null;
+  const lines = text.split('\n').filter(line => line.trim());
+  return (
+    <ul className="space-y-1.5 md:space-y-2 mt-1">
+      {lines.map((line, idx) => {
+        let content = line.trim();
+        let isBullet = false;
+        if (content.startsWith('-')) {
+          content = content.replace(/^-+\s*/, '');
+          isBullet = true;
+        } else if (content.startsWith('•')) {
+          content = content.replace(/^•+\s*/, '');
+          isBullet = true;
+        }
+        
+        return isBullet ? (
+          <li key={idx} className="flex items-start gap-2">
+            <span className="text-[var(--primary)] mt-[0.35em] flex-shrink-0 text-sm md:text-base leading-none">▪</span>
+            <span className="leading-relaxed break-keep text-[var(--foreground)]">{content}</span>
+          </li>
+        ) : (
+          <li key={idx} className="leading-relaxed break-keep text-[var(--foreground)] mt-1.5 mb-1 font-semibold">{content}</li>
+        );
+      })}
+    </ul>
+  );
+};
+
 // 섹션2 키워드 하이라이트 렌더러
 const HighlightedText = ({ text, keywords }: { text: string, keywords?: string[] }) => {
   if (!keywords || keywords.length === 0 || !text) return <>{text}</>;
@@ -273,12 +303,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                 </h3>
                 <span className="text-[1.4rem] font-bold text-[var(--muted-foreground)]">{stock.currentPrice}</span>
               </div>
-              <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-[1.3rem] leading-relaxed whitespace-pre-line">
+              <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-base md:text-[1.3rem] leading-relaxed">
                  <strong className="text-blue-500 block mb-1">🤖 AI 분석</strong>
-                 {stock.summary}
+                 <SummaryList text={stock.summary} />
               </div>
               {stock.news?.map((newsItem: any, index: number) => (
-                <AccordionNews key={index} category={newsItem.category} news={{ id: `${stock.name}-${index}`, title: `${index + 1}. ${newsItem.title}`, content: newsItem.link, articleSummary: newsItem.articleSummary }} />
+                <AccordionNews key={index} category={newsItem.category} news={{ id: `${stock.name}-${index}`, title: newsItem.title, content: newsItem.link, articleSummary: newsItem.articleSummary }} />
               ))}
             </section>
           )) : <p className="text-[1.4rem] text-[var(--muted-foreground)] px-2">등록된 주요 종목이 없습니다.</p>}
@@ -296,11 +326,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                 </h3>
                 <span className="text-[1.4rem] font-bold text-[var(--muted-foreground)]">{stock.currentPrice}</span>
               </div>
-              <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-[1.3rem] leading-relaxed whitespace-pre-line">
-                 {stock.summary}
+              <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-base md:text-[1.3rem] leading-relaxed">
+                 <SummaryList text={stock.summary} />
               </div>
               {stock.news?.map((newsItem: any, index: number) => (
-                <AccordionNews key={index} category={newsItem.category} news={{ id: `${stock.name}-${index}`, title: `${index + 1}. ${newsItem.title}`, content: newsItem.link, articleSummary: newsItem.articleSummary }} />
+                <AccordionNews key={index} category={newsItem.category} news={{ id: `${stock.name}-${index}`, title: newsItem.title, content: newsItem.link, articleSummary: newsItem.articleSummary }} />
               ))}
             </section>
           )) : <p className="text-[1.4rem] text-[var(--muted-foreground)] px-2">등록된 관심 종목이 없습니다.</p>}
