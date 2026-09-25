@@ -171,6 +171,10 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
     if (!newsItem) return null;
     
     let cleanTitle = item.newTitle ? item.newTitle.replace(/\[★우선선택\]\s*/g, '') : newsItem.title.replace(/\[★우선선택\]\s*/g, '');
+    
+    // AI가 자의적으로 붙인 일련번호(예: "1. ", "2. ") 강제 제거
+    cleanTitle = cleanTitle.replace(/^\d+\.\s*/, '');
+
     if (newsItem.pubDate && !cleanTitle.includes(newsItem.pubDate)) {
       cleanTitle += ` (${newsItem.pubDate})`;
     }

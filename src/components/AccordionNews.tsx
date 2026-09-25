@@ -133,14 +133,22 @@ export default function AccordionNews({ news, category }: { news: any, category?
                   기사 본문을 불러오는 중입니다... ⏳
                 </div>
               ) : articleData?.content ? (
-                <div className="prose dark:prose-invert max-w-none text-[1.25rem] p-5" dangerouslySetInnerHTML={{ __html: articleData.content }} />
+                <div className="prose dark:prose-invert max-w-none text-base md:text-[1.25rem] p-4 md:p-5" dangerouslySetInnerHTML={{ __html: articleData.content }} />
               ) : (
-                <div className="flex flex-col justify-center items-center h-full w-full p-5 text-center gap-4">
-                  <div className="text-[1.1rem] text-[var(--muted-foreground)]">
-                    본문을 추출할 수 없는 구조의 페이지이거나 접근이 제한된 사이트입니다.
+                <div className="flex flex-col justify-center items-center h-full w-full p-4 md:p-6 text-center gap-4 bg-[var(--muted)]/10">
+                  <div className="w-16 h-16 bg-[var(--muted)] rounded-full flex items-center justify-center text-3xl mb-2">
+                    🛡️
                   </div>
-                  <a href={articleUrl} target="_blank" rel="noopener noreferrer" className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 px-4 py-2 rounded-lg font-bold border border-blue-200 dark:border-blue-800 shadow-sm inline-block hover:bg-blue-100">
-                    🚀 외부 브라우저로 열기
+                  <h4 className="font-bold text-lg md:text-[1.3rem] text-[var(--foreground)]">해당 언론사의 보안 정책으로 원문을 긁어올 수 없습니다.</h4>
+                  <div className="text-base md:text-[1.1rem] text-[var(--muted-foreground)] mb-2">
+                    대신 AI가 분석한 핵심 요약을 참고하시거나, 아래 버튼을 눌러 원문 사이트에서 직접 확인해 주세요.
+                  </div>
+                  <div className="bg-[var(--card)] p-4 rounded-xl border border-[var(--border)] shadow-sm text-left w-full mb-4">
+                    <strong className="text-blue-600 block mb-2">💡 AI 핵심 요약</strong>
+                    <p className="text-base md:text-[1.15rem] leading-relaxed text-[var(--foreground)]">{news.articleSummary}</p>
+                  </div>
+                  <a href={articleUrl} target="_blank" rel="noopener noreferrer" className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-md inline-flex items-center gap-2 hover:bg-blue-700 active:scale-95 transition-all text-base md:text-lg">
+                    <span>🚀</span> 원문 사이트(외부 브라우저)로 열기
                   </a>
                 </div>
               )}
