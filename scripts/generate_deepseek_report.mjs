@@ -52,6 +52,9 @@ async function fetchGoogleNews(query) {
       description = description.substring(0, 300);
     }
     
+    // 미리보기가 없거나 너무 짧으면(영양가 없으면) AI 환각 방지를 위해 아예 제외
+    if (!description || description.length < 20) continue;
+    
     const sourceMatch = itemContent.match(/<source[^>]*>(.*?)<\/source>/);
     let publisher = sourceMatch ? sourceMatch[1] : '';
     let shortPub = publisher.replace(/[^가-힣a-zA-Z0-9]/g, '').substring(0, 3);
@@ -130,11 +133,8 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
   [분석 및 작성 지침]
   1. 전체 요약(summary): 주가 변화 및 전망에 대한 내용은 50%로 제한하고, 나머지 50%는 기업에 대한 뉴스 내용(실적, 계약, 신제품, 경영 동향 등) 자체에 할당해. 유사한 내용을 중심으로 핵심만 압축하여 기존 대비 70% 분량으로 간결하고 밀도 있게 작성해. (개조식 Bullet point 어법 사용)
   2. 뉴스 기사 클러스터링 및 중복 제거: 수집된 기사들을 독립적인 사건(이슈) 단위로 묶고, 중복 이슈를 철저히 배제하여 최대 5개의 '유니크한 이슈 대표 기사'만 선정하라. ([★우선선택] 마커가 붙은 기사가 있다면 무조건 최우선으로 채택하라.)
-  3. 뉴스 분류: 선정된 기사들 중에서 카테고리를 다음 중 하나로 지정해.
-     - most_viewed: 최근에 많이 노출된 기사
-     - sudden: 과거 언급 없다가 갑자기 올라오는 뉴스
-  4. 산업 분류: 이 종목이 속한 시장(코스피 또는 코스닥)과 공식 산업분류명(예: 코스피 전기전자, 코스닥 제약 등)을 'industry'에 기재해.
-  5. 절대 제공된 뉴스 목록(제목 및 미리보기)에 없는 내용을 상상해서 작성하거나 지어내지 마라.
+  3. 산업 분류: 이 종목이 속한 시장(코스피 또는 코스닥)과 공식 산업분류명(예: 코스피 전기전자, 코스닥 제약 등)을 'industry'에 기재해.
+  4. 절대 제공된 뉴스 목록(제목 및 미리보기)에 없는 내용을 상상해서 작성하거나 지어내지 마라.
   
   뉴스 목록:
   ${newsItems.map((n, i) => `[인덱스: ${i}] 제목: ${n.title}\n미리보기: ${n.description}`).join('\n\n')}
@@ -146,7 +146,6 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
     "selectedNews": [
       {
         "index": 0,
-        "category": "most_viewed 또는 sudden",
         "newTitle": "기사 내용을 드러내는 짧고 깔끔한 요약 제목 (원본 제목에 있는 [언론사] 태그는 반드시 그대로 유지할 것. 제목 끝에 임의의 날짜를 절대 추가하지 말 것)",
         "articleSummary": "해당 개별 기사에 대한 요약 (반드시 제공된 '미리보기' 내용 내에서만 팩트 기반으로 2~3문장 작성. 절대 배경지식을 동원해 지어내지 말 것)"
       }
@@ -155,20 +154,33 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
   `;
   const result = await callGemini(prompt, true);
   
+  // 100% 알고리즘 기반 카테고리 판별 함수 (AI 환각 배제)
+  const categorizeNews = (title, allNewsItems) => {
+    const words = title.split(/\s+/).filter(w => w.length >= 2).map(w => w.replace(/[^가-힣a-zA-Z0-9]/g, ''));
+    let matchCount = 0;
+    for (const item of allNewsItems) {
+      if (words.filter(w => item.title.includes(w)).length >= 2) matchCount++;
+    }
+    if (matchCount >= 3) return 'most_viewed'; // 유사 기사가 3개 이상이면 집중 보도된 "주목"
+    if (/단독|최초|돌연|갑자기|급등|급락|신규|깜짝|속보/.test(title)) return 'sudden'; // 모멘텀 키워드가 있으면 "상승"
+    return 'most_viewed'; // 기본값
+  };
+
   const selectedNews = (result.selectedNews || []).map(item => {
     const newsItem = newsItems[item.index];
     if (!newsItem) return null;
     
-    // 우선선택 마커를 제거하고, 스크립트 단에서 날짜를 정확하게 접미사로 붙여줍니다.
     let cleanTitle = item.newTitle ? item.newTitle.replace(/\[★우선선택\]\s*/g, '') : newsItem.title.replace(/\[★우선선택\]\s*/g, '');
     if (newsItem.pubDate && !cleanTitle.includes(newsItem.pubDate)) {
       cleanTitle += ` (${newsItem.pubDate})`;
     }
 
+    const determinedCategory = categorizeNews(cleanTitle, newsItems);
+
     return {
       ...newsItem,
       title: cleanTitle,
-      category: item.category,
+      category: determinedCategory,
       articleSummary: item.articleSummary || ''
     };
   }).filter(Boolean);
@@ -208,6 +220,9 @@ async function fetchYahooRSSNews(tickers) {
           description = descMatch[1].replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
           description = description.substring(0, 400);
         }
+
+        // 영문 기사도 미리보기가 부실하면 제외
+        if (!description || description.length < 20) continue;
 
         items.push({
           ticker,
@@ -318,6 +333,8 @@ async function main() { try {
     console.log("⚠️ 외국인 선물 데이터 없음");
   }
   
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
   console.log("Generating Section 1: Macro Summary & Indices...");
   const macroNews = await fetchGoogleNews("미국 증시 마감 OR 글로벌 경제");
   
@@ -439,7 +456,6 @@ async function main() { try {
     "news": [
       {
         "index": 뉴스목록에서의인덱스숫자,
-        "category": "most_viewed 또는 sudden",
         "title": "한국어로 번역된 기사 제목",
         "articleSummary": "기사의 핵심 요약 (제공된 미리보기 내용을 바탕으로 완벽하게 번역 및 요약. 없는 내용 지어내기 엄격히 금지)",
         "sectorName": "매칭된 정확한 섹터명"
@@ -452,11 +468,22 @@ async function main() { try {
   const finalSectorNews = (translatedNewsResult.news || []).map(item => {
     const rawNews = rawYahooNews[item.index];
     if (!rawNews) return null;
+    
+    // 외신도 동일한 알고리즘으로 카테고리 판별
+    const words = item.title.split(/\s+/).filter(w => w.length >= 2).map(w => w.replace(/[^가-힣a-zA-Z0-9]/g, ''));
+    let matchCount = 0;
+    for (const n of rawYahooNews) {
+      if (words.filter(w => n.title.includes(w)).length >= 2) matchCount++;
+    }
+    let determinedCategory = 'most_viewed';
+    if (matchCount >= 2) determinedCategory = 'most_viewed';
+    else if (/단독|최초|돌연|갑자기|급등|급락|신규|깜짝|속보|최고|최저/.test(item.title)) determinedCategory = 'sudden';
+
     return {
-      title: item.title,
+      title: `${item.title} (${rawNews.pubDate})`,
       link: rawNews.link,
       pubDate: rawNews.pubDate,
-      category: item.category,
+      category: determinedCategory,
       articleSummary: item.articleSummary,
       isForeign: true,
       sectorName: item.sectorName
@@ -500,7 +527,7 @@ async function main() { try {
     const news = await fetchGoogleNews(`${stock.name} (특징주 OR 실적 OR 뉴스 OR 공시 OR 리포트 OR 신제품 OR 계약 OR 경영)`);
     const aiResult = await summarizeStock(stock.name, news, 7);
     report.section3_major.push({ ...stock, currentPrice: "장전", summary: aiResult.summary, industry: aiResult.industry, news: aiResult.news });
-    
+    await sleep(1500); // API Rate Limit 방지용 휴식
   }
 
   // 섹션 4: 관심 종목 (Top 5 뉴스 목표)
@@ -509,7 +536,7 @@ async function main() { try {
     const news = await fetchGoogleNews(`${stock.name} (특징주 OR 실적 OR 뉴스 OR 공시 OR 리포트 OR 신제품 OR 계약 OR 경영)`);
     const aiResult = await summarizeStock(stock.name, news, 5);
     report.section4_interest.push({ ...stock, currentPrice: "장전", summary: aiResult.summary, industry: aiResult.industry, news: aiResult.news });
-    
+    await sleep(1500); // API Rate Limit 방지용 휴식
   }
 
   // 섹션 5: 관망 종목 (슬립모드 해제 로직 임시 구현)
