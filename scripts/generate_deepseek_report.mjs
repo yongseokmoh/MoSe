@@ -257,7 +257,8 @@ async function fetchYahooRSSNews(tickers) {
 // Yahoo Finance API를 활용한 실시간 지수 수집 (1일/5일 트렌드 및 차트용 데이터 포함)
 async function fetchYahooFinance(ticker) {
   try {
-    const res = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=10d`, {
+    const encodedTicker = encodeURIComponent(ticker);
+    const res = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodedTicker}?interval=1d&range=10d`, {
       headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
     });
     const data = await res.json();
@@ -295,8 +296,6 @@ async function fetchYahooFinance(ticker) {
     return null;
   }
 }
-
-
 
 // 외국인 코스피200 선물 순매수 조회 (뉴스 크롤링 기반)
 async function fetchForeignFuturesFromNews() {
@@ -478,13 +477,13 @@ async function main() { try {
   console.log("Generating Section 2: Translated Top 3 News per Sector...");
   const translatePrompt = `
   다음은 수집된 미국 주요 종목의 최신 영문 뉴스 목록이야.
-  앞서 분석한 3개의 핵심 섹터는 다음과 같아: ${(sectorSummary.sectors || []).map(s => s.sectorName).join(', ')}.
+  앞서 분석한 3개의 핵심 섹터는 다음과 같아: [ ${(sectorSummary.sectors || []).map(s => `"${s.sectorName}"`).join(', ')} ].
 
   [지시사항]
   1. 앞서 분석한 3개의 핵심 섹터 각각에 대해, 아래 제공된 [뉴스 목록]에서 가장 중요하고 임팩트 있는 기사를 딱 3개씩 선별해라. (총 9개)
   2. 선별된 9개 기사에 대해, '제목(title)'과 '핵심 요약(articleSummary)'을 한국어로 완벽하고 자연스럽게 번역해라.
   3. 반드시 제공된 [뉴스 목록]의 미리보기 내용만을 바탕으로 번역 및 요약해야 하며, 배경지식을 동원해 없는 내용을 지어내지 마라.
-  4. 반드시 아래 JSON 배열 형식으로 반환해라.
+  4. 반드시 아래 JSON 배열 형식으로 반환해라. (이때 sectorName은 위에서 제시된 3개의 핵심 섹터명 배열 중 하나와 토씨 하나 틀리지 않고 100% 동일한 문자열로 적어야 매칭이 된다)
 
   [뉴스 목록]
   ${rawYahooNews.map((n, i) => `[인덱스: ${i}] ${n.ticker}: ${n.title}\n미리보기: ${n.description}`).join('\n\n')}
@@ -496,7 +495,7 @@ async function main() { try {
         "index": 뉴스목록에서의인덱스숫자,
         "title": "한국어로 번역된 기사 제목",
         "articleSummary": "기사의 핵심 요약 (제공된 미리보기 내용을 바탕으로 완벽하게 번역 및 요약. 없는 내용 지어내기 엄격히 금지)",
-        "sectorName": "매칭된 정확한 섹터명"
+        "sectorName": "위 3개의 섹터명 중 하나와 정확히 일치하는 문자열 복사붙여넣기"
       }
     ]
   }
