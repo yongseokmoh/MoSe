@@ -67,8 +67,8 @@ export default function AccordionNews({ news, category }: { news: any, category?
           onClick={() => setIsOpen(!isOpen)}
         >
           <span className="font-semibold text-[1.5rem] leading-snug w-full">
-            {category === 'sudden' && <span className="inline-block text-[1rem] bg-red-100 text-red-700 dark:bg-red-900/80 dark:text-red-300 px-2 py-0.5 rounded mr-2 align-middle font-extrabold mb-1">🔥 급상승</span>}
-            {category === 'most_viewed' && <span className="inline-block text-[1rem] bg-blue-100 text-blue-700 dark:bg-blue-900/80 dark:text-blue-300 px-2 py-0.5 rounded mr-2 align-middle font-extrabold mb-1">👀 많이 본</span>}
+            {category === 'sudden' && <span className="inline-block text-[1rem] bg-red-100 text-red-700 dark:bg-red-900/80 dark:text-red-300 px-2 py-0.5 rounded mr-2 align-middle font-extrabold mb-1">🔥 상승</span>}
+            {category === 'most_viewed' && <span className="inline-block text-[1rem] bg-blue-100 text-blue-700 dark:bg-blue-900/80 dark:text-blue-300 px-2 py-0.5 rounded mr-2 align-middle font-extrabold mb-1">👀 주목</span>}
             {cleanTitle}
           </span>
           <div className="w-full flex justify-end">
@@ -93,14 +93,14 @@ export default function AccordionNews({ news, category }: { news: any, category?
                 onClick={handleReadArticle}
                 className="flex-1 text-[1.3125rem] font-bold bg-blue-500 hover:bg-blue-600 active:scale-95 text-white py-3 rounded-xl shadow transition-all"
               >
-                📰 기사 본문 보기
+                📰 본문
               </button>
               <button
                 onClick={handleScrap}
                 disabled={isScraping}
                 className="flex-1 text-[1.3125rem] bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-[var(--primary-foreground)] py-3 rounded-xl font-bold shadow transition-all active:scale-95 disabled:opacity-50"
               >
-                {isScraping ? '저장중 ⏳' : '💾 보관함 스크랩'}
+                {isScraping ? '저장중 ⏳' : '💾 저장'}
               </button>
             </div>
             <div className="text-center mt-2">

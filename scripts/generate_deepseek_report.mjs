@@ -41,9 +41,20 @@ async function fetchGoogleNews(query) {
       formattedDate = `${pubDate.getFullYear()}.${String(pubDate.getMonth() + 1).padStart(2, '0')}.${String(pubDate.getDate()).padStart(2, '0')}`;
     }
     
+    const sourceMatch = itemContent.match(/<source[^>]*>(.*?)<\/source>/);
+    let publisher = sourceMatch ? sourceMatch[1] : '';
+    let shortPub = publisher.replace(/[^가-힣a-zA-Z0-9]/g, '').substring(0, 3);
+    
     let rawTitle = titleMatch[1].replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1').replace(/&quot;/g, '"');
-    let isTrusted = TRUSTED_PUBLISHERS.test(rawTitle);
-    let finalTitle = isTrusted ? `[★우선선택] ${rawTitle}` : rawTitle;
+    if (publisher) {
+      rawTitle = rawTitle.replace(new RegExp(` - ${publisher.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`), '').trim();
+    }
+    
+    let isTrusted = TRUSTED_PUBLISHERS.test(publisher) || TRUSTED_PUBLISHERS.test(rawTitle);
+    let finalTitle = shortPub ? `[${shortPub}] ${rawTitle}` : rawTitle;
+    if (isTrusted) {
+      finalTitle = `[★우선선택] ${finalTitle}`;
+    }
 
     items.push({ 
       title: finalTitle, 
@@ -53,7 +64,7 @@ async function fetchGoogleNews(query) {
     });
   }
   
-  // 신뢰 언론사 기사가 배열 앞쪽에 오도록 정렬 (AI에게 가중치)
+  // 신뢰 언론사 기사가 배열 앞쪽에 오도록 강력히 정렬 (AI에게 가중치)
   items.sort((a, b) => (b.isTrusted ? 1 : 0) - (a.isTrusted ? 1 : 0));
   
   return items;
@@ -107,7 +118,7 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
   
   [분석 및 작성 지침]
   1. 전체 요약(summary): 주가 변화 및 전망에 대한 내용은 50%로 제한하고, 나머지 50%는 기업에 대한 뉴스 내용(실적, 계약, 신제품, 경영 동향 등) 자체에 할당해. 유사한 내용을 중심으로 핵심만 압축하여 기존 대비 70% 분량으로 간결하고 밀도 있게 작성해. (개조식 Bullet point 어법 사용)
-  2. 뉴스 기사 클러스터링 및 중복 제거: 수집된 기사들을 독립적인 사건(이슈) 단위로 묶고, 중복 이슈를 철저히 배제하여 최대 5개의 '유니크한 이슈 대표 기사'만 선정하라. (동일한 이슈에 대한 여러 기사 중 대표 기사를 고를 때는 반드시 제목에 '[★우선선택]' 마커가 붙은 기사를 최우선으로 채택하라. 단, 유니크한 사건이라면 마커가 없어도 포함하라.) 유니크한 사건이 적다면 억지로 5개를 채우지 마라.
+  2. 뉴스 기사 클러스터링 및 중복 제거: 수집된 기사들을 독립적인 사건(이슈) 단위로 묶고, 중복 이슈를 철저히 배제하여 최대 5개의 '유니크한 이슈 대표 기사'만 선정하라. ([★우선선택] 마커가 붙은 기사가 있다면 무조건 최우선으로 채택하라.)
   3. 뉴스 분류: 선정된 기사들 중에서 카테고리를 다음 중 하나로 지정해.
      - most_viewed: 최근에 많이 노출된 기사
      - sudden: 과거 언급 없다가 갑자기 올라오는 뉴스
@@ -124,7 +135,7 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
       {
         "index": 0,
         "category": "most_viewed 또는 sudden",
-        "newTitle": "[출처] 기사 내용을 드러내는 짧고 깔끔한 요약 제목 (오늘 날짜 혹은 발행일자)",
+        "newTitle": "기사 내용을 드러내는 짧고 깔끔한 요약 제목 (원본 제목에 있는 [언론사] 태그는 반드시 그대로 유지할 것. 제목 끝에 임의의 날짜를 추가하지 말 것)",
         "articleSummary": "해당 개별 기사에 대한 상세한 요약 (수치, 인과관계, 비즈니스 임팩트 등을 포함하여 3~5문장 내외로 깊이 있게 작성)"
       }
     ]
@@ -143,7 +154,7 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
 
     return {
       ...newsItem,
-      title: item.newTitle || newsItem.title, // 가공된 제목으로 덮어쓰기
+      title: item.newTitle ? item.newTitle.replace(/\[★우선선택\]\s*/g, '') : newsItem.title.replace(/\[★우선선택\]\s*/g, ''), // 우선선택 마커는 표시할 때 제거
       category: item.category,
       articleSummary: summaryWithDate
     };
@@ -325,12 +336,20 @@ async function main() { try {
     ASML: 'ASML', AMAT: 'AMAT', QCOM: '퀄컴',
     LLY: '일라이릴리', JPM: 'JP모건', XOM: '엑손모빌'
   };
-  const peerChanges = {};
+  const peerData = {};
   for (const [ticker, name] of Object.entries(usPeerTickers)) {
     const d = await fetchYahooFinance(ticker);
-    if (d) peerChanges[name] = (parseFloat(d.percent1d) >= 0 ? '+' : '') + d.percent1d + '%';
+    if (d) {
+      const isPos = parseFloat(d.percent1d) >= 0;
+      peerData[name] = { 
+        name, 
+        market: ticker.includes('.') ? '기타' : (ticker === 'TSM' ? 'NYSE' : 'NASDAQ'),
+        price: d.value, 
+        change: (isPos ? '+' : '') + d.percent1d + '%' 
+      };
+    }
   }
-  const peerChangeLine = Object.entries(peerChanges).map(([n, v]) => n + ' ' + v).join(', ');
+  const peerChangeLine = Object.values(peerData).map(p => `${p.name} ${p.change}`).join(', ');
 
   console.log("Fetching Yahoo Finance RSS News for US Peers...");
   const rawYahooNews = await fetchYahooRSSNews(Object.keys(usPeerTickers));
@@ -345,7 +364,7 @@ async function main() { try {
   2. historicalImpact: 과거 유사 상황에서 한국 해당 섹터 반응을 사례/퍼센트로 2~3문장.
   3. outlook: 오늘 한국 시장 개장 시 영향 2~3문장.
   4. keywords: 핵심 키워드 3~5개 (키워드만 읽어도 내용 파악 가능하도록).
-  5. usPeerChange: 해당 대장주(usPeer)의 실제 등락률을 [실제 등락률] 에서 찾아 기입. 없으면 "N/A".
+  5. usPeers: 해당 섹터를 대표하거나 뉴스에서 주로 언급된 미국 대장주 이름들을 배열로 나열해라. (예: ["엔비디아", "AMD", "TSMC"])
 
   [실제 등락률]
   ${peerChangeLine}
@@ -359,8 +378,7 @@ async function main() { try {
       {
         "weather": "☀️ 맑음 OR ⛅ 구름 OR 🌧️ 흐림 OR ⛈️ 폭풍",
         "sectorName": "반도체/AI",
-        "usPeer": "엔비디아",
-        "usPeerChange": "+2.35%",
+        "usPeers": ["엔비디아", "AMD", "TSMC"],
         "overnightTrend": "간밤 동향 3~4문장 (반드시 실제 등락률 포함)...",
         "historicalImpact": "과거 패턴 2~3문장...",
         "outlook": "오늘 전망 2~3문장...",
@@ -371,14 +389,14 @@ async function main() { try {
   `;
   const sectorSummary = await callGemini(sectorPrompt, true);
 
-  console.log("Generating Section 2: Translated Top 3 News...");
+  console.log("Generating Section 2: Translated Top 3 News per Sector...");
   const translatePrompt = `
   다음은 수집된 미국 주요 종목의 최신 영문 뉴스 목록이야.
   앞서 분석한 3개의 핵심 섹터는 다음과 같아: ${(sectorSummary.sectors || []).map(s => s.sectorName).join(', ')}.
 
   [지시사항]
-  1. 전체 뉴스 중에서 가장 중요하고 임팩트 있는 기사 딱 3개만 선별해라. (각 섹터별로 골고루 매칭되면 좋지만, 전체 Top 3를 뽑는 것이 우선)
-  2. 선별된 3개 기사에 대해, '제목(title)'과 '핵심 요약(articleSummary)'을 한국어로 완벽하고 자연스럽게 번역해라.
+  1. 앞서 분석한 3개의 핵심 섹터 각각에 대해, 가장 중요하고 임팩트 있는 기사를 딱 3개씩 선별해라. (총 9개의 기사가 나와야 함)
+  2. 선별된 9개 기사에 대해, '제목(title)'과 '핵심 요약(articleSummary)'을 한국어로 완벽하고 자연스럽게 번역해라.
   3. 반드시 아래 JSON 배열 형식으로 반환해라.
 
   [뉴스 목록]
@@ -392,7 +410,7 @@ async function main() { try {
         "category": "most_viewed 또는 sudden",
         "title": "한국어로 번역된 기사 제목",
         "articleSummary": "한국어로 번역된 3~4문장 분량의 상세한 핵심 요약",
-        "sectorName": "매칭된 섹터명"
+        "sectorName": "매칭된 정확한 섹터명"
       }
     ]
   }
@@ -412,6 +430,14 @@ async function main() { try {
       sectorName: item.sectorName
     };
   }).filter(Boolean);
+
+  // 섹터 객체 안에 peers와 news 배열 매핑
+  if (sectorSummary.sectors) {
+    for (let sector of sectorSummary.sectors) {
+      sector.peers = (sector.usPeers || []).map(p => peerData[p]).filter(Boolean);
+      sector.news = finalSectorNews.filter(n => n.sectorName === sector.sectorName).slice(0, 3);
+    }
+  }
 
   const report = {
     date: new Date().toISOString(),

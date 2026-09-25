@@ -65,18 +65,22 @@ export async function GET(request: Request) {
       cleanHtml = DOMPurify.sanitize(article.content);
       title = article.title || title;
     } else {
-      // Fallback: extract all p and div tags that contain substantial text
-      const elements = Array.from(doc.window.document.querySelectorAll('p, div'));
+      // Fallback: extract all p, div, span, and heading tags that contain substantial text
+      const elements = Array.from(doc.window.document.querySelectorAll('p, div, span, h1, h2, h3, h4'));
       const textBlocks = elements
         .map(el => el.textContent?.trim())
-        .filter(t => t && t.length > 40); // Only keep substantial blocks of text
+        .filter(t => t && t.length > 30);
       
       if (textBlocks.length > 0) {
-        // Deduplicate and join
         const uniqueBlocks = Array.from(new Set(textBlocks));
         cleanHtml = DOMPurify.sanitize(uniqueBlocks.map(t => `<p>${t}</p>`).join(''));
       } else {
-        throw new Error('문맥을 추출할 수 없는 페이지입니다.');
+        const bodyText = doc.window.document.body?.textContent?.trim() || '';
+        if (bodyText.length > 50) {
+          cleanHtml = DOMPurify.sanitize(`<p>${bodyText.substring(0, 3000)}...</p>`);
+        } else {
+          cleanHtml = `<p style="padding: 15px; background: #f3f4f6; color: #4b5563; border-radius: 8px;"><strong>본문을 직접 추출할 수 없는 구조의 페이지입니다. (보안 정책 등) 하단의 원문 링크를 통해 확인해 주세요.</strong></p>`;
+        }
       }
     }
 

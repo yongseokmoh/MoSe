@@ -181,23 +181,26 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                       <span className="text-[1.8rem]">{sector.weather?.split(' ')[0]}</span>
                       <span>{sector.sectorName}</span>
                     </h3>
-                    {sector.usPeer && sector.usPeer !== 'N/A' && (
-                      <div className="flex gap-2 mb-3">
-                        <div className="flex flex-col bg-[var(--muted)]/40 border border-[var(--border)] rounded-lg px-3 py-1.5 min-w-[120px] shadow-sm">
-                          <span className="text-[1rem] text-[var(--muted-foreground)] font-bold">{sector.usPeer}</span>
-                          {sector.usPeerChange && sector.usPeerChange !== 'N/A' ? (() => {
-                            const isPos = !sector.usPeerChange.startsWith('-');
-                            return (
-                              <span className={`text-[1.25rem] font-extrabold ${isPos ? 'text-red-500' : 'text-blue-500'}`}>
-                                {sector.usPeerChange}
+                    
+                    {sector.peers && sector.peers.length > 0 && (
+                      <div className="flex flex-col gap-2 mb-3">
+                        {sector.peers.map((p: any, pIdx: number) => (
+                          <div key={pIdx} className="flex justify-between items-center bg-[var(--muted)]/40 px-3 py-2 rounded-lg border border-[var(--border)] shadow-sm">
+                            <div className="flex items-baseline gap-2">
+                              <span className="font-bold text-[1.1rem] text-[var(--foreground)]">{p.name}</span>
+                              <span className="text-[0.8rem] text-[var(--muted-foreground)]">{p.market}</span>
+                            </div>
+                            <div className="flex items-baseline gap-3">
+                              <span className="font-semibold text-[1rem] text-[var(--muted-foreground)]">{p.price}</span>
+                              <span className={`font-extrabold text-[1rem] ${p.change.startsWith('-') ? 'text-blue-500' : 'text-red-500'}`}>
+                                {p.change}
                               </span>
-                            );
-                          })() : (
-                            <span className="text-[1.25rem] font-bold text-[var(--muted-foreground)]">-</span>
-                          )}
-                        </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     )}
+
                     <div className="text-[1.3rem] leading-relaxed mb-3">
                       <span className="font-bold text-blue-600 dark:text-blue-400">간밤 동향: </span>
                       <HighlightedText text={sector.overnightTrend} keywords={keywords} />
@@ -208,8 +211,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                     </div>
                     {sector.outlook && (
                       <div className="text-[1.2rem] leading-relaxed bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
-                        <span className="font-bold text-gray-900 dark:text-gray-100">오늘 전망: </span>
-                        <span className="text-gray-800 dark:text-gray-200"><HighlightedText text={sector.outlook} keywords={keywords} /></span>
+                        <span className="font-bold text-black dark:text-white">오늘 전망: </span>
+                        <span className="text-black dark:text-white"><HighlightedText text={sector.outlook} keywords={keywords} /></span>
                       </div>
                     )}
                     {keywords.length > 0 && (
@@ -221,22 +224,24 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                         ))}
                       </div>
                     )}
+
+                    {/* 섹터별 번역 기사 Top 3 */}
+                    {sector.news && sector.news.length > 0 && (
+                      <div className="mt-4 pt-3 border-t border-[var(--border)]">
+                        <h4 className="font-bold text-[1.2rem] mb-2 text-[var(--primary)] flex items-center gap-1">
+                          <span className="text-[1.4rem]">📰</span> 섹터 주요 외신 (AI 번역)
+                        </h4>
+                        {sector.news.map((newsItem: any, index: number) => (
+                          <AccordionNews key={index} category={newsItem.category} news={{ id: `sector-${idx}-news-${index}`, title: newsItem.title, content: newsItem.link, articleSummary: newsItem.articleSummary, isForeign: newsItem.isForeign }} />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 );
               })}
               <div className="text-[1.2rem] text-[var(--muted-foreground)] text-right mt-2 mb-4">
                 ※ 과거의 패턴이 미래의 결과를 보장하지는 않습니다.
               </div>
-              {s2.news && s2.news.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-[var(--border)]">
-                  <h3 className="font-bold text-[1.4rem] mb-3 text-[var(--primary)] flex items-center gap-2">
-                    <span className="text-[1.8rem]">📰</span> 글로벌 주요 뉴스 (AI 번역)
-                  </h3>
-                  {s2.news.map((newsItem: any, index: number) => (
-                    <AccordionNews key={index} category={newsItem.category} news={{ id: `sector-news-${index}`, title: `${newsItem.sectorName ? `[${newsItem.sectorName}] ` : ''}${newsItem.title}`, content: newsItem.link, articleSummary: newsItem.articleSummary, isForeign: newsItem.isForeign }} />
-                  ))}
-                </div>
-              )}
             </div>
           ) : (
             <p className="text-[1.3rem] text-[var(--foreground)] leading-relaxed font-medium">
