@@ -397,34 +397,43 @@ async function main() { try {
   // 미국 주요 종목 간밤 등락률 실제 데이터 수집
   const usPeerTickers = {
     // 반도체 및 장비
-    NVDA: '엔비디아(AI반도체)', TSM: 'TSMC(파운드리)', AMD: 'AMD(반도체)', INTC: '인텔(반도체)', ASML: 'ASML(반도체장비)', AMAT: 'AMAT(반도체장비)', QCOM: '퀄컴(팹리스)', MU: '마이크론(메모리)',
+    NVDA: '엔비디아(AI반도체)', TSM: 'TSMC(파운드리)', AMD: 'AMD(반도체)', INTC: '인텔(반도체)', ASML: 'ASML(반도체장비)', AMAT: 'AMAT(반도체장비)', QCOM: '퀄컴(팹리스)', MU: '마이크론(메모리)', AVGO: '브로드컴(네트워크반도체)',
     // 빅테크 플랫폼
-    AAPL: '애플(IT기기)', MSFT: '마이크로소프트(SW)', GOOGL: '알파벳(플랫폼)', META: '메타(SNS)', AMZN: '아마존(상거래)',
+    AAPL: '애플(IT기기)', MSFT: '마이크로소프트(SW)', GOOGL: '알파벳(플랫폼)', META: '메타(SNS)', AMZN: '아마존(상거래)', NFLX: '넷플릭스(미디어)',
     // 모빌리티 / 2차전지
-    TSLA: '테슬라(전기차)',
+    TSLA: '테슬라(전기차)', TM: '도요타(완성차)',
     // 헬스케어 / 바이오
-    LLY: '일라이릴리(제약)', JNJ: '존슨앤존슨(헬스케어)',
-    // 금융
-    JPM: 'JP모건(금융)', BAC: '뱅크오브아메리카(금융)',
+    LLY: '일라이릴리(비만치료제)', JNJ: '존슨앤존슨(제약)', NVO: '노보노디스크(바이오)', UNH: '유나이티드헬스(의료)',
+    // 금융 / 결제
+    JPM: 'JP모건(은행)', BAC: '뱅크오브아메리카(은행)', V: '비자(결제)', GS: '골드만삭스(투자은행)',
     // 화학 / 소재 / 에너지
-    XOM: '엑손모빌(에너지)', LIN: '린데(화학가스)', ALB: '알버말(리튬)', FCX: '프리포트-맥모란(구리)'
+    XOM: '엑손모빌(정유)', CVX: '쉐브론(에너지)', LIN: '린데(화학가스)', ALB: '알버말(리튬)', FCX: '프리포트-맥모란(구리)', DOW: '다우(화학)',
+    // 소비재 / 유통
+    WMT: '월마트(유통)', KO: '코카콜라(식음료)', PG: 'P&G(필수소비재)',
+    // 산업재 / 방산
+    LMT: '록히드마틴(방산)', CAT: '캐터필러(기계장비)'
   };
   const peerData = {};
   
-  // 병렬 수집으로 속도 대폭 향상
-  const peerPromises = Object.entries(usPeerTickers).map(async ([ticker, name]) => {
-    const d = await fetchYahooFinance(ticker);
-    if (d) {
-      const isPos = parseFloat(d.percent1d) >= 0;
-      peerData[name] = { 
-        name, 
-        market: ticker.includes('.') ? '기타' : (ticker === 'TSM' ? 'NYSE' : 'NASDAQ'),
-        price: d.value, 
-        change: (isPos ? '+' : '') + d.percent1d + '%' 
-      };
-    }
-  });
-  await Promise.all(peerPromises);
+  // 병렬 분할 수집 (야후 API 차단 방지를 위해 10개씩 묶어서 처리)
+  const entries = Object.entries(usPeerTickers);
+  const chunkSize = 10;
+  for (let i = 0; i < entries.length; i += chunkSize) {
+    const chunk = entries.slice(i, i + chunkSize);
+    await Promise.all(chunk.map(async ([ticker, name]) => {
+      const d = await fetchYahooFinance(ticker);
+      if (d) {
+        const isPos = parseFloat(d.percent1d) >= 0;
+        peerData[name] = { 
+          name, 
+          market: ticker.includes('.') ? '기타' : (ticker === 'TSM' ? 'NYSE' : 'NASDAQ'),
+          price: d.value, 
+          change: (isPos ? '+' : '') + d.percent1d + '%' 
+        };
+      }
+    }));
+    await sleep(200); // 청크 사이의 미세한 휴식
+  }
 
   const peerChangeLine = Object.values(peerData).map(p => `${p.name} ${p.change}`).join(', ');
 
