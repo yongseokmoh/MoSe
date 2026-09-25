@@ -4,6 +4,7 @@ import MacroSummaryClient from '@/components/MacroSummaryClient';
 import fs from 'fs';
 import path from 'path';
 import Link from 'next/link';
+import { USFlag, KRFlag } from '@/components/Flags';
 
 // 미니 차트 (Sparkline) 컴포넌트
 const Sparkline = ({ data, isPositive }: { data: number[], isPositive: boolean }) => {
@@ -27,12 +28,12 @@ const Sparkline = ({ data, isPositive }: { data: number[], isPositive: boolean }
 };
 
 // 지수 카드 컴포넌트 (폰트 120%)
-const IndexCard = ({ title, data, highlight = false }: { title: string, data: any, highlight?: boolean }) => {
+const IndexCard = ({ title, data, highlight = false }: { title: React.ReactNode, data: any, highlight?: boolean }) => {
   if (!data || typeof data === 'string') {
     return (
       <div className={`bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-center border ${highlight ? 'border-[var(--primary)]/30 shadow-inner' : 'border-transparent'}`}>
-        <span className={`text-[var(--muted-foreground)] text-[26px] mb-0.5 ${highlight ? 'font-extrabold' : ''}`}>{title}</span>
-        <span className="text-[var(--muted-foreground)] text-[22px] font-bold">데이터 없음</span>
+        <span className={`text-[var(--muted-foreground)] text-[1.625rem] mb-0.5 ${highlight ? 'font-extrabold' : ''}`}>{title}</span>
+        <span className="text-[var(--muted-foreground)] text-[1.375rem] font-bold">데이터 없음</span>
       </div>
     );
   }
@@ -43,13 +44,13 @@ const IndexCard = ({ title, data, highlight = false }: { title: string, data: an
   return (
     <div className={`bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-between border transition-all ${highlight ? 'border-[var(--primary)]/30 shadow-inner bg-[var(--primary)]/5' : 'border-[var(--border)]/30'}`}>
       <div className="flex justify-between items-center mb-1">
-        <span className={`text-[var(--muted-foreground)] text-[26px] leading-tight ${highlight ? 'font-extrabold' : 'font-bold'}`}>{title}</span>
+        <span className={`text-[var(--muted-foreground)] text-[1.625rem] leading-tight ${highlight ? 'font-extrabold' : 'font-bold'}`}>{title}</span>
         <Sparkline data={data.history} isPositive={is1dPos} />
       </div>
-      <div className={`text-[24px] font-extrabold tracking-tight ${color1d} mb-1.5`}>
+      <div className={`text-[1.5rem] font-extrabold tracking-tight ${color1d} mb-1.5`}>
         {data.value}
       </div>
-      <div className="flex justify-between items-center text-[25px] font-bold">
+      <div className="flex justify-between items-center text-[1.5625rem] font-bold">
         <span className={`${color1d} bg-[var(--background)] px-1 py-0.5 rounded border border-[var(--border)] flex-1 text-center mr-0.5`}>
           1일 {is1dPos ? '+' : ''}{data.percent1d}%
         </span>
@@ -141,25 +142,25 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
         <section className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm">
           <h2 className="font-bold text-[1.9rem] mb-3 text-[var(--primary)]">섹션 1: 거시 및 글로벌 지수</h2>
           <div className="grid grid-cols-2 gap-2 mb-4">
-            <IndexCard title="🇺🇸 다우존스" data={s1.dowJones} />
-            <IndexCard title="🇺🇸 S&P 500" data={s1.sp500} />
-            <IndexCard title="🇺🇸 나스닥" data={s1.nasdaq} />
-            <IndexCard title="🇺🇸 필라델피아 반도체" data={s1.sox} highlight={true} />
-            <IndexCard title="🇰🇷 코스피" data={s1.kospi} />
-            <IndexCard title="🇰🇷 코스닥" data={s1.kosdaq} />
-            <IndexCard title="💱 원/달러 환율" data={s1.exchangeRate} />
-            <IndexCard title="🛢️ WTI 원유" data={s1.wti} />
+            <IndexCard title={<><USFlag /> 다우존스</>} data={s1.dowJones} />
+            <IndexCard title={<><USFlag /> S&P 500</>} data={s1.sp500} />
+            <IndexCard title={<><USFlag /> 나스닥</>} data={s1.nasdaq} />
+            <IndexCard title={<><USFlag /> 필라델피아 반도체</>} data={s1.sox} highlight={true} />
+            <IndexCard title={<><KRFlag /> 코스피</>} data={s1.kospi} />
+            <IndexCard title={<><KRFlag /> 코스닥</>} data={s1.kosdaq} />
+            <IndexCard title={<><span className="mr-1">💱</span> 원/달러 환율</>} data={s1.exchangeRate} />
+            <IndexCard title={<><span className="mr-1">🛢️</span> WTI 원유</>} data={s1.wti} />
             {s1.foreignFutures && (() => {
               const ff = s1.foreignFutures;
               const isPos = ff.rawNetBuy >= 0;
               const color = isPos ? 'text-red-500' : 'text-blue-500';
               return (
                 <div className="bg-[var(--muted)]/60 p-3 rounded-xl flex flex-col justify-between border border-[var(--border)]/30">
-                  <span className="text-[var(--muted-foreground)] text-[26px] font-bold leading-tight mb-1">🌏 외국인 선물</span>
-                  <div className={`text-[22px] font-extrabold tracking-tight ${color} mb-1`}>
+                  <span className="text-[var(--muted-foreground)] text-[1.625rem] font-bold leading-tight mb-1">🌏 외국인 선물</span>
+                  <div className={`text-[1.375rem] font-extrabold tracking-tight ${color} mb-1`}>
                     {ff.netBuy}
                   </div>
-                  <span className={`text-[20px] font-bold px-2 py-0.5 rounded border text-center ${isPos ? 'text-red-500 border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20' : 'text-blue-500 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/20'}`}>
+                  <span className={`text-[1.25rem] font-bold px-2 py-0.5 rounded border text-center ${isPos ? 'text-red-500 border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20' : 'text-blue-500 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/20'}`}>
                     KOSPI200 {ff.direction}
                   </span>
                 </div>
@@ -179,37 +180,37 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                 const keywords: string[] = sector.keywords || [];
                 return (
                   <div key={idx} className="bg-[var(--card)] p-4 rounded-xl border border-[var(--border)] shadow-sm">
-                    <h3 className="font-bold text-[25px] mb-3 flex items-center gap-2 flex-wrap">
+                    <h3 className="font-bold text-[1.5625rem] mb-3 flex items-center gap-2 flex-wrap">
                       <span className="text-[2.0rem]">{sector.weather?.split(' ')[0]}</span>
                       <span>{sector.sectorName}</span>
                     </h3>
                     {sector.usPeer && sector.usPeer !== 'N/A' && (
                       <div className="flex gap-2 mb-3">
                         <div className="flex flex-col bg-[var(--muted)]/40 border border-[var(--border)] rounded-lg px-3 py-1.5 min-w-[120px] shadow-sm">
-                          <span className="text-[16px] text-[var(--muted-foreground)] font-bold">{sector.usPeer}</span>
+                          <span className="text-[1rem] text-[var(--muted-foreground)] font-bold">{sector.usPeer}</span>
                           {sector.usPeerChange && sector.usPeerChange !== 'N/A' ? (() => {
                             const isPos = !sector.usPeerChange.startsWith('-');
                             return (
-                              <span className={`text-[20px] font-extrabold ${isPos ? 'text-red-500' : 'text-blue-500'}`}>
+                              <span className={`text-[1.25rem] font-extrabold ${isPos ? 'text-red-500' : 'text-blue-500'}`}>
                                 {sector.usPeerChange}
                               </span>
                             );
                           })() : (
-                            <span className="text-[20px] font-bold text-[var(--muted-foreground)]">-</span>
+                            <span className="text-[1.25rem] font-bold text-[var(--muted-foreground)]">-</span>
                           )}
                         </div>
                       </div>
                     )}
-                    <div className="text-[23px] leading-relaxed mb-3">
+                    <div className="text-[1.4375rem] leading-relaxed mb-3">
                       <span className="font-bold text-blue-600 dark:text-blue-400">간밤 동향: </span>
                       <HighlightedText text={sector.overnightTrend} keywords={keywords} />
                     </div>
-                    <div className="text-[21px] leading-relaxed text-[var(--muted-foreground)] bg-[var(--muted)]/30 p-3 rounded-lg mb-2">
+                    <div className="text-[1.3125rem] leading-relaxed text-[var(--muted-foreground)] bg-[var(--muted)]/30 p-3 rounded-lg mb-2">
                       <span className="font-bold text-[var(--foreground)]">과거 패턴: </span>
                       <HighlightedText text={sector.historicalImpact} keywords={keywords} />
                     </div>
                     {sector.outlook && (
-                      <div className="text-[21px] leading-relaxed bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
+                      <div className="text-[1.3125rem] leading-relaxed bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
                         <span className="font-bold text-gray-900 dark:text-gray-100">오늘 전망: </span>
                         <span className="text-gray-800 dark:text-gray-200"><HighlightedText text={sector.outlook} keywords={keywords} /></span>
                       </div>
@@ -217,7 +218,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                     {keywords.length > 0 && (
                       <div className="mt-2 flex flex-wrap gap-1.5">
                         {keywords.map((kw: string, ki: number) => (
-                          <span key={ki} className="text-[18px] bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-200 px-2 py-0.5 rounded-full border border-yellow-300 dark:border-yellow-700 font-semibold">
+                          <span key={ki} className="text-[1.125rem] bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-200 px-2 py-0.5 rounded-full border border-yellow-300 dark:border-yellow-700 font-semibold">
                             #{kw}
                           </span>
                         ))}
@@ -226,12 +227,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                   </div>
                 );
               })}
-              <div className="text-[22px] text-[var(--muted-foreground)] text-right mt-2">
+              <div className="text-[1.375rem] text-[var(--muted-foreground)] text-right mt-2">
                 ※ 과거의 패턴이 미래의 결과를 보장하지는 않습니다.
               </div>
             </div>
           ) : (
-            <p className="text-[23px] text-[var(--foreground)] leading-relaxed font-medium">
+            <p className="text-[1.4375rem] text-[var(--foreground)] leading-relaxed font-medium">
               {typeof s2Summary === 'string' ? s2Summary : "데이터 생성 중..."}
             </p>
           )}
@@ -243,13 +244,13 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
           {major.length > 0 ? major.map((stock: any) => (
             <section key={stock.id || stock.name} className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm mb-4 border-l-4 border-l-blue-500">
               <div className="flex justify-between items-center mb-3">
-                <h3 className="font-bold text-[26px]">
+                <h3 className="font-bold text-[1.625rem]">
                   {stock.name}
-                  {stock.industry && <span className="text-[1.8rem] text-[var(--muted-foreground)] font-normal ml-2">/ {stock.industry}</span>}
+                  {stock.industry && <span className="text-[0.8em] text-[var(--muted-foreground)] font-normal ml-2">/ {stock.industry}</span>}
                 </h3>
                 <span className="text-[1.6rem] font-bold text-[var(--muted-foreground)]">{stock.currentPrice}</span>
               </div>
-              <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-[23px] leading-relaxed">
+              <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-[1.4375rem] leading-relaxed whitespace-pre-line">
                  <strong className="text-blue-500 block mb-1">🤖 AI 분석</strong>
                  {stock.summary}
               </div>
@@ -266,13 +267,13 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
           {interest.length > 0 ? interest.map((stock: any) => (
             <section key={stock.id || stock.name} className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm mb-4 border-l-4 border-l-gray-400">
               <div className="flex justify-between items-center mb-3">
-                <h3 className="font-bold text-[26px]">
+                <h3 className="font-bold text-[1.625rem]">
                   {stock.name}
-                  {stock.industry && <span className="text-[1.8rem] text-[var(--muted-foreground)] font-normal ml-2">/ {stock.industry}</span>}
+                  {stock.industry && <span className="text-[0.8em] text-[var(--muted-foreground)] font-normal ml-2">/ {stock.industry}</span>}
                 </h3>
                 <span className="text-[1.6rem] font-bold text-[var(--muted-foreground)]">{stock.currentPrice}</span>
               </div>
-              <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-[23px] leading-relaxed">
+              <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-[1.4375rem] leading-relaxed whitespace-pre-line">
                  {stock.summary}
               </div>
               {stock.news?.map((newsItem: any, index: number) => (

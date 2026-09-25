@@ -16,7 +16,7 @@ async function fetchGoogleNews(query) {
   const items = [];
   const itemRegex = /<item>[\s\S]*?<title>(.*?)<\/title>[\s\S]*?<link>(.*?)<\/link>[\s\S]*?<\/item>/g;
   let match;
-  while ((match = itemRegex.exec(text)) !== null && items.length < 10) { // 최대 10개까지 확보
+  while ((match = itemRegex.exec(text)) !== null && items.length < 50) { // 최대 50개까지 확보
     items.push({ 
       title: match[1].replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1').replace(/&quot;/g, '"'), 
       link: match[2] 
@@ -73,10 +73,10 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
   
   [분석 및 작성 지침]
   1. 전체 요약(summary): 주가 변화 및 전망에 대한 내용은 50%로 제한하고, 나머지 50%는 기업에 대한 뉴스 내용(실적, 계약, 신제품, 경영 동향 등) 자체에 할당해. 기존보다 분량을 1.5배 늘려서 작성하고, 간결하고 읽기 쉬운 개조식(Bullet point) 어법으로 작성해.
-  2. 뉴스 기사 중복 제거: 내용이 사실상 동일하거나 중복되는 기사는 후보에서 탈락시키고 다음 순위의 기사를 선택해.
-  3. 뉴스 분류: 중복이 제거된 기사들 중에서 다음을 선택해.
-     - 사람들이 많이 본 뉴스 (최대 5개)
-     - 과거 언급 없다가 갑자기 올라오는 뉴스 (최대 2개)
+  2. 뉴스 기사 클러스터링 및 중복 제거: 수집된 기사들을 독립적인 사건(이슈) 단위로 묶고, 중복 이슈를 철저히 배제하여 최대 5개의 '유니크한 이슈 대표 기사'만 선정하라. 유니크한 사건이 적다면 억지로 5개를 채우지 마라.
+  3. 뉴스 분류: 선정된 기사들 중에서 카테고리를 다음 중 하나로 지정해.
+     - most_viewed: 사람들이 많이 본 뉴스
+     - sudden: 과거 언급 없다가 갑자기 올라오는 뉴스
   4. 산업 분류: 이 종목이 속한 시장(코스피 또는 코스닥)과 공식 산업분류명(예: 코스피 전기전자, 코스닥 제약 등)을 'industry'에 기재해.
   
   뉴스 목록:
@@ -91,7 +91,7 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
         "index": "선택된 뉴스의 원래 인덱스 번호 (정수)",
         "category": "most_viewed 또는 sudden",
         "newTitle": "[출처] 기사 내용을 드러내는 짧고 깔끔한 요약 제목 (오늘 날짜 혹은 발행일자)",
-        "articleSummary": "해당 개별 기사에 대한 1~2줄 핵심 요약"
+        "articleSummary": "해당 개별 기사에 대한 상세한 요약 (수치, 인과관계, 비즈니스 임팩트 등을 포함하여 3~5문장 내외로 깊이 있게 작성)"
       }
     ]
   }
@@ -145,7 +145,8 @@ async function fetchYahooFinance(ticker) {
       value: valueStr,
       percent1d: percent1d.toFixed(2),
       percent5d: percent5d.toFixed(2),
-      history: last5 // 미니 차트용 배열
+      history: last5, // 미니 차트용 배열
+      timestamp: result.meta.regularMarketTime * 1000
     };
   } catch (e) {
     console.error(`Yahoo Finance 에러 (${ticker}):`, e);

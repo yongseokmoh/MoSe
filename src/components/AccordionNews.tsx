@@ -4,6 +4,11 @@ import { useState } from 'react';
 export default function AccordionNews({ news, category }: { news: any, category?: 'most_viewed' | 'sudden' }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScraping, setIsScraping] = useState(false);
+  
+  // Reader Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isReading, setIsReading] = useState(false);
+  const [articleData, setArticleData] = useState<{title?: string, content?: string, error?: string} | null>(null);
 
   const handleScrap = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -25,6 +30,26 @@ export default function AccordionNews({ news, category }: { news: any, category?
     setIsScraping(false);
   };
 
+  const handleReadArticle = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsModalOpen(true);
+    if (articleData) return; // Already fetched
+    
+    setIsReading(true);
+    try {
+      const res = await fetch(`/api/read?url=${encodeURIComponent(articleUrl)}`);
+      const data = await res.json();
+      if (res.ok) {
+        setArticleData(data);
+      } else {
+        setArticleData({ error: data.error || '기사를 불러오지 못했습니다.' });
+      }
+    } catch (err) {
+      setArticleData({ error: '네트워크 오류로 기사를 불러오지 못했습니다.' });
+    }
+    setIsReading(false);
+  };
+
   const cleanTitle = news.title.replace(/<\/?[^>]+(>|$)/g, "");
   const articleUrl = news.link || news.content || '#';
 
@@ -37,12 +62,12 @@ export default function AccordionNews({ news, category }: { news: any, category?
           className="p-3 flex justify-between items-center cursor-pointer active:bg-[var(--muted)]/50 transition-colors"
           onClick={() => setIsOpen(!isOpen)}
         >
-          <span className="font-semibold text-[24px] leading-snug flex-1 pr-2">
-            {category === 'sudden' && <span className="inline-block text-[16px] bg-red-100 text-red-700 dark:bg-red-900/80 dark:text-red-300 px-2 py-0.5 rounded mr-2 align-middle font-extrabold mb-1">🔥 급상승</span>}
-            {category === 'most_viewed' && <span className="inline-block text-[16px] bg-blue-100 text-blue-700 dark:bg-blue-900/80 dark:text-blue-300 px-2 py-0.5 rounded mr-2 align-middle font-extrabold mb-1">👀 많이 본</span>}
+          <span className="font-semibold text-[1.5rem] leading-snug flex-1 pr-2">
+            {category === 'sudden' && <span className="inline-block text-[1rem] bg-red-100 text-red-700 dark:bg-red-900/80 dark:text-red-300 px-2 py-0.5 rounded mr-2 align-middle font-extrabold mb-1">🔥 급상승</span>}
+            {category === 'most_viewed' && <span className="inline-block text-[1rem] bg-blue-100 text-blue-700 dark:bg-blue-900/80 dark:text-blue-300 px-2 py-0.5 rounded mr-2 align-middle font-extrabold mb-1">👀 많이 본</span>}
             {cleanTitle}
           </span>
-          <span className="text-[var(--muted-foreground)] text-[25px] bg-[var(--muted)] p-1 rounded-full px-2 shrink-0">
+          <span className="text-[var(--muted-foreground)] text-[1.5625rem] bg-[var(--muted)] p-1 rounded-full px-2 shrink-0">
             {isOpen ? '닫기 ▲' : '열기 ▼'}
           </span>
         </div>
@@ -51,7 +76,7 @@ export default function AccordionNews({ news, category }: { news: any, category?
         {isOpen && (
           <div className="p-4 bg-[var(--muted)]/20 border-t border-[var(--border)] leading-relaxed">
             {news.articleSummary && (
-              <div className="mb-4 text-[21px] text-[var(--foreground)] bg-[var(--background)] p-3 rounded-lg border border-[var(--border)] shadow-inner">
+              <div className="mb-4 text-[1.3125rem] text-[var(--foreground)] bg-[var(--background)] p-3 rounded-lg border border-[var(--border)] shadow-inner whitespace-pre-line">
                 <strong className="text-[var(--primary)] mb-1 block">💡 핵심 요약</strong>
                 {news.articleSummary}
               </div>
@@ -59,29 +84,64 @@ export default function AccordionNews({ news, category }: { news: any, category?
             
             <div className="flex justify-between gap-3 mb-2">
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  window.open(articleUrl, '_blank', 'noopener,noreferrer');
-                }}
-                className="flex-1 text-[21px] font-bold bg-blue-500 hover:bg-blue-600 active:scale-95 text-white py-3 rounded-xl shadow transition-all"
+                onClick={handleReadArticle}
+                className="flex-1 text-[1.3125rem] font-bold bg-blue-500 hover:bg-blue-600 active:scale-95 text-white py-3 rounded-xl shadow transition-all"
               >
-                📰 기사 원문 보기
+                📰 기사 본문 보기
               </button>
               <button
                 onClick={handleScrap}
                 disabled={isScraping}
-                className="flex-1 text-[21px] bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-[var(--primary-foreground)] py-3 rounded-xl font-bold shadow transition-all active:scale-95 disabled:opacity-50"
+                className="flex-1 text-[1.3125rem] bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-[var(--primary-foreground)] py-3 rounded-xl font-bold shadow transition-all active:scale-95 disabled:opacity-50"
               >
                 {isScraping ? '저장중 ⏳' : '💾 보관함 스크랩'}
               </button>
             </div>
-            
-            <p className="text-[17px] text-[var(--muted-foreground)] text-center mt-2">
-              ※ 구글 뉴스 등 일부 기사는 새 창이나 팝업으로 열립니다.
-            </p>
+            <div className="text-center mt-2">
+              <a href={articleUrl} target="_blank" rel="noopener noreferrer" className="text-[1.0625rem] text-blue-500 underline">
+                외부 브라우저로 원문 열기
+              </a>
+            </div>
           </div>
         )}
       </div>
+
+      {/* Reader Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-[var(--background)] w-full max-w-2xl h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden relative border border-[var(--border)]">
+            <div className="p-4 border-b border-[var(--border)] flex justify-between items-center bg-[var(--muted)]/30">
+              <h3 className="font-bold text-[1.5rem] truncate pr-4 text-[var(--foreground)]">
+                {articleData?.title || '기사 읽기'}
+              </h3>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="text-[2rem] leading-none p-2 -m-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+              >
+                &times;
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-5 text-[1.25rem] leading-relaxed">
+              {isReading ? (
+                <div className="flex justify-center items-center h-full text-[var(--muted-foreground)]">
+                  기사 본문을 불러오는 중입니다... ⏳
+                </div>
+              ) : articleData?.error ? (
+                <div className="text-red-500 text-center mt-10">
+                  {articleData.error}
+                  <div className="mt-4">
+                    <a href={articleUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+                      원문 링크로 직접 이동하기
+                    </a>
+                  </div>
+                </div>
+              ) : articleData?.content ? (
+                <div className="prose dark:prose-invert max-w-none text-[1.25rem]" dangerouslySetInnerHTML={{ __html: articleData.content }} />
+              ) : null}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
