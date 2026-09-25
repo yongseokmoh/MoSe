@@ -41,7 +41,8 @@ export default function AccordionNews({ news, category }: { news: any, category?
     
     setIsReading(true);
     try {
-      const res = await fetch(`/api/read?url=${encodeURIComponent(articleUrl)}`);
+      const translateParam = news.isForeign ? '&translate=true' : '';
+      const res = await fetch(`/api/read?url=${encodeURIComponent(articleUrl)}${translateParam}`);
       const data = await res.json();
       if (res.ok && data.content) {
         setArticleData(data);
@@ -67,7 +68,7 @@ export default function AccordionNews({ news, category }: { news: any, category?
         >
           <span className="font-semibold text-[1.5rem] leading-snug w-full">
             {category === 'sudden' && <span className="inline-block text-[1rem] bg-red-100 text-red-700 dark:bg-red-900/80 dark:text-red-300 px-2 py-0.5 rounded mr-2 align-middle font-extrabold mb-1">🔥 급상승</span>}
-            {category === 'most_viewed' && <span className="inline-block text-[1rem] bg-blue-100 text-blue-700 dark:bg-blue-900/80 dark:text-blue-300 px-2 py-0.5 rounded mr-2 align-middle font-extrabold mb-1">👀 최근 많이 본</span>}
+            {category === 'most_viewed' && <span className="inline-block text-[1rem] bg-blue-100 text-blue-700 dark:bg-blue-900/80 dark:text-blue-300 px-2 py-0.5 rounded mr-2 align-middle font-extrabold mb-1">👀 많이 본</span>}
             {cleanTitle}
           </span>
           <div className="w-full flex justify-end">
@@ -117,7 +118,7 @@ export default function AccordionNews({ news, category }: { news: any, category?
           <div className="bg-[var(--background)] w-full max-w-2xl h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden relative border border-[var(--border)]">
             <div className="p-4 border-b border-[var(--border)] flex justify-between items-center bg-[var(--muted)]/30">
               <h3 className="font-bold text-[1.3rem] truncate pr-4 text-[var(--foreground)]">
-                {useIframeFallback ? '원문 브라우저' : (articleData?.title || '기사 읽기')}
+                {articleData?.title || '기사 읽기'}
               </h3>
               <button 
                 onClick={() => setIsModalOpen(false)}
@@ -131,19 +132,18 @@ export default function AccordionNews({ news, category }: { news: any, category?
                 <div className="flex justify-center items-center h-full text-[var(--muted-foreground)] p-5">
                   기사 본문을 불러오는 중입니다... ⏳
                 </div>
-              ) : useIframeFallback ? (
-                <div className="flex flex-col h-full w-full">
-                  <div className="bg-yellow-50 dark:bg-yellow-900/30 p-3 text-[1rem] text-yellow-800 dark:text-yellow-200 text-center flex flex-col gap-2 border-b border-yellow-200 dark:border-yellow-800 shrink-0">
-                    <span>자체 뷰어 변환이 지원되지 않는 언론사입니다. 원문 웹페이지를 직접 띄웁니다.</span>
-                    <a href={articleUrl} target="_blank" rel="noopener noreferrer" className="bg-white dark:bg-black px-3 py-1.5 rounded border border-yellow-300 dark:border-yellow-700 font-bold shadow-sm inline-block mx-auto hover:bg-gray-50">
-                      🚀 새 창에서 열기 (화면이 잘렸거나 안 보일 경우 클릭)
-                    </a>
-                  </div>
-                  <iframe src={articleUrl} className="flex-1 w-full border-none bg-white" sandbox="allow-scripts allow-same-origin allow-popups" title="Article Original Viewer" />
-                </div>
               ) : articleData?.content ? (
                 <div className="prose dark:prose-invert max-w-none text-[1.25rem] p-5" dangerouslySetInnerHTML={{ __html: articleData.content }} />
-              ) : null}
+              ) : (
+                <div className="flex flex-col justify-center items-center h-full w-full p-5 text-center gap-4">
+                  <div className="text-[1.1rem] text-[var(--muted-foreground)]">
+                    본문을 추출할 수 없는 구조의 페이지이거나 접근이 제한된 사이트입니다.
+                  </div>
+                  <a href={articleUrl} target="_blank" rel="noopener noreferrer" className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 px-4 py-2 rounded-lg font-bold border border-blue-200 dark:border-blue-800 shadow-sm inline-block hover:bg-blue-100">
+                    🚀 외부 브라우저로 열기
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -15,6 +15,8 @@ async function fetchGoogleNews(query) {
   const text = await response.text();
   const items = [];
   
+  const TRUSTED_PUBLISHERS = /한국경제|한경|매일경제|매경|더벨|thebell|인베스트조선|Invest Chosun|블로터|넘버스|연합뉴스|연합인포맥스|뉴스1|뉴시스|전자신문|머니투데이|MT|이데일리|edaily/i;
+
   const itemRegex = /<item>([\s\S]*?)<\/item>/g;
   let match;
   
@@ -30,18 +32,30 @@ async function fetchGoogleNews(query) {
     
     if (!titleMatch || !linkMatch) continue;
     
+    let formattedDate = '';
     if (pubDateMatch) {
       const pubDate = new Date(pubDateMatch[1]);
       if (pubDate < twoMonthsAgo) {
         continue; // 2개월 이상 지난 뉴스 필터링
       }
+      formattedDate = `${pubDate.getFullYear()}.${String(pubDate.getMonth() + 1).padStart(2, '0')}.${String(pubDate.getDate()).padStart(2, '0')}`;
     }
     
+    let rawTitle = titleMatch[1].replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1').replace(/&quot;/g, '"');
+    let isTrusted = TRUSTED_PUBLISHERS.test(rawTitle);
+    let finalTitle = isTrusted ? `[★우선선택] ${rawTitle}` : rawTitle;
+
     items.push({ 
-      title: titleMatch[1].replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1').replace(/&quot;/g, '"'), 
-      link: linkMatch[1] 
+      title: finalTitle, 
+      link: linkMatch[1],
+      pubDate: formattedDate,
+      isTrusted
     });
   }
+  
+  // 신뢰 언론사 기사가 배열 앞쪽에 오도록 정렬 (AI에게 가중치)
+  items.sort((a, b) => (b.isTrusted ? 1 : 0) - (a.isTrusted ? 1 : 0));
+  
   return items;
 }
 
@@ -93,7 +107,7 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
   
   [분석 및 작성 지침]
   1. 전체 요약(summary): 주가 변화 및 전망에 대한 내용은 50%로 제한하고, 나머지 50%는 기업에 대한 뉴스 내용(실적, 계약, 신제품, 경영 동향 등) 자체에 할당해. 유사한 내용을 중심으로 핵심만 압축하여 기존 대비 70% 분량으로 간결하고 밀도 있게 작성해. (개조식 Bullet point 어법 사용)
-  2. 뉴스 기사 클러스터링 및 중복 제거: 수집된 기사들을 독립적인 사건(이슈) 단위로 묶고, 중복 이슈를 철저히 배제하여 최대 5개의 '유니크한 이슈 대표 기사'만 선정하라. 유니크한 사건이 적다면 억지로 5개를 채우지 마라.
+  2. 뉴스 기사 클러스터링 및 중복 제거: 수집된 기사들을 독립적인 사건(이슈) 단위로 묶고, 중복 이슈를 철저히 배제하여 최대 5개의 '유니크한 이슈 대표 기사'만 선정하라. (동일한 이슈에 대한 여러 기사 중 대표 기사를 고를 때는 반드시 제목에 '[★우선선택]' 마커가 붙은 기사를 최우선으로 채택하라. 단, 유니크한 사건이라면 마커가 없어도 포함하라.) 유니크한 사건이 적다면 억지로 5개를 채우지 마라.
   3. 뉴스 분류: 선정된 기사들 중에서 카테고리를 다음 중 하나로 지정해.
      - most_viewed: 최근에 많이 노출된 기사
      - sudden: 과거 언급 없다가 갑자기 올라오는 뉴스
@@ -102,13 +116,13 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
   뉴스 목록:
   ${newsItems.map((n, i) => `${i}. ${n.title}`).join('\n')}
   
-  출력 형식 (반드시 JSON):
+  [출력 형식 (반드시 JSON 객체로 응답, 모든 필드 필수 포함)]
   {
     "summary": "개조식 요약 내용 (기존보다 1.5배 분량, 기업 뉴스 내용 50% 포함)\\n- 내용1\\n- 내용2...",
     "industry": "코스피 전기전자 (이런 형식의 소속 시장 및 산업명)",
     "selectedNews": [
       {
-        "index": "선택된 뉴스의 원래 인덱스 번호 (정수)",
+        "index": 0,
         "category": "most_viewed 또는 sudden",
         "newTitle": "[출처] 기사 내용을 드러내는 짧고 깔끔한 요약 제목 (오늘 날짜 혹은 발행일자)",
         "articleSummary": "해당 개별 기사에 대한 상세한 요약 (수치, 인과관계, 비즈니스 임팩트 등을 포함하여 3~5문장 내외로 깊이 있게 작성)"
@@ -121,15 +135,61 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
   const selectedNews = (result.selectedNews || []).map(item => {
     const newsItem = newsItems[item.index];
     if (!newsItem) return null;
+    
+    let summaryWithDate = item.articleSummary || '';
+    if (newsItem.pubDate && !summaryWithDate.includes(newsItem.pubDate)) {
+      summaryWithDate += ` (${newsItem.pubDate})`;
+    }
+
     return {
       ...newsItem,
       title: item.newTitle || newsItem.title, // 가공된 제목으로 덮어쓰기
       category: item.category,
-      articleSummary: item.articleSummary
+      articleSummary: summaryWithDate
     };
   }).filter(Boolean);
   
   return { summary: result.summary || '요약 생성 실패', industry: result.industry || '분류 불가', news: selectedNews };
+}
+
+// Yahoo Finance RSS를 통한 최신 뉴스 수집
+async function fetchYahooRSSNews(tickers) {
+  const items = [];
+  const threeDaysAgo = new Date();
+  threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+  for (const ticker of tickers) {
+    try {
+      const url = `https://feeds.finance.yahoo.com/rss/2.0/headline?s=${ticker}`;
+      const response = await fetch(url);
+      const text = await response.text();
+      
+      const itemRegex = /<item>([\s\S]*?)<\/item>/g;
+      let match;
+      while ((match = itemRegex.exec(text)) !== null) {
+        const itemContent = match[1];
+        const titleMatch = itemContent.match(/<title>(.*?)<\/title>/);
+        const linkMatch = itemContent.match(/<link>(.*?)<\/link>/);
+        const pubDateMatch = itemContent.match(/<pubDate>(.*?)<\/pubDate>/);
+        
+        if (!titleMatch || !linkMatch || !pubDateMatch) continue;
+        
+        const pubDate = new Date(pubDateMatch[1]);
+        if (pubDate < threeDaysAgo) continue;
+        
+        let title = titleMatch[1].replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1');
+        items.push({
+          ticker,
+          title,
+          link: linkMatch[1],
+          pubDate: pubDate.toISOString()
+        });
+      }
+    } catch (e) {
+      console.error(`Yahoo RSS Error (${ticker}):`, e.message);
+    }
+  }
+  return items;
 }
 
 // Yahoo Finance API를 활용한 실시간 지수 수집 (1일/5일 트렌드 및 차트용 데이터 포함)
@@ -256,9 +316,7 @@ async function main() { try {
   `;
   const macroSummary = await callGemini(macroPrompt, true);
 
-  console.log("Generating Section 2: Sector Summary...");
-  const sectorNews = await fetchGoogleNews("미국 증시 특징주 OR 나스닥 특징주");
-
+  console.log("Generating Section 2: Sector Summary & News...");
   // 미국 주요 종목 간밤 등락률 실제 데이터 수집
   const usPeerTickers = {
     NVDA: '엔비디아', TSM: 'TSMC', AMD: 'AMD', INTC: '인텔',
@@ -273,6 +331,9 @@ async function main() { try {
     if (d) peerChanges[name] = (parseFloat(d.percent1d) >= 0 ? '+' : '') + d.percent1d + '%';
   }
   const peerChangeLine = Object.entries(peerChanges).map(([n, v]) => n + ' ' + v).join(', ');
+
+  console.log("Fetching Yahoo Finance RSS News for US Peers...");
+  const rawYahooNews = await fetchYahooRSSNews(Object.keys(usPeerTickers));
 
   const sectorPrompt = `
   너는 수석 글로벌 투자 전략가야.
@@ -290,23 +351,67 @@ async function main() { try {
   ${peerChangeLine}
 
   [미국장 뉴스]
-  ${sectorNews.map(n=>n.title).join("\n")}
+  ${rawYahooNews.map(n=>`[${n.ticker}] ${n.title}`).join("\n").substring(0, 8000)}
 
-  [출력 형식 - 반드시 JSON 배열만 출력]
-  [
-    {
-      "weather": "☀️ 맑음 OR ⛅ 구름 OR 🌧️ 흐림 OR ⛈️ 폭풍",
-      "sectorName": "반도체/AI",
-      "usPeer": "엔비디아",
-      "usPeerChange": "+2.35%",
-      "overnightTrend": "간밤 동향 3~4문장 (반드시 실제 등락률 포함)...",
-      "historicalImpact": "과거 패턴 2~3문장...",
-      "outlook": "오늘 전망 2~3문장...",
-      "keywords": ["키워드1", "키워드2", "키워드3"]
-    }
-  ]
+  [출력 형식 - 반드시 JSON 객체로 응답]
+  {
+    "sectors": [
+      {
+        "weather": "☀️ 맑음 OR ⛅ 구름 OR 🌧️ 흐림 OR ⛈️ 폭풍",
+        "sectorName": "반도체/AI",
+        "usPeer": "엔비디아",
+        "usPeerChange": "+2.35%",
+        "overnightTrend": "간밤 동향 3~4문장 (반드시 실제 등락률 포함)...",
+        "historicalImpact": "과거 패턴 2~3문장...",
+        "outlook": "오늘 전망 2~3문장...",
+        "keywords": ["키워드1", "키워드2", "키워드3"]
+      }
+    ]
+  }
   `;
   const sectorSummary = await callGemini(sectorPrompt, true);
+
+  console.log("Generating Section 2: Translated Top 3 News...");
+  const translatePrompt = `
+  다음은 수집된 미국 주요 종목의 최신 영문 뉴스 목록이야.
+  앞서 분석한 3개의 핵심 섹터는 다음과 같아: ${(sectorSummary.sectors || []).map(s => s.sectorName).join(', ')}.
+
+  [지시사항]
+  1. 전체 뉴스 중에서 가장 중요하고 임팩트 있는 기사 딱 3개만 선별해라. (각 섹터별로 골고루 매칭되면 좋지만, 전체 Top 3를 뽑는 것이 우선)
+  2. 선별된 3개 기사에 대해, '제목(title)'과 '핵심 요약(articleSummary)'을 한국어로 완벽하고 자연스럽게 번역해라.
+  3. 반드시 아래 JSON 배열 형식으로 반환해라.
+
+  [뉴스 목록]
+  ${rawYahooNews.map((n, i) => `[${i}] ${n.ticker}: ${n.title}`).join('\n')}
+
+  [출력 형식 - 반드시 JSON 객체로 응답]
+  {
+    "news": [
+      {
+        "index": 뉴스목록에서의인덱스숫자,
+        "category": "most_viewed 또는 sudden",
+        "title": "한국어로 번역된 기사 제목",
+        "articleSummary": "한국어로 번역된 3~4문장 분량의 상세한 핵심 요약",
+        "sectorName": "매칭된 섹터명"
+      }
+    ]
+  }
+  `;
+  const translatedNewsResult = await callGemini(translatePrompt, true);
+  
+  const finalSectorNews = (translatedNewsResult.news || []).map(item => {
+    const rawNews = rawYahooNews[item.index];
+    if (!rawNews) return null;
+    return {
+      title: item.title,
+      link: rawNews.link,
+      pubDate: rawNews.pubDate,
+      category: item.category,
+      articleSummary: item.articleSummary,
+      isForeign: true,
+      sectorName: item.sectorName
+    };
+  }).filter(Boolean);
 
   const report = {
     date: new Date().toISOString(),
@@ -324,7 +429,7 @@ async function main() { try {
     },
     section2: {
       summary: sectorSummary,
-      news: sectorNews.slice(0, 3) // 대표 뉴스 3개 첨부
+      news: finalSectorNews // 야후 번역 기사 3개 첨부
     },
     section3_major: [],
     section4_interest: [],

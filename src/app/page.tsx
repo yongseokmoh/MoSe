@@ -224,9 +224,19 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                   </div>
                 );
               })}
-              <div className="text-[1.2rem] text-[var(--muted-foreground)] text-right mt-2">
+              <div className="text-[1.2rem] text-[var(--muted-foreground)] text-right mt-2 mb-4">
                 ※ 과거의 패턴이 미래의 결과를 보장하지는 않습니다.
               </div>
+              {s2.news && s2.news.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-[var(--border)]">
+                  <h3 className="font-bold text-[1.4rem] mb-3 text-[var(--primary)] flex items-center gap-2">
+                    <span className="text-[1.8rem]">📰</span> 글로벌 주요 뉴스 (AI 번역)
+                  </h3>
+                  {s2.news.map((newsItem: any, index: number) => (
+                    <AccordionNews key={index} category={newsItem.category} news={{ id: `sector-news-${index}`, title: `${newsItem.sectorName ? `[${newsItem.sectorName}] ` : ''}${newsItem.title}`, content: newsItem.link, articleSummary: newsItem.articleSummary, isForeign: newsItem.isForeign }} />
+                  ))}
+                </div>
+              )}
             </div>
           ) : (
             <p className="text-[1.3rem] text-[var(--foreground)] leading-relaxed font-medium">
