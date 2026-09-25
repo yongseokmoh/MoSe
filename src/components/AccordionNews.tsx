@@ -4,7 +4,6 @@ import { useState } from 'react';
 export default function AccordionNews({ news, category }: { news: any, category?: 'most_viewed' | 'sudden' }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScraping, setIsScraping] = useState(false);
-  const [showModal, setShowModal] = useState(false);
 
   const handleScrap = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -31,41 +30,6 @@ export default function AccordionNews({ news, category }: { news: any, category?
 
   return (
     <>
-      {/* 인라인 기사 모달 */}
-      {showModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
-          onClick={() => setShowModal(false)}
-        >
-          <div
-            className="relative bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl overflow-hidden"
-            style={{ width: '95vw', height: '85vh' }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* 모달 헤더 */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800">
-              <span className="text-[20px] font-bold text-zinc-700 dark:text-zinc-200 truncate pr-4">
-                📰 기사 원문
-              </span>
-              <button
-                onClick={() => setShowModal(false)}
-                className="text-[26px] leading-none text-zinc-500 hover:text-zinc-800 dark:hover:text-white transition-colors font-bold"
-              >
-                ✕
-              </button>
-            </div>
-            {/* 외부 링크 안내 + iframe */}
-            <iframe
-              src={articleUrl}
-              className="w-full"
-              style={{ height: 'calc(85vh - 56px)' }}
-              title="기사 원문"
-              sandbox="allow-scripts allow-same-origin allow-popups"
-            />
-          </div>
-        </div>
-      )}
-
       {/* 아코디언 */}
       <div className={`border rounded-xl mb-2 overflow-hidden shadow-sm ${category === 'sudden' ? 'border-red-400 dark:border-red-800 bg-red-50/50 dark:bg-red-950/20' : category === 'most_viewed' ? 'border-blue-400 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20' : 'border-[var(--border)] bg-[var(--background)]'}`}>
         {/* 아코디언 헤더 */}
@@ -95,7 +59,10 @@ export default function AccordionNews({ news, category }: { news: any, category?
             
             <div className="flex justify-between gap-3 mb-2">
               <button
-                onClick={() => setShowModal(true)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.open(articleUrl, '_blank', 'noopener,noreferrer');
+                }}
                 className="flex-1 text-[21px] font-bold bg-blue-500 hover:bg-blue-600 active:scale-95 text-white py-3 rounded-xl shadow transition-all"
               >
                 📰 기사 원문 보기
@@ -110,7 +77,7 @@ export default function AccordionNews({ news, category }: { news: any, category?
             </div>
             
             <p className="text-[17px] text-[var(--muted-foreground)] text-center mt-2">
-              ※ 일부 기사는 외부 정책으로 원문 뷰어에 표시되지 않을 수 있습니다.
+              ※ 구글 뉴스 등 일부 기사는 새 창이나 팝업으로 열립니다.
             </p>
           </div>
         )}

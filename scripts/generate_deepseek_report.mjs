@@ -90,6 +90,7 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
       {
         "index": "선택된 뉴스의 원래 인덱스 번호 (정수)",
         "category": "most_viewed 또는 sudden",
+        "newTitle": "[출처] 기사 내용을 드러내는 짧고 깔끔한 요약 제목 (오늘 날짜 혹은 발행일자)",
         "articleSummary": "해당 개별 기사에 대한 1~2줄 핵심 요약"
       }
     ]
@@ -102,6 +103,7 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
     if (!newsItem) return null;
     return {
       ...newsItem,
+      title: item.newTitle || newsItem.title, // 가공된 제목으로 덮어쓰기
       category: item.category,
       articleSummary: item.articleSummary
     };
