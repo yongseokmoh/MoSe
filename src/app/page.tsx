@@ -96,9 +96,9 @@ const parseFormatting = (text: string) => {
   const parts = text.split(regex);
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i} className="font-bold text-[var(--foreground)]">{part.slice(2, -2)}</strong>;
+      return <strong key={i} className="font-bold text-[var(--foreground)]">{part.slice(2, -2).trim()}</strong>;
     } else if (part.startsWith('!!') && part.endsWith('!!')) {
-      return <strong key={i} className="text-blue-500 font-bold">{part.slice(2, -2)}</strong>;
+      return <strong key={i} className="text-blue-600 dark:text-blue-400 font-bold">{part.slice(2, -2).trim()}</strong>;
     }
     return <span key={i}>{part}</span>;
   });
