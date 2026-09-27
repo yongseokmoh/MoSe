@@ -43,43 +43,46 @@ const Sparkline = ({ data, isPositive }: { data: number[], isPositive: boolean }
 const IndexCard = ({ title, data, highlight = false }: { title: React.ReactNode, data: any, highlight?: boolean }) => {
   if (!data || typeof data === 'string') {
     return (
-      <div className={`bg-[var(--muted)]/60 p-3 md:p-4 rounded-xl flex flex-col justify-center border ${highlight ? 'border-[var(--primary)]/30 shadow-inner' : 'border-transparent'}`}>
-        <span className={`text-[var(--muted-foreground)] text-sm md:text-base mb-0.5 ${highlight ? 'font-extrabold' : ''}`}>{title}</span>
-        <span className="text-[var(--muted-foreground)] text-lg md:text-xl font-bold">데이터 없음</span>
+      <div className={`bg-slate-800 p-3 md:p-4 rounded-xl flex flex-col justify-center border ${highlight ? 'border-blue-500/50 shadow-inner' : 'border-slate-700'}`}>
+        <span className={`text-slate-300 text-sm md:text-base mb-0.5 ${highlight ? 'font-extrabold text-blue-300' : ''}`}>{title}</span>
+        <span className="text-slate-400 text-lg md:text-xl font-bold">데이터 없음</span>
       </div>
     );
   }
   const is1dPos = parseFloat(data.percent1d) >= 0;
   const is5dPos = parseFloat(data.percent5d) >= 0;
-  const color1d = is1dPos ? 'text-red-500 dark:text-red-400' : 'text-blue-500 dark:text-blue-400';
-  const color5d = is5dPos ? 'text-red-500 dark:text-red-400' : 'text-blue-500 dark:text-blue-400';
+  // 차콜 다크 배경이므로 400 계열 색상 사용
+  const color1d = is1dPos ? 'text-red-400' : 'text-blue-400';
+  const color5d = is5dPos ? 'text-red-400' : 'text-blue-400';
   
   return (
-    <div className={`relative overflow-hidden bg-[var(--card)] p-3 md:p-4 rounded-xl flex flex-col justify-between border transition-all ${highlight ? 'border-[var(--primary)]/40 shadow-md bg-blue-50/30 dark:bg-blue-900/10' : 'border-[var(--border)] shadow-sm'}`}>
+    <div className={`relative overflow-hidden bg-slate-800 p-3 md:p-4 rounded-xl flex flex-col justify-between border transition-all ${highlight ? 'border-blue-500/60 shadow-[0_0_15px_rgba(59,130,246,0.15)]' : 'border-slate-700 shadow-sm'}`}>
       
       <Sparkline data={data.history} isPositive={is1dPos} />
 
       <div className="relative z-10 mb-1.5 md:mb-2">
-        <span className={`text-[var(--foreground)] text-sm md:text-[1.1rem] leading-snug break-keep block ${highlight ? 'font-extrabold text-[var(--primary)]' : 'font-bold'}`}>
+        <span className={`text-slate-100 text-sm md:text-[1.1rem] leading-snug break-keep block ${highlight ? 'font-extrabold text-blue-300' : 'font-bold'}`}>
           {title}
         </span>
       </div>
       
-      <div className={`relative z-10 text-xl md:text-[1.6rem] font-extrabold tracking-tight ${color1d} mb-2.5 md:mb-3`}>
+      {/* 폰트 약 15% 축소 (기존 1.6rem -> 1.35rem) */}
+      <div className={`relative z-10 text-lg md:text-[1.35rem] font-extrabold tracking-tight ${color1d} mb-2.5 md:mb-3`}>
         {data.value}
       </div>
       
-      <div className="relative z-10 flex justify-between items-center text-xs md:text-[0.95rem] font-bold mb-2">
-        <span className={`${color1d} bg-[var(--background)]/80 backdrop-blur-sm px-1.5 py-1 rounded border border-[var(--border)] flex-1 text-center mr-1 shadow-sm`}>
+      {/* 1일/5일 두 줄 분리 (가로 잘림 방지) */}
+      <div className="relative z-10 flex flex-col gap-1.5 text-xs md:text-[0.95rem] font-bold mb-2">
+        <span className={`${color1d} bg-slate-900/60 backdrop-blur-sm px-1.5 py-1 rounded border border-slate-700 w-full text-center shadow-sm`}>
           1일 {is1dPos ? '+' : ''}{data.percent1d}%
         </span>
-        <span className={`${color5d} bg-[var(--background)]/80 backdrop-blur-sm px-1.5 py-1 rounded border border-[var(--border)] flex-1 text-center ml-1 shadow-sm`}>
+        <span className={`${color5d} bg-slate-900/60 backdrop-blur-sm px-1.5 py-1 rounded border border-slate-700 w-full text-center shadow-sm`}>
           5일 {is5dPos ? '+' : ''}{data.percent5d}%
         </span>
       </div>
       
       {data.timestamp && (
-        <div className="relative z-10 text-right text-[10px] md:text-xs text-[var(--muted-foreground)] font-medium">
+        <div className="relative z-10 text-right text-[10px] md:text-xs text-slate-400 font-medium mt-1">
           {new Date(data.timestamp).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
         </div>
       )}
