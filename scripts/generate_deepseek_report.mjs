@@ -333,10 +333,12 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
   3. 뉴스 기사 클러스터링 및 중복 제거: 중복 이슈를 철저히 배제하여 최대 ${maxNewsCount}개의 '유니크한 이슈 대표 기사'만 선정하라. ([★우선선택] 마커가 최우선)
   4. 산업 분류: 이 종목이 속한 시장(코스피 또는 코스닥)과 공식 산업분류명(예: 코스피 전기전자)을 'industry'에 기재해. (임의 창작 금지, 보편적/공식적인 분류만 사용할 것)
   5. ⚠️ 할루시네이션 방지: 절대 제공된 뉴스 목록(제목 및 미리보기)에 없는 구체적 수치, 기업 관계, 인과관계를 상상해서 작성하거나 지어내지 마라.
-  6. 시각적 강조(데이터 투 잉크): 전체 텍스트의 10~20% 분량의 핵심 단어에만 양쪽에 별표 두 개를 붙여 **단어** 형태로 마크다운 하이라이트를 적용하라.
-     - 하이라이트된 단어들만 쭉 이어 읽어도 전체 문맥과 의미가 어느 정도 재현되도록 핵심 키워드(수치, 실적, 고유명사, 호재/악재 등)를 전략적으로 선택하라.
-     - ⚠️ 절대 기호와 단어 사이에 공백을 두지 마라. (예: ** 상승 ** 금지, **상승** 허용)
-     - 이외의 다른 마크다운(예: !!단어!!)은 절대 사용하지 마라.
+  6. 시각적 강조(데이터 잉크) - ⚠️ 매우 중요:
+     - 생성된 텍스트의 10~20% 분량의 핵심 단어에 반드시 앞뒤 띄어쓰기 없이 **단어** 형태로 마크다운을 적용하라.
+     - ⚠️ 경고: 강조 처리(**)가 아예 없는 문장이 있으면 절대 안 된다! 각 문장마다 최소 1~2개의 핵심 키워드(주체, 수치, 동사, 호재/악재 등)는 무조건 강조해야 한다.
+     - 마크다운된 단어들만 쭉 이어서 읽어도 전체 문맥이 거의 전달되도록 엄선하라.
+     - ⚠️ 두 글자 미만의 단어는 절대 강조하지 마라. (예: ** 훅 ** 불가, **급** 불가)
+     - 이외의 다른 마크다운(예: !!단어!!)은 절대 쓰지 마라.
   7. 어법 단순화(명확성): 경제/금융 전문 용어는 보존하되, 현학적/추상적인 표현은 배제하고 단문 위주로 서술하라.
   
   뉴스 목록:
@@ -396,6 +398,16 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
     
     // AI가 자의적으로 붙인 일련번호(예: "1. ", "2. ") 강제 제거
     cleanTitle = cleanTitle.replace(/^\d+\.\s*/, '');
+
+    // 언론사 이름 3글자 강제 컷팅 (할루시네이션 방지용 코드레벨 방어)
+    cleanTitle = cleanTitle.replace(/^\[([^\]]+)\]/, (match, p1) => {
+      let pub = p1.trim();
+      if (pub.toLowerCase().includes('market in') || pub.toLowerCase() === 'mar') pub = '마켓인';
+      else if (pub.toLowerCase().includes('news1') || pub.toLowerCase() === 'new') pub = '뉴스1';
+      else if (pub.toLowerCase().includes('sr타')) pub = 'SR타';
+      else if (pub.toLowerCase().includes('zdnet')) pub = '지디넷';
+      return '[' + pub.substring(0, 3) + ']';
+    });
 
     if (newsItem.pubDate && !cleanTitle.includes(newsItem.pubDate)) {
       cleanTitle += ` (${newsItem.pubDate})`;
