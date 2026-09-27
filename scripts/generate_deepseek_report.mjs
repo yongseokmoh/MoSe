@@ -333,10 +333,10 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
   3. 뉴스 기사 클러스터링 및 중복 제거: 중복 이슈를 철저히 배제하여 최대 ${maxNewsCount}개의 '유니크한 이슈 대표 기사'만 선정하라. ([★우선선택] 마커가 최우선)
   4. 산업 분류: 이 종목이 속한 시장(코스피 또는 코스닥)과 공식 산업분류명(예: 코스피 전기전자)을 'industry'에 기재해. (임의 창작 금지, 보편적/공식적인 분류만 사용할 것)
   5. ⚠️ 할루시네이션 방지: 절대 제공된 뉴스 목록(제목 및 미리보기)에 없는 구체적 수치, 기업 관계, 인과관계를 상상해서 작성하거나 지어내지 마라.
-  6. 시각적 강조(하이라이트 비율 10~20% 강제): 밋밋한 텍스트가 되지 않도록, 전체 텍스트의 10~20% 분량의 핵심 단어에 반드시 마크다운 하이라이트를 적용하라.
-     - [수치, 실적, 고유명사]는 양쪽에 별표 두 개를 붙여 **단어** 형태로 강조.
-     - [호재/악재, 긍정/부정적 방향성, 모멘텀]을 나타내는 단어는 양쪽에 느낌표 두 개를 붙여 !!단어!! 형태로 강조.
-     - 단, 엉뚱한 띄어쓰기나 문장 전체를 감싸지 말고 정확히 '핵심 단어' 단위로만 규칙성 있게 적용할 것. (⚠️ 절대 기호와 단어 사이에 공백을 두지 마라. 예: ** 상승 ** 금지, **상승** 허용)
+  6. 시각적 강조(데이터 투 잉크): 전체 텍스트의 10~20% 분량의 핵심 단어에만 양쪽에 별표 두 개를 붙여 **단어** 형태로 마크다운 하이라이트를 적용하라.
+     - 하이라이트된 단어들만 쭉 이어 읽어도 전체 문맥과 의미가 어느 정도 재현되도록 핵심 키워드(수치, 실적, 고유명사, 호재/악재 등)를 전략적으로 선택하라.
+     - ⚠️ 절대 기호와 단어 사이에 공백을 두지 마라. (예: ** 상승 ** 금지, **상승** 허용)
+     - 이외의 다른 마크다운(예: !!단어!!)은 절대 사용하지 마라.
   7. 어법 단순화(명확성): 경제/금융 전문 용어는 보존하되, 현학적/추상적인 표현은 배제하고 단문 위주로 서술하라.
   
   뉴스 목록:
@@ -367,8 +367,8 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
       if (stats.clusterScore >= 20 && stats.anomalyScore < 30) isMostViewed = true;
     }
     
-    // 1. 급등(sudden) 폴백: 키워드 기반
-    if (!isSudden && /단독|최초|돌연|갑자기|급등|급락|신규|깜짝|속보|최고|최저/.test(title)) {
+    // 1. 급등(sudden) 폴백: 키워드 기반 (경고, 특징주, 상한가 등 확대)
+    if (!isSudden && /단독|최초|돌연|갑자기|급등|급락|신규|깜짝|속보|최고|최저|경고|상한가|하한가|돌파|폭등|폭락|수주|계약|흑자|특징주/.test(title)) {
       isSudden = true;
     }
     
@@ -380,7 +380,7 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
         if (n.title === title) continue;
         if (words.filter(w => n.title.includes(w)).length >= 2) localMatchCount++;
       }
-      if (localMatchCount >= 2) isMostViewed = true;
+      if (localMatchCount >= 1) isMostViewed = true; // 기준 완화: 종목명 외에 1단어만 더 겹쳐도 주목 부여
     }
 
     if (isSudden) return 'sudden'; // 급등

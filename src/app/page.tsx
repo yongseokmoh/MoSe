@@ -92,13 +92,11 @@ const IndexCard = ({ title, data, highlight = false }: { title: React.ReactNode,
 
 // 요약 텍스트 시각적 강조 헬퍼 (Data-to-Ink)
 const parseFormatting = (text: string) => {
-  const regex = /(\*\*.*?\*\*|!!.*?!!)/g;
+  const regex = /(\*\*.*?\*\*)/g;
   const parts = text.split(regex);
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i} className="font-bold text-[var(--foreground)]">{part.slice(2, -2).trim()}</strong>;
-    } else if (part.startsWith('!!') && part.endsWith('!!')) {
-      return <strong key={i} className="text-blue-600 dark:text-blue-400 font-bold">{part.slice(2, -2).trim()}</strong>;
+      return <strong key={i} className="font-bold text-blue-600 dark:text-blue-400">{part.slice(2, -2).trim()}</strong>;
     }
     return <span key={i}>{part}</span>;
   });
