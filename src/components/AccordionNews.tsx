@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 
-export default function AccordionNews({ news, category }: { news: any, category?: 'most_viewed' | 'sudden' }) {
+export default function AccordionNews({ news, category }: { news: any, category?: 'most_viewed' | 'sudden' | 'normal' }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScraping, setIsScraping] = useState(false);
   
