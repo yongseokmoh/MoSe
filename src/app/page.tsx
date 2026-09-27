@@ -87,6 +87,20 @@ const IndexCard = ({ title, data, highlight = false }: { title: React.ReactNode,
   );
 };
 
+// 요약 텍스트 시각적 강조 헬퍼 (Data-to-Ink)
+const parseFormatting = (text: string) => {
+  const regex = /(\*\*.*?\*\*|!!.*?!!)/g;
+  const parts = text.split(regex);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i} className="font-bold text-[var(--foreground)]">{part.slice(2, -2)}</strong>;
+    } else if (part.startsWith('!!') && part.endsWith('!!')) {
+      return <strong key={i} className="text-blue-500 font-bold">{part.slice(2, -2)}</strong>;
+    }
+    return <span key={i}>{part}</span>;
+  });
+};
+
 // 종목 요약 불릿 렌더링 컴포넌트
 const SummaryList = ({ text }: { text: string }) => {
   if (!text) return null;
@@ -107,10 +121,10 @@ const SummaryList = ({ text }: { text: string }) => {
         return isBullet ? (
           <li key={idx} className="flex items-start gap-2">
             <span className="text-[var(--primary)] mt-[0.35em] flex-shrink-0 text-sm md:text-base leading-none">▪</span>
-            <span className="leading-relaxed break-keep text-[var(--foreground)]">{content}</span>
+            <span className="leading-relaxed break-keep text-[var(--foreground)]">{parseFormatting(content)}</span>
           </li>
         ) : (
-          <li key={idx} className="leading-relaxed break-keep text-[var(--foreground)] mt-1.5 mb-1 font-semibold">{content}</li>
+          <li key={idx} className="leading-relaxed break-keep text-[var(--foreground)] mt-1.5 mb-1 font-semibold">{parseFormatting(content)}</li>
         );
       })}
     </ul>
@@ -301,10 +315,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                   {stock.name}
                   {stock.industry && <span className="text-[0.7em] text-[var(--muted-foreground)] font-normal ml-2">/ {stock.industry}</span>}
                 </h3>
-                <span className="text-[1.4rem] font-bold text-[var(--muted-foreground)]">{stock.currentPrice}</span>
               </div>
               <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-base md:text-[1.3rem] leading-relaxed">
-                 <strong className="text-blue-500 block mb-1">🤖 AI 분석</strong>
+                 <strong className="text-blue-500 block mb-1">🤖 뉴스요약</strong>
                  <SummaryList text={stock.summary} />
               </div>
               {stock.news?.map((newsItem: any, index: number) => (
@@ -324,7 +337,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                   {stock.name}
                   {stock.industry && <span className="text-[0.7em] text-[var(--muted-foreground)] font-normal ml-2">/ {stock.industry}</span>}
                 </h3>
-                <span className="text-[1.4rem] font-bold text-[var(--muted-foreground)]">{stock.currentPrice}</span>
               </div>
               <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-base md:text-[1.3rem] leading-relaxed">
                  <SummaryList text={stock.summary} />

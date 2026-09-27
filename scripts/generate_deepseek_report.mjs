@@ -146,6 +146,8 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
   2. 뉴스 기사 클러스터링 및 중복 제거: 수집된 기사들을 독립적인 사건(이슈) 단위로 묶고, 중복 이슈를 철저히 배제하여 최대 5개의 '유니크한 이슈 대표 기사'만 선정하라. ([★우선선택] 마커가 붙은 기사가 있다면 무조건 최우선으로 채택하라.)
   3. 산업 분류: 이 종목이 속한 시장(코스피 또는 코스닥)과 공식 산업분류명(예: 코스피 전기전자, 코스닥 제약 등)을 'industry'에 기재해.
   4. 절대 제공된 뉴스 목록(제목 및 미리보기)에 없는 내용을 상상해서 작성하거나 지어내지 마라.
+  5. 시각적 강조(Data-to-Ink 준수): 중요한 정보가 눈에 띄도록 핵심 단어에만 마크다운 기호를 추가하라. 고유명사나 수치는 **단어** (Bold)로, 호재/악재 및 핵심 방향성을 나타내는 단어는 !!단어!! (파란글씨)로 감싸라. 단, 전체 문장을 통째로 강조해서는 안 되며, 반드시 '한 문장당 최대 1~2개의 핵심 단어(어구)'에만 적용하여 여백의 미를 지켜라.
+  6. 어법 단순화(명확성): 경제/금융 전문 용어는 보존하되, 현학적이거나 추상적인 표현은 배제하라. 문장의 길이를 짧게 끊어 쓰는 '단문' 위주로 서술하여 중/고등학생도 직관적으로 이해할 수 있게 하라. (단, 이해를 돕겠다는 목적으로 뉴스 데이터에 없는 비유나 임의의 부연 설명(할루시네이션)을 절대 덧붙이지 마라.)
   
   뉴스 목록:
   ${newsItems.map((n, i) => `[인덱스: ${i}] 제목: ${n.title}\n미리보기: ${n.description}`).join('\n\n')}
@@ -362,6 +364,7 @@ async function main() { try {
   3. 반드시 수집된 정보들을 종합하여, **"그래서 오늘 국내/글로벌 시장이 어떤 방향(상승/하락/보합/섹터차별화 등)으로 흘러갈 것인가?"**에 대한 명확한 결론적 지향점(Market Direction)을 확신에 찬 어조로 제시하라.
   4. 어머님이 모바일에서 읽기 편하도록, 한 가지 주제나 흐름이 끝날 때마다 반드시 줄바꿈(\\n\\n)을 두 번씩 넣어서 3~4개의 굵직한 문단으로 구성하라.
   5. 할루시네이션(거짓 정보)을 철저히 배제하고, 제공된 뉴스 데이터와 실제 지표에 입각하여 논리적으로 서술하라.
+  6. 어법 단순화(명확성): 경제/금융 전문 용어는 보존하되, 현학적이거나 추상적인 표현은 배제하라. 문장의 길이를 짧게 끊어 쓰는 '단문' 위주로 서술하여 중/고등학생도 직관적으로 이해할 수 있게 하라. (단, 이해를 돕겠다는 목적으로 뉴스 데이터에 없는 비유나 임의의 부연 설명(할루시네이션)을 절대 덧붙이지 마라.)
   
   [⭐특수 기능 지시사항 (가장 중요)⭐]
   생성한 요약 텍스트 안에서 가장 핵심이 되는 중요한 단어나 어구(키워드) 3~5개를 선정해.
@@ -563,7 +566,7 @@ async function main() { try {
   for (const stock of MAJOR_STOCKS) {
     const news = await fetchGoogleNews(`${stock.name} (특징주 OR 실적 OR 뉴스 OR 공시 OR 리포트 OR 신제품 OR 계약 OR 경영)`);
     const aiResult = await summarizeStock(stock.name, news, 7);
-    report.section3_major.push({ ...stock, currentPrice: "장전", summary: aiResult.summary, industry: aiResult.industry, news: aiResult.news });
+    report.section3_major.push({ ...stock, summary: aiResult.summary, industry: aiResult.industry, news: aiResult.news });
     await sleep(1500); // API Rate Limit 방지용 휴식
   }
 
@@ -572,7 +575,7 @@ async function main() { try {
   for (const stock of INTEREST_STOCKS) {
     const news = await fetchGoogleNews(`${stock.name} (특징주 OR 실적 OR 뉴스 OR 공시 OR 리포트 OR 신제품 OR 계약 OR 경영)`);
     const aiResult = await summarizeStock(stock.name, news, 5);
-    report.section4_interest.push({ ...stock, currentPrice: "장전", summary: aiResult.summary, industry: aiResult.industry, news: aiResult.news });
+    report.section4_interest.push({ ...stock, summary: aiResult.summary, industry: aiResult.industry, news: aiResult.news });
     await sleep(1500); // API Rate Limit 방지용 휴식
   }
 
