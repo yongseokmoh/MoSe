@@ -23,18 +23,18 @@ const Sparkline = ({ data, isPositive }: { data: number[], isPositive: boolean }
   
   return (
     <svg 
-      className="absolute bottom-0 left-0 w-full h-[65%] opacity-20 pointer-events-none" 
+      className="absolute bottom-0 left-0 w-full h-[65%] opacity-50 pointer-events-none" 
       preserveAspectRatio="none" 
       viewBox="0 -10 100 120"
     >
       <defs>
         <linearGradient id={`gradient-${isPositive ? 'pos' : 'neg'}`} x1="0" x2="0" y1="0" y2="1">
           <stop offset="0%" stopColor={color} stopOpacity="0.8" />
-          <stop offset="100%" stopColor={color} stopOpacity="0" />
+          <stop offset="100%" stopColor={color} stopOpacity="0.05" />
         </linearGradient>
       </defs>
       <polygon fill={`url(#gradient-${isPositive ? 'pos' : 'neg'})`} points={fillPoints} />
-      <polyline fill="none" stroke={color} strokeWidth="3" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" points={points} />
+      <polyline fill="none" stroke={color} strokeWidth="4" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" points={points} />
     </svg>
   );
 };
