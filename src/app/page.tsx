@@ -95,14 +95,24 @@ const parseFormatting = (text: string) => {
   const regex = /(\*\*.*?\*\*|!!.*?!!|\*(?!\*).*?\*(?!\*)|<b>.*?<\/b>|<strong>.*?<\/strong>)/g;
   const parts = text.split(regex);
   return parts.map((part, i) => {
+    let innerText = null;
     if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('!!') && part.endsWith('!!'))) {
-      return <strong key={i} className="font-extrabold text-blue-700 dark:text-blue-400">{part.slice(2, -2).trim()}</strong>;
+      innerText = part.slice(2, -2).trim();
     } else if (part.startsWith('*') && part.endsWith('*')) {
-      return <strong key={i} className="font-extrabold text-blue-700 dark:text-blue-400">{part.slice(1, -1).trim()}</strong>;
+      innerText = part.slice(1, -1).trim();
     } else if (part.startsWith('<b>') && part.endsWith('</b>')) {
-      return <strong key={i} className="font-extrabold text-blue-700 dark:text-blue-400">{part.slice(3, -4).trim()}</strong>;
+      innerText = part.slice(3, -4).trim();
     } else if (part.startsWith('<strong>') && part.endsWith('</strong>')) {
-      return <strong key={i} className="font-extrabold text-blue-700 dark:text-blue-400">{part.slice(8, -9).trim()}</strong>;
+      innerText = part.slice(8, -9).trim();
+    }
+
+    if (innerText !== null) {
+      const spaceCount = (innerText.match(/\s/g) || []).length;
+      // 너무 짧은 단어(조사 등), 너무 긴 구절, 띄어쓰기가 많은 구절은 하이라이트 취소
+      if (innerText.length < 2 || spaceCount >= 2 || innerText.length > 15) {
+        return <span key={i}>{innerText}</span>;
+      }
+      return <strong key={i} className="font-bold text-blue-900 dark:text-blue-400">{innerText}</strong>;
     }
     return <span key={i}>{part}</span>;
   });
