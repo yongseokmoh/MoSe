@@ -78,6 +78,7 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
   const prompt = `
   다음은 '${stockName}'에 대한 최신 뉴스 헤드라인들이야.
   [특별 지시사항]: 애널리스트 리포트(목표가), 실적 발표, 전일/장외 거래 변동 내용이 있다면 무조건 우선적으로 포함해서 요약해.
+  [⚠️ 할루시네이션 방지]: 할루시네이션이란 제공된 뉴스에 없는 사실을 AI가 임의로 창작하여 진실처럼 말하는 현상을 뜻한다. 절대 제공된 뉴스 목록에 없는 구체적 수치, 기업 관계, 시장 반응을 상상해서 작성하거나 지어내지 마라.
   뉴스 목록:
   ${newsItems.map((n, i) => `${i}. ${n.title}`).join('\n')}
   

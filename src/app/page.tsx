@@ -92,11 +92,17 @@ const IndexCard = ({ title, data, highlight = false }: { title: React.ReactNode,
 
 // 요약 텍스트 시각적 강조 헬퍼 (Data-to-Ink)
 const parseFormatting = (text: string) => {
-  const regex = /(\*\*.*?\*\*|!!.*?!!)/g;
+  const regex = /(\*\*.*?\*\*|!!.*?!!|\*(?!\*).*?\*(?!\*)|<b>.*?<\/b>|<strong>.*?<\/strong>)/g;
   const parts = text.split(regex);
   return parts.map((part, i) => {
     if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('!!') && part.endsWith('!!'))) {
-      return <strong key={i} className="font-bold text-blue-800 dark:text-blue-400">{part.slice(2, -2).trim()}</strong>;
+      return <strong key={i} className="font-extrabold text-blue-700 dark:text-blue-400">{part.slice(2, -2).trim()}</strong>;
+    } else if (part.startsWith('*') && part.endsWith('*')) {
+      return <strong key={i} className="font-extrabold text-blue-700 dark:text-blue-400">{part.slice(1, -1).trim()}</strong>;
+    } else if (part.startsWith('<b>') && part.endsWith('</b>')) {
+      return <strong key={i} className="font-extrabold text-blue-700 dark:text-blue-400">{part.slice(3, -4).trim()}</strong>;
+    } else if (part.startsWith('<strong>') && part.endsWith('</strong>')) {
+      return <strong key={i} className="font-extrabold text-blue-700 dark:text-blue-400">{part.slice(8, -9).trim()}</strong>;
     }
     return <span key={i}>{part}</span>;
   });
@@ -340,6 +346,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                 </h3>
               </div>
               <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-base md:text-[1.3rem] leading-relaxed">
+                 <strong className="text-blue-500 block mb-1">🤖 뉴스요약</strong>
                  <SummaryList text={stock.summary} />
               </div>
               {stock.news?.map((newsItem: any, index: number) => (
