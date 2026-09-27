@@ -186,7 +186,7 @@ async function fetchGoogleNews(query) {
     
     const sourceMatch = itemContent.match(/<source[^>]*>(.*?)<\/source>/);
     let publisher = sourceMatch ? sourceMatch[1] : '';
-    let shortPub = publisher.replace(/[^가-힣a-zA-Z0-9]/g, '').substring(0, 3);
+    
     
     let rawTitle = titleMatch[1].replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1').replace(/&quot;/g, '"');
     if (publisher) {
@@ -194,7 +194,7 @@ async function fetchGoogleNews(query) {
     }
     
     let isTrusted = TRUSTED_PUBLISHERS.test(publisher) || TRUSTED_PUBLISHERS.test(rawTitle);
-    let finalTitle = shortPub ? `[${shortPub}] ${rawTitle}` : rawTitle;
+    let finalTitle = publisher ? `[${publisher}] ${rawTitle}` : rawTitle;
     if (isTrusted) {
       finalTitle = `[★우선선택] ${finalTitle}`;
     }
@@ -349,7 +349,7 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
     "selectedNews": [
       {
         "index": 0,
-        "newTitle": "기사 내용을 드러내는 짧고 깔끔한 요약 제목 (원본 제목에 있는 [언론사] 태그는 반드시 그대로 유지할 것. 제목 끝에 임의의 날짜를 절대 추가하지 말 것)",
+        "newTitle": "기사 내용을 드러내는 짧고 깔끔한 요약 제목 (⚠️ 원본 제목 앞의 [언론사] 태그를 반드시 유지하되, [mar]처럼 영문이거나 4글자 이상이라면 반드시 [마켓인], [매일경] 등 '한글 3글자'로 번역/축약하여 통일할 것. 제목 끝에 날짜 추가 절대 금지)",
         "articleSummary": "해당 개별 기사에 대한 요약 (반드시 제공된 '미리보기' 내용 내에서만 팩트 기반으로 2~3문장 작성)"
       }
     ]
@@ -481,6 +481,7 @@ async function fetchYahooFinance(ticker) {
     if (validCloses.length < 2) return null;
     
     // 최근 5영업일 데이터 (모자라면 있는 만큼만)
+    const historyData = validCloses.slice(-22);
     const last5 = validCloses.slice(-5);
     
     const current = last5[last5.length - 1];
@@ -499,7 +500,7 @@ async function fetchYahooFinance(ticker) {
       value: valueStr,
       percent1d: percent1d.toFixed(2),
       percent5d: percent5d.toFixed(2),
-      history: last5, // 미니 차트용 배열
+      history: historyData,
       timestamp: result.meta.regularMarketTime * 1000
     };
   } catch (e) {
