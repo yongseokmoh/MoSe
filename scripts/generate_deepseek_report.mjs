@@ -88,7 +88,7 @@ function calculateScores(article, stockData) {
   // 2. Publisher Score
   let publisherScore = getPublisherScore(article.publisher);
   
-  // 3. Cluster Score
+  // 3. Cluster Score (기준 완화: 4개만 겹쳐도 20점 '주목')
   const pool = stockData.output_pool.entries;
   let clusterMatchCount = 0;
   for (const poolItem of pool) {
@@ -97,45 +97,43 @@ function calculateScores(article, stockData) {
     if (matchCount >= 2) clusterMatchCount++;
   }
   let clusterScore = 0;
-  if (clusterMatchCount >= 10) clusterScore = 30;
-  else if (clusterMatchCount >= 5) clusterScore = 20;
-  else if (clusterMatchCount >= 3) clusterScore = 10;
+  if (clusterMatchCount >= 7) clusterScore = 30;
+  else if (clusterMatchCount >= 4) clusterScore = 20;
+  else if (clusterMatchCount >= 2) clusterScore = 10;
   
-  // 4. Anomaly Score (Z-Score 방식)
+  // 4. Anomaly Score (Z-Score 방식, Laplace smoothing 완화)
   let anomalyScore = 0;
-  if (stockData.stockProfile.warmupComplete) {
-    let recentFreq = 0;
-    let baselineFreq = 0;
-    const baseline = stockData.baseline.entries;
+  let recentFreq = 0;
+  let baselineFreq = 0;
+  const baseline = stockData.baseline.entries;
+  
+  // 3개월 중 최근 3일 vs 그 이전
+  const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+  const recentEntries = baseline.filter(e => new Date(e.date) >= threeDaysAgo);
+  const pastEntries = baseline.filter(e => new Date(e.date) < threeDaysAgo);
+  
+  // 키워드별 등장 빈도 평균 계산
+  let maxRatio = 0;
+  for (const kw of article.keywords) {
+    const recentCount = recentEntries.filter(e => e.keywords.includes(kw)).length;
+    const pastCount = pastEntries.filter(e => e.keywords.includes(kw)).length;
+    const pastDays = Math.max(1, (threeDaysAgo - new Date(stockData.stockProfile.registeredAt)) / (1000 * 60 * 60 * 24));
+    const dailyRecent = recentCount / 3;
+    const dailyPast = pastCount / pastDays;
     
-    // 3개월 중 최근 3일 vs 그 이전
-    const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
-    const recentEntries = baseline.filter(e => new Date(e.date) >= threeDaysAgo);
-    const pastEntries = baseline.filter(e => new Date(e.date) < threeDaysAgo);
-    
-    // 키워드별 등장 빈도 평균 계산 (단순화: 기사 핵심 키워드 중 최대 빈도를 가지는 키워드 기준)
-    let maxRatio = 0;
-    for (const kw of article.keywords) {
-      const recentCount = recentEntries.filter(e => e.keywords.includes(kw)).length;
-      const pastCount = pastEntries.filter(e => e.keywords.includes(kw)).length;
-      const pastDays = Math.max(1, (threeDaysAgo - new Date(stockData.stockProfile.registeredAt)) / (1000 * 60 * 60 * 24));
-      const dailyRecent = recentCount / 3;
-      const dailyPast = pastCount / pastDays;
-      
-      const ratio = dailyRecent / (dailyPast + 0.5); // Laplace smoothing
-      if (ratio > maxRatio) maxRatio = ratio;
-    }
-    
-    if (maxRatio >= 5.0) anomalyScore = 50;
-    else if (maxRatio >= 3.0) anomalyScore = 30;
-    else if (maxRatio >= 1.5) anomalyScore = 10;
+    // 초기 데이터가 없을 때 뱃지가 안 뜨는 현상 방지를 위해 0.5 -> 0.2로 완화
+    const ratio = dailyRecent / (dailyPast + 0.2);
+    if (ratio > maxRatio) maxRatio = ratio;
   }
   
-  // 콜드스타트 보호
+  if (maxRatio >= 5.0) anomalyScore = 50;
+  else if (maxRatio >= 3.0) anomalyScore = 30;
+  else if (maxRatio >= 1.5) anomalyScore = 10;
+  
+  // 콜드스타트 보호 (AnomalyScore 0점 강제화 제거, 가중치만 부여)
   if (!stockData.stockProfile.warmupComplete) {
-    anomalyScore = 0;
-    recencyScore *= 1.5;
-    publisherScore *= 1.5;
+    recencyScore *= 1.2;
+    publisherScore *= 1.2;
   }
   
   // 5. Decay Factor
@@ -359,10 +357,22 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
   const result = await callGemini(prompt, true);
   
   // Layer 3 출력 렌더러 - 뱃지 판별 로직
-  const categorizeNews = (stats) => {
-    if (!stats) return 'normal';
-    if (stats.anomalyScore >= 30) return 'sudden'; // 급등
-    if (stats.clusterScore >= 20 && stats.anomalyScore < 30) return 'most_viewed'; // 주목
+  const categorizeNews = (stats, title) => {
+    let isSudden = false;
+    let isMostViewed = false;
+
+    if (stats) {
+      if (stats.anomalyScore >= 30) isSudden = true;
+      if (stats.clusterScore >= 20 && stats.anomalyScore < 30) isMostViewed = true;
+    }
+    
+    // 캐시 초기화 직후 통계가 부족할 때를 대비한 키워드 기반 폴백
+    if (!isSudden && /단독|최초|돌연|갑자기|급등|급락|신규|깜짝|속보|최고|최저/.test(title)) {
+      isSudden = true;
+    }
+
+    if (isSudden) return 'sudden'; // 급등
+    if (isMostViewed) return 'most_viewed'; // 주목
     return 'normal'; // 회색(일반)
   };
 
@@ -379,7 +389,7 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
       cleanTitle += ` (${newsItem.pubDate})`;
     }
 
-    const determinedCategory = categorizeNews(newsItem.stats);
+    const determinedCategory = categorizeNews(newsItem.stats, cleanTitle);
 
     return {
       ...newsItem,
@@ -675,9 +685,10 @@ async function main() { try {
 
   [지시사항]
   1. 앞서 분석한 3개의 핵심 섹터 각각에 대해, 아래 제공된 [뉴스 목록]에서 가장 중요하고 임팩트 있는 기사를 딱 3개씩 선별해라. (총 9개)
-  2. 선별된 9개 기사에 대해, '제목(title)'과 '핵심 요약(articleSummary)'을 한국어로 완벽하고 자연스럽게 번역해라.
-  3. 반드시 제공된 [뉴스 목록]의 미리보기 내용만을 바탕으로 번역 및 요약해야 하며, 배경지식을 동원해 없는 내용을 지어내지 마라.
-  4. 반드시 아래 JSON 배열 형식으로 반환해라. (이때 sectorName은 위에서 제시된 3개의 핵심 섹터명 배열 중 하나와 토씨 하나 틀리지 않고 100% 동일한 문자열로 적어야 매칭이 된다)
+  2. ⚠️ 종목 다양성 규칙: 한 섹터 내에서 선별하는 3개의 기사가 한 기업에만 쏠리지 않도록 하라. 한 종목(기업)에 대한 기사는 **최대 2개까지만 허용**하며, 가급적 3개 모두 서로 다른 기업이나 다른 관점의 이슈를 다루는 유니크한 기사로 구성하라.
+  3. 선별된 9개 기사에 대해, '제목(title)'과 '핵심 요약(articleSummary)'을 한국어로 완벽하고 자연스럽게 번역해라.
+  4. 반드시 제공된 [뉴스 목록]의 미리보기 내용만을 바탕으로 번역 및 요약해야 하며, 배경지식을 동원해 없는 내용을 지어내지 마라.
+  5. 반드시 아래 JSON 배열 형식으로 반환해라. (이때 sectorName은 위에서 제시된 3개의 핵심 섹터명 배열 중 하나와 토씨 하나 틀리지 않고 100% 동일한 문자열로 적어야 매칭이 된다)
 
   [뉴스 목록]
   ${rawYahooNews.map((n, i) => `[인덱스: ${i}] ${n.ticker}: ${n.title}\n미리보기: ${n.description}`).join('\n\n')}
