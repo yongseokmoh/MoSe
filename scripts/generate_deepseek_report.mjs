@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const profilePath = path.join(process.cwd(), 'src', 'data', 'user_profile.json');
@@ -15,6 +16,136 @@ function formatToYYMMDD(dateObj) {
   const dd = String(dateObj.getDate()).padStart(2, '0');
   return `${yy}/${mm}/${dd}`;
 }
+
+// ==========================================
+// Layer 1: 통계 엔진 및 캐시 관리
+// ==========================================
+const CACHE_PATH = path.join(process.cwd(), 'src', 'data', 'news_cache.json');
+
+function loadCache() {
+  if (fs.existsSync(CACHE_PATH)) {
+    return JSON.parse(fs.readFileSync(CACHE_PATH, 'utf8'));
+  }
+  return { version: "2.0", lastUpdated: "", stocks: {} };
+}
+
+function saveCache(cache) {
+  cache.lastUpdated = new Date().toISOString();
+  fs.writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 2), 'utf8');
+}
+
+function housekeeping(cache) {
+  const now = new Date();
+  const nowTime = now.getTime();
+  
+  for (const stockName in cache.stocks) {
+    const stockData = cache.stocks[stockName];
+    // 91일 경과 baseline 삭제
+    stockData.baseline.entries = stockData.baseline.entries.filter(e => {
+      return (nowTime - new Date(e.date).getTime()) < 91 * 24 * 60 * 60 * 1000;
+    });
+    // 31일 경과 output_pool 삭제
+    stockData.output_pool.entries = stockData.output_pool.entries.filter(e => {
+      return (nowTime - new Date(e.date).getTime()) < 31 * 24 * 60 * 60 * 1000;
+    });
+    
+    // 콜드스타트 보호 해제 확인 (14일 경과)
+    if (!stockData.stockProfile.warmupComplete) {
+      const regDate = new Date(stockData.stockProfile.registeredAt);
+      if ((nowTime - regDate.getTime()) >= 14 * 24 * 60 * 60 * 1000) {
+        stockData.stockProfile.warmupComplete = true;
+      }
+    }
+  }
+}
+
+function getPublisherScore(publisher) {
+  if (!publisher) return 0;
+  const t1 = /한국경제|매일경제|연합뉴스|더벨|인베스트조선|블로터|넘버스/i;
+  const t2 = /뉴스1|뉴시스|전자신문|연합인포맥스/i;
+  const t3 = /머니투데이|이데일리/i;
+  if (t1.test(publisher)) return 20;
+  if (t2.test(publisher)) return 12;
+  if (t3.test(publisher)) return 8;
+  return 0;
+}
+
+function extractKeywords(title) {
+  return title.split(/\s+/).filter(w => w.length >= 2).map(w => w.replace(/[^가-힣a-zA-Z0-9]/g, '')).filter(w => w.length > 0);
+}
+
+function calculateScores(article, stockData) {
+  const now = new Date();
+  const pubDate = new Date(article.pubDate || now);
+  const diffDays = Math.floor((now - pubDate) / (1000 * 60 * 60 * 24));
+  
+  // 1. Recency Score
+  let recencyScore = 0;
+  if (diffDays <= 1) recencyScore = 40;
+  else if (diffDays <= 3) recencyScore = 20;
+  else if (diffDays <= 7) recencyScore = 10;
+  
+  // 2. Publisher Score
+  let publisherScore = getPublisherScore(article.publisher);
+  
+  // 3. Cluster Score
+  const pool = stockData.output_pool.entries;
+  let clusterMatchCount = 0;
+  for (const poolItem of pool) {
+    if (poolItem.id === article.id) continue;
+    const matchCount = article.keywords.filter(k => poolItem.keywords.includes(k)).length;
+    if (matchCount >= 2) clusterMatchCount++;
+  }
+  let clusterScore = 0;
+  if (clusterMatchCount >= 10) clusterScore = 30;
+  else if (clusterMatchCount >= 5) clusterScore = 20;
+  else if (clusterMatchCount >= 3) clusterScore = 10;
+  
+  // 4. Anomaly Score (Z-Score 방식)
+  let anomalyScore = 0;
+  if (stockData.stockProfile.warmupComplete) {
+    let recentFreq = 0;
+    let baselineFreq = 0;
+    const baseline = stockData.baseline.entries;
+    
+    // 3개월 중 최근 3일 vs 그 이전
+    const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+    const recentEntries = baseline.filter(e => new Date(e.date) >= threeDaysAgo);
+    const pastEntries = baseline.filter(e => new Date(e.date) < threeDaysAgo);
+    
+    // 키워드별 등장 빈도 평균 계산 (단순화: 기사 핵심 키워드 중 최대 빈도를 가지는 키워드 기준)
+    let maxRatio = 0;
+    for (const kw of article.keywords) {
+      const recentCount = recentEntries.filter(e => e.keywords.includes(kw)).length;
+      const pastCount = pastEntries.filter(e => e.keywords.includes(kw)).length;
+      const pastDays = Math.max(1, (threeDaysAgo - new Date(stockData.stockProfile.registeredAt)) / (1000 * 60 * 60 * 24));
+      const dailyRecent = recentCount / 3;
+      const dailyPast = pastCount / pastDays;
+      
+      const ratio = dailyRecent / (dailyPast + 0.5); // Laplace smoothing
+      if (ratio > maxRatio) maxRatio = ratio;
+    }
+    
+    if (maxRatio >= 5.0) anomalyScore = 50;
+    else if (maxRatio >= 3.0) anomalyScore = 30;
+    else if (maxRatio >= 1.5) anomalyScore = 10;
+  }
+  
+  // 콜드스타트 보호
+  if (!stockData.stockProfile.warmupComplete) {
+    anomalyScore = 0;
+    recencyScore *= 1.5;
+    publisherScore *= 1.5;
+  }
+  
+  // 5. Decay Factor
+  const decayFactor = Math.pow(0.85, diffDays);
+  
+  const totalScore = (recencyScore + publisherScore + clusterScore + anomalyScore) * decayFactor;
+  
+  return { recencyScore, publisherScore, clusterScore, anomalyScore, decayFactor, totalScore };
+}
+
 
 async function fetchGoogleNews(query) {
   const url = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=ko&gl=KR&ceid=KR:ko`;
@@ -75,13 +206,65 @@ async function fetchGoogleNews(query) {
       link: linkMatch[1],
       pubDate: formattedDate,
       description,
-      isTrusted
+      isTrusted,
+      publisher // 새로 추가
     });
   }
   
   items.sort((a, b) => (b.isTrusted ? 1 : 0) - (a.isTrusted ? 1 : 0));
   
   return items;
+}
+
+// 2-Track 수집 및 Layer 1 파이프라인 처리
+async function processLayer1(stockName, cache) {
+  if (!cache.stocks[stockName]) {
+    cache.stocks[stockName] = {
+      baseline: { entries: [] },
+      output_pool: { entries: [] },
+      stockProfile: {
+        registeredAt: new Date().toISOString(),
+        avgDailyArticleCount: 0.0,
+        warmupComplete: false
+      }
+    };
+  }
+  
+  const stockData = cache.stocks[stockName];
+  
+  // 2-Track 쿼리 수집
+  const query_main = `${stockName} (실적 OR 계약 OR 신사업 OR 투자 OR 인수 OR 신제품)`;
+  const query_risk = `${stockName} (소송 OR 리스크 OR 조사 OR 지배구조 OR 매각 OR 분쟁)`;
+  
+  const mainNews = await fetchGoogleNews(query_main);
+  const riskNews = await fetchGoogleNews(query_risk);
+  const combinedNews = [...mainNews, ...riskNews];
+  
+  // 중복 제거 및 캐시 저장
+  for (const item of combinedNews) {
+    const hash = crypto.createHash('sha256').update(item.link).digest('hex');
+    item.id = hash;
+    
+    // 이미 output_pool에 있으면 스킵
+    if (stockData.output_pool.entries.find(e => e.id === hash)) continue;
+    
+    // 키워드 추출
+    item.keywords = extractKeywords(item.title);
+    
+    // 스코어링
+    item.stats = calculateScores(item, stockData);
+    
+    // 캐시 저장
+    stockData.output_pool.entries.push(item);
+    stockData.baseline.entries.push({
+      date: item.pubDate || new Date().toISOString(),
+      keywords: item.keywords
+    });
+  }
+  
+  // 통계 기반 정렬 (최상위 15개 추출용)
+  stockData.output_pool.entries.sort((a, b) => b.stats.totalScore - a.stats.totalScore);
+  return stockData.output_pool.entries.slice(0, 15);
 }
 
 async function callGemini(prompt, isJson = false, retries = 3, useReasoner = false) {
@@ -130,7 +313,7 @@ async function callGemini(prompt, isJson = false, retries = 3, useReasoner = fal
   return isJson ? { summary: '딥시크 요약 에러 (' + lastErrMsg + ')', topNewsIndex: [0, 1] } : '딥시크 요약 실패';
 }
 
-// 섹션 2, 3, 4
+// 섹션 2, 3, 4 (Layer 2 & Layer 3)
 async function summarizeStock(stockName, newsItems, maxNewsCount) {
   if (newsItems.length === 0) return { summary: "최신 뉴스가 없습니다.", news: [], industry: "분류 불가" };
   
@@ -143,11 +326,19 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
      - 산발적인 정보들을 종합하여, 전체 흐름이 한눈에 읽히는 **단 3~4개의 핵심 불릿 포인트(-)**로 완벽하게 압축 및 구조화하라.
      - "9월 9일 2% 상승", "9월 21일 3% 하락" 같은 무의미한 일일 주가 등락 나열은 모조리 삭제하라. 대신 "자회사 로보틱스 상장 추진 및 유상증자로 인한 주가 모멘텀 상승"과 같이 굵직한 '원인'과 '결과'로만 묶어서 서술하라.
      - [기업 동향(실적/계약/신사업)]과 [시장 반응(주가 흐름)]을 균형 있게 녹여내어 밀도 있게 작성하라.
-  2. 뉴스 기사 클러스터링 및 중복 제거: 수집된 기사들을 독립적인 사건(이슈) 단위로 묶고, 중복 이슈를 철저히 배제하여 최대 5개의 '유니크한 이슈 대표 기사'만 선정하라. ([★우선선택] 마커가 붙은 기사가 있다면 무조건 최우선으로 채택하라.)
-  3. 산업 분류: 이 종목이 속한 시장(코스피 또는 코스닥)과 공식 산업분류명(예: 코스피 전기전자, 코스닥 제약 등)을 'industry'에 기재해.
-  4. 절대 제공된 뉴스 목록(제목 및 미리보기)에 없는 내용을 상상해서 작성하거나 지어내지 마라.
-  5. 시각적 강조(Data-to-Ink 준수): 중요한 정보가 눈에 띄도록 핵심 단어에만 마크다운 기호를 추가하라. 고유명사나 수치는 **단어** (Bold)로, 호재/악재 및 핵심 방향성을 나타내는 단어는 !!단어!! (파란글씨)로 감싸라. 단, 전체 문장을 통째로 강조해서는 안 되며, 반드시 '한 문장당 최대 1~2개의 핵심 단어(어구)'에만 적용하여 여백의 미를 지켜라.
-  6. 어법 단순화(명확성): 경제/금융 전문 용어는 보존하되, 현학적이거나 추상적인 표현은 배제하라. 문장의 길이를 짧게 끊어 쓰는 '단문' 위주로 서술하여 중/고등학생도 직관적으로 이해할 수 있게 하라. (단, 이해를 돕겠다는 목적으로 뉴스 데이터에 없는 비유나 임의의 부연 설명(할루시네이션)을 절대 덧붙이지 마라.)
+  
+  2. 🚫 홍보 복제 기사 탈락 규칙 (필수):
+     다음 유형은 '홍보 복제 기사'로 분류하여 즉시 탈락시켜라:
+       ① 여러 매체가 동일 내용을 베낀 기업 보도자료 기반 단순 MOU/협약 기사
+       ② 실적 수치 없이 "전년 대비 성장", "사상 최대" 등 미사여구만 있는 홍보성 기사
+       ③ 주가 등락 수치만 단순 나열하는 시황 기사
+     반드시 '주가 펀더멘털에 직접 영향을 주는 사건(계약, 실적, 지배구조 변화, 규제, 신사업 진출)' 위주로만 최종 ${maxNewsCount}개를 선별하라.
+
+  3. 뉴스 기사 클러스터링 및 중복 제거: 수집된 기사들을 독립적인 사건(이슈) 단위로 묶고, 중복 이슈를 철저히 배제하여 최대 ${maxNewsCount}개의 '유니크한 이슈 대표 기사'만 선정하라. ([★우선선택] 마커가 붙은 기사가 있다면 무조건 최우선으로 채택하라.)
+  4. 산업 분류: 이 종목이 속한 시장(코스피 또는 코스닥)과 공식 산업분류명(예: 코스피 전기전자, 코스닥 제약 등)을 'industry'에 기재해.
+  5. 절대 제공된 뉴스 목록(제목 및 미리보기)에 없는 내용을 상상해서 작성하거나 지어내지 마라.
+  6. 시각적 강조(Data-to-Ink 준수): 중요한 정보가 눈에 띄도록 핵심 단어에만 마크다운 기호를 추가하라. 고유명사나 수치는 **단어** (Bold)로, 호재/악재 및 핵심 방향성을 나타내는 단어는 !!단어!! (파란글씨)로 감싸라. 단, 전체 문장을 통째로 강조해서는 안 되며, 반드시 '한 문장당 최대 1~2개의 핵심 단어(어구)'에만 적용하여 여백의 미를 지켜라.
+  7. 어법 단순화(명확성): 경제/금융 전문 용어는 보존하되, 현학적이거나 추상적인 표현은 배제하라. 문장의 길이를 짧게 끊어 쓰는 '단문' 위주로 서술하여 중/고등학생도 직관적으로 이해할 수 있게 하라.
   
   뉴스 목록:
   ${newsItems.map((n, i) => `[인덱스: ${i}] 제목: ${n.title}\n미리보기: ${n.description}`).join('\n\n')}
@@ -155,28 +346,24 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
   [출력 형식 (반드시 JSON 객체로 응답, 모든 필드 필수 포함)]
   {
     "summary": "구조화된 핵심 요약 (반드시 3~4개의 불릿 포인트로만 압축할 것)\\n- 핵심 요약 1\\n- 핵심 요약 2\\n- 핵심 요약 3",
-    "industry": "코스피 전기전자 (이런 형식의 소속 시장 및 산업명)",
+    "industry": "코스피 전기전자",
     "selectedNews": [
       {
         "index": 0,
         "newTitle": "기사 내용을 드러내는 짧고 깔끔한 요약 제목 (원본 제목에 있는 [언론사] 태그는 반드시 그대로 유지할 것. 제목 끝에 임의의 날짜를 절대 추가하지 말 것)",
-        "articleSummary": "해당 개별 기사에 대한 요약 (반드시 제공된 '미리보기' 내용 내에서만 팩트 기반으로 2~3문장 작성. 절대 배경지식을 동원해 지어내지 말 것)"
+        "articleSummary": "해당 개별 기사에 대한 요약 (반드시 제공된 '미리보기' 내용 내에서만 팩트 기반으로 2~3문장 작성)"
       }
     ]
   }
   `;
   const result = await callGemini(prompt, true);
   
-  // 100% 알고리즘 기반 카테고리 판별 함수 (AI 환각 배제)
-  const categorizeNews = (title, allNewsItems) => {
-    const words = title.split(/\s+/).filter(w => w.length >= 2).map(w => w.replace(/[^가-힣a-zA-Z0-9]/g, ''));
-    let matchCount = 0;
-    for (const item of allNewsItems) {
-      if (words.filter(w => item.title.includes(w)).length >= 2) matchCount++;
-    }
-    if (matchCount >= 3) return 'most_viewed'; // 유사 기사가 3개 이상이면 집중 보도된 "주목"
-    if (/단독|최초|돌연|갑자기|급등|급락|신규|깜짝|속보/.test(title)) return 'sudden'; // 모멘텀 키워드가 있으면 "상승"
-    return 'most_viewed'; // 기본값
+  // Layer 3 출력 렌더러 - 뱃지 판별 로직
+  const categorizeNews = (stats) => {
+    if (!stats) return 'normal';
+    if (stats.anomalyScore >= 30) return 'sudden'; // 급등
+    if (stats.clusterScore >= 20 && stats.anomalyScore < 30) return 'most_viewed'; // 주목
+    return 'normal'; // 회색(일반)
   };
 
   const selectedNews = (result.selectedNews || []).map(item => {
@@ -192,7 +379,7 @@ async function summarizeStock(stockName, newsItems, maxNewsCount) {
       cleanTitle += ` (${newsItem.pubDate})`;
     }
 
-    const determinedCategory = categorizeNews(cleanTitle, newsItems);
+    const determinedCategory = categorizeNews(newsItem.stats);
 
     return {
       ...newsItem,
@@ -338,6 +525,9 @@ async function fetchForeignFuturesFromNews() {
 async function main() { try {
   console.log("🚀 Daily News Batch Started...");
   
+  const cache = loadCache();
+  housekeeping(cache);
+  
   const majorNames = MAJOR_STOCKS.map(s => s.name);
 
   // 외국인 선물 순매수 (뉴스 크롤링 기반)
@@ -445,15 +635,15 @@ async function main() { try {
   const sectorPrompt = `
   너는 수석 글로벌 투자 전략가야.
   현재 나의 주요 투자 종목은 [${majorNames.join(', ')}] 이야.
-  이 종목들이 속한 산업과 연관된 **미국 GICS 11대 주요 섹터(정보기술, 임의소비재, 산업재, 커뮤니케이션 서비스, 헬스케어, 소재, 금융, 에너지, 유틸리티, 필수소비재, 부동산)** 중에서, 간밤에 가장 유의미한 움직임이나 뉴스가 있었던 핵심 섹터 딱 3개를 선정하고, JSON 배열 형식으로 분석을 제공해.
+  이 종목들이 속한 산업과 연관된 **미국 GICS 11대 주요 섹터(정보기술, 임의소비재, 산업재, 커뮤니케이션 서비스, 헬스케어, 소재, 금융, 에너지, 유틸리티, 필수소비재, 부동산)** 중에서, 간밤에 가장 유의미한 움직임이나 뉴스가 있었던 핵심 섹터 딱 3개를 선정하고, 그것이 나의 주요 종목에 미치는 영향을 분석하라 (Top-down 방식).
 
   [분석 지침]
-  1. 섹터 선정: 반드시 위에서 제시된 11대 GICS 섹터명 중 3개를 그대로 사용하라. (예: "정보기술(IT)")
+  1. 섹터 선정: 반드시 위에서 제시된 11대 GICS 섹터명 목록에서만 3개를 선택해 그대로 사용하라. (예: "정보기술(IT)" 등 임의 변형 금지. 오직 "정보기술" 만 사용)
   2. overnightTrend: 아래 [미국장 뉴스]를 중심으로 해당 섹터의 기업 동향과 주요 이슈를 서술. [실제 등락률] 수치보다는 비즈니스 맥락과 뉴스 위주로 3~4문장.
-  3. historicalImpact: 이 미국 섹터의 간밤 흐름이 나의 주요 투자 종목([${majorNames.join(', ')}]) 혹은 한국 관련 테마주들에 오늘 어떤 영향을 미칠지 분석하여 사례/퍼센트로 2~3문장 서술.
+  3. historicalImpact: 이 미국 섹터의 간밤 흐름이 나의 한국 주요 종목([${majorNames.join(', ')}])에 오늘 어떤 직접적인 영향을 미칠지 사례/퍼센트로 2~3문장 서술.
   4. outlook: 오늘 한국 시장 개장 시 해당 섹터 및 테마에 대한 전반적 전망 2~3문장.
   5. keywords: 핵심 키워드 3~5개 (키워드만 읽어도 내용 파악 가능하도록).
-  6. usPeers: 해당 섹터에 속하는 미국 대장주를 반드시 아래 [미국장 대장주 목록]에서 골라 배열로 나열하라. 종목명 뒤의 괄호 안 섹터 힌트를 참고하여 정확하게 매핑하라. (예: "정보기술" 섹터라면 "엔비디아(AI반도체)", "산업재"라면 "캐터필러(기계장비)"). 억지로 끼워 맞추지 말고 빈 배열 [] 을 반환해도 좋으나, 최대한 적합한 GICS 분류를 따르라.
+  6. usPeers: 해당 섹터에 속하는 미국 대장주를 반드시 아래 [미국장 대장주 목록]에서 골라 배열로 나열하라. 종목명 뒤의 괄호 안 섹터 힌트를 참고하여 정확하게 매핑하라. (예: "정보기술" 섹터라면 "엔비디아(AI반도체)", "산업재"라면 "캐터필러(기계장비)"). 빈 배열 [] 을 반환해도 좋으나 최대한 적합한 GICS 분류를 따르라.
 
   [미국장 대장주 목록 및 간밤 등락률]
   ${peerChangeLine}
@@ -466,10 +656,10 @@ async function main() { try {
     "sectors": [
       {
         "weather": "☀️ 맑음 OR ⛅ 구름 OR 🌧️ 흐림 OR ⛈️ 폭풍",
-        "sectorName": "반도체/AI",
+        "sectorName": "GICS 11대 섹터명 중 하나와 100% 일치하는 문자열",
         "usPeers": ["엔비디아", "AMD", "TSMC"],
         "overnightTrend": "간밤 동향 3~4문장 (반드시 실제 등락률 포함)...",
-        "historicalImpact": "과거 패턴 2~3문장...",
+        "historicalImpact": "한국 주요 종목에 미치는 영향 2~3문장...",
         "outlook": "오늘 전망 2~3문장...",
         "keywords": ["키워드1", "키워드2", "키워드3"]
       }
@@ -562,31 +752,32 @@ async function main() { try {
     section5_watchlist: []
   };
 
-  // 섹션 3: 주요 종목 (Top 7 뉴스 목표)
+  // 섹션 3: 주요 종목
   console.log("Processing Section 3: Major Stocks...");
   for (const stock of MAJOR_STOCKS) {
-    const news = await fetchGoogleNews(`${stock.name} (특징주 OR 실적 OR 뉴스 OR 공시 OR 리포트 OR 신제품 OR 계약 OR 경영)`);
-    const aiResult = await summarizeStock(stock.name, news, 7);
+    const top15News = await processLayer1(stock.name, cache);
+    const aiResult = await summarizeStock(stock.name, top15News, 5);
     report.section3_major.push({ ...stock, summary: aiResult.summary, industry: aiResult.industry, news: aiResult.news });
     await sleep(1500); // API Rate Limit 방지용 휴식
   }
 
-  // 섹션 4: 관심 종목 (Top 5 뉴스 목표)
+  // 섹션 4: 관심 종목
   console.log("Processing Section 4: Interest Stocks...");
   for (const stock of INTEREST_STOCKS) {
-    const news = await fetchGoogleNews(`${stock.name} (특징주 OR 실적 OR 뉴스 OR 공시 OR 리포트 OR 신제품 OR 계약 OR 경영)`);
-    const aiResult = await summarizeStock(stock.name, news, 5);
+    const top15News = await processLayer1(stock.name, cache);
+    const aiResult = await summarizeStock(stock.name, top15News, 5);
     report.section4_interest.push({ ...stock, summary: aiResult.summary, industry: aiResult.industry, news: aiResult.news });
     await sleep(1500); // API Rate Limit 방지용 휴식
   }
 
   // 섹션 5: 관망 종목 (슬립모드 해제 로직 임시 구현)
-  // 기사 수가 특정 개수를 넘거나 특정 키워드가 폭증할 때만 작동하도록 뼈대 작성
   console.log("Processing Section 5: Watchlist Stocks...");
   for (const stock of ARCHIVED_STOCKS) {
-    // 임시 로직: 일단 빈 칸으로 구성 (추후 폭증 감지 알고리즘 적용 시 여기에 추가)
-    // report.section5_watchlist.push({ ... });
+    // 임시 로직: 일단 빈 칸으로 구성
   }
+  
+  // 파이프라인 마지막 단계: 캐시 저장 (news_cache.json)
+  saveCache(cache);
 
   const outPath = path.join(process.cwd(), 'src', 'data', 'latest_report.json');
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
