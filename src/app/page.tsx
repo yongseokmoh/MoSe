@@ -108,8 +108,8 @@ const parseFormatting = (text: string) => {
 
     if (innerText !== null) {
       const spaceCount = (innerText.match(/\s/g) || []).length;
-      // 너무 짧은 단어(조사 등), 너무 긴 구절, 띄어쓰기가 많은 구절은 하이라이트 취소
-      if (innerText.length < 2 || spaceCount >= 2 || innerText.length > 15) {
+      // 의미 단위 구절 하이라이트를 허용하되, 문장 전체나 너무 긴 덩어리는 취소 (방어막 완화)
+      if (innerText.length < 2 || spaceCount >= 4 || innerText.length > 30) {
         return <span key={i}>{innerText}</span>;
       }
       return <strong key={i} className="font-bold text-blue-900 dark:text-blue-400">{innerText}</strong>;
@@ -151,14 +151,16 @@ const SummaryList = ({ text }: { text: string }) => {
 // 섹션2 키워드 하이라이트 렌더러
 const HighlightedText = ({ text, keywords }: { text: string, keywords?: string[] }) => {
   if (!keywords || keywords.length === 0 || !text) return <>{text}</>;
-  const escaped = keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  // 긴 키워드부터 매칭하여 부분 매칭 오류 방지
+  const sortedKeywords = [...keywords].sort((a, b) => b.length - a.length);
+  const escaped = sortedKeywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
   const regex = new RegExp(`(${escaped.join('|')})`, 'g');
   const parts = text.split(regex);
   return (
     <>
       {parts.map((part, i) =>
         keywords.includes(part)
-          ? <mark key={i} className="bg-yellow-200 dark:bg-yellow-700/60 text-inherit font-bold px-0.5 rounded">{part}</mark>
+          ? <strong key={i} className="font-bold text-blue-900 dark:text-blue-400">{part}</strong>
           : <span key={i}>{part}</span>
       )}
     </>
