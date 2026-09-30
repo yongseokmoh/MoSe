@@ -38,7 +38,7 @@ export default function MacroSummaryClient({ summaryData }: { summaryData: any }
         <span 
           key={currentMatch.index} 
           onClick={() => setSelectedKeyword(keywordObj)}
-          className="text-blue-600 dark:text-blue-400 font-extrabold cursor-pointer border-b-2 border-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 active:bg-blue-200 transition-colors"
+          className="text-blue-700 dark:text-blue-400 font-extrabold cursor-pointer border-b-2 border-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 active:bg-blue-200 transition-colors"
         >
           {currentMatch[0]}
         </span>
@@ -79,7 +79,7 @@ export default function MacroSummaryClient({ summaryData }: { summaryData: any }
             >
               ✕
             </button>
-            <h3 className="font-extrabold text-lg md:text-[1.3rem] mb-3 md:mb-4 pr-8 text-blue-600 bg-blue-50 dark:bg-blue-950 inline-block px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900">
+            <h3 className="font-extrabold text-lg md:text-[1.3rem] mb-3 md:mb-4 pr-8 text-blue-700 bg-blue-50 dark:bg-blue-950 inline-block px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900">
               "{selectedKeyword.word}"
             </h3>
             <p className="text-base md:text-[1.2rem] leading-relaxed font-medium mb-5 md:mb-6 whitespace-pre-line">
