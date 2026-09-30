@@ -12,10 +12,9 @@ const INTEREST_STOCKS = userProfile.stocks.filter(s => s.type === 'interest');
 const ARCHIVED_STOCKS = userProfile.stocks.filter(s => s.type === 'archived');
 
 function formatToYYMMDD(dateObj) {
-  const yy = String(dateObj.getFullYear()).slice(-2);
   const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
   const dd = String(dateObj.getDate()).padStart(2, '0');
-  return `${yy}/${mm}/${dd}`;
+  return `${mm}/${dd}`;
 }
 
 // ==========================================
@@ -863,9 +862,39 @@ async function main() { try {
   for (const stock of MAJOR_STOCKS) {
     const top15News = await processLayer1(stock.name, cache);
     const aiResult = await summarizeStock(stock.name, top15News, 5);
-    report.section3_major.push({ ...stock, summary: aiResult.summary, industry: aiResult.industry, news: aiResult.news });
+    
+    const code = krxCodes[stock.name] || krxCodes[stock.name + '우'] || null;
+    let volume = 0, marketCap = 0;
+    if (code) {
+      const pollingData = await fetchNaverPollingData(code);
+      volume = pollingData.volume;
+      marketCap = pollingData.marketCap;
+    }
+    
+    report.section3_major.push({ 
+      ...stock, 
+      summary: aiResult.summary, 
+      industry: aiResult.industry, 
+      news: aiResult.news,
+      volume,
+      marketCap
+    });
     await sleep(1500); // API Rate Limit 방지용 휴식
   }
+  
+  // Sorting section3_major by combined score
+  const vols = report.section3_major.map(s => s.volume);
+  const caps = report.section3_major.map(s => s.marketCap);
+  const maxVol = Math.max(...vols, 1);
+  const maxCap = Math.max(...caps, 1);
+  
+  report.section3_major.forEach(s => {
+    const normVol = (s.volume / maxVol) * 100;
+    const normCap = (s.marketCap / maxCap) * 100;
+    s.combinedScore = (normVol * 0.5) + (normCap * 0.5);
+  });
+  
+  report.section3_major.sort((a, b) => b.combinedScore - a.combinedScore);
 
   // 섹션 4: 관심 종목
   console.log("Processing Section 4: Interest Stocks...");

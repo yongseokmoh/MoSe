@@ -66,7 +66,7 @@ export default function AccordionNews({ news, category }: { news: any, category?
           className="p-3 md:p-4 flex flex-col gap-1.5 md:gap-2 cursor-pointer active:bg-[var(--muted)]/50 transition-colors"
           onClick={() => setIsOpen(!isOpen)}
         >
-          <span className="font-semibold text-lg md:text-[1.5rem] leading-snug w-full">
+          <span className="font-semibold text-base md:text-[1.3125rem] leading-snug w-full">
             {category === 'sudden' && <span className="inline-block text-xs md:text-[1rem] bg-red-100 text-red-700 dark:bg-red-900/80 dark:text-red-300 px-2 py-0.5 rounded mr-2 align-middle font-extrabold mb-1">🔥 상승</span>}
             {category === 'most_viewed' && <span className="inline-block text-xs md:text-[1rem] bg-blue-100 text-blue-700 dark:bg-blue-900/80 dark:text-blue-300 px-2 py-0.5 rounded mr-2 align-middle font-extrabold mb-1">👀 주목</span>}
             {(!category || category === 'normal') && <span className="inline-block text-xs md:text-[1rem] bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded mr-2 align-middle font-extrabold mb-1">⭐ 중요</span>}
