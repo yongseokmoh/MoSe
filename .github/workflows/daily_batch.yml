@@ -21,8 +21,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: 3. Install Dependencies
+        run: npm ci
           
-      - name: 3. Run DeepSeek script (Primary Engine)
+      - name: 4. Run DeepSeek script (Primary Engine)
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
@@ -31,7 +34,7 @@ jobs:
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
         run: node scripts/generate_deepseek_report.mjs
         
-      - name: 4. Commit & Push
+      - name: 5. Commit & Push
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
         run: |
