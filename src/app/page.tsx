@@ -112,7 +112,7 @@ const parseFormatting = (text: string) => {
       if (innerText.length < 2 || spaceCount >= 4 || innerText.length > 30) {
         return <span key={i}>{innerText}</span>;
       }
-      return <strong key={i} className="font-bold text-blue-900 dark:text-blue-400">{innerText}</strong>;
+      return <strong key={i} className="font-bold text-[#000080] dark:text-[#7ba2eb]">{innerText}</strong>;
     }
     return <span key={i}>{part}</span>;
   });
@@ -160,7 +160,7 @@ const HighlightedText = ({ text, keywords }: { text: string, keywords?: string[]
     <>
       {parts.map((part, i) =>
         keywords.includes(part)
-          ? <strong key={i} className="font-bold text-blue-900 dark:text-blue-400">{part}</strong>
+          ? <strong key={i} className="font-bold text-[#000080] dark:text-[#7ba2eb]">{part}</strong>
           : <span key={i}>{part}</span>
       )}
     </>
@@ -261,7 +261,14 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                         {sector.peers.map((p: any, pIdx: number) => (
                           <div key={pIdx} className="flex justify-between items-center bg-[var(--muted)]/40 px-2 py-1.5 md:px-3 md:py-2 rounded-lg border border-[var(--border)] shadow-sm">
                             <div className="flex items-baseline gap-1 md:gap-2 flex-wrap">
-                              <span className="font-bold text-base md:text-[1.1rem] text-[var(--foreground)]">{p.name}</span>
+                              <span>
+  <span className="font-bold text-base md:text-[1.1rem] text-[var(--foreground)]">
+    {p.name.includes('(') ? p.name.split('(')[0] : p.name}
+  </span>
+  {p.name.includes('(') && (
+    <span className="text-gray-500 text-[80%] ml-1">({p.name.split('(')[1]}</span>
+  )}
+</span>
                               <span className="text-xs md:text-[0.8rem] text-[var(--muted-foreground)]">{p.market}</span>
                             </div>
                             <div className="flex items-baseline gap-2 md:gap-3">
@@ -276,7 +283,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                     )}
 
                     <div className="text-base md:text-[1.3rem] leading-relaxed mb-2 md:mb-3">
-                      <span className="font-bold text-blue-600 dark:text-blue-400">간밤 동향: </span>
+                      <span className="font-bold text-[#000080] dark:text-[#7ba2eb]">간밤 동향: </span>
                       <HighlightedText text={sector.overnightTrend} keywords={keywords} />
                     </div>
                     <div className="text-sm md:text-[1.2rem] leading-relaxed text-[var(--muted-foreground)] bg-[var(--muted)]/30 p-2 md:p-3 rounded-lg mb-2">
@@ -336,7 +343,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                 </h3>
               </div>
               <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-base md:text-[1.3rem] leading-relaxed">
-                 <strong className="text-blue-500 block mb-1">🤖 뉴스요약</strong>
+                 <strong className="text-[#000080] dark:text-[#7ba2eb] block mb-1">🤖 뉴스요약</strong>
                  <SummaryList text={stock.summary} />
               </div>
               {stock.news?.map((newsItem: any, index: number) => (
@@ -358,7 +365,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
                 </h3>
               </div>
               <div className="bg-[var(--muted)]/30 p-3 rounded-xl mb-3 text-base md:text-[1.3rem] leading-relaxed">
-                 <strong className="text-blue-500 block mb-1">🤖 뉴스요약</strong>
+                 <strong className="text-[#000080] dark:text-[#7ba2eb] block mb-1">🤖 뉴스요약</strong>
                  <SummaryList text={stock.summary} />
               </div>
               {stock.news?.map((newsItem: any, index: number) => (

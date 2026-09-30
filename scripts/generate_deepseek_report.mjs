@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import { fetchAllKRXCodes } from './krx_codes.mjs';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const profilePath = path.join(process.cwd(), 'src', 'data', 'user_profile.json');
@@ -145,6 +146,58 @@ function calculateScores(article, stockData) {
 }
 
 
+
+async function fetchNaverNews(query) {
+  const NAVER_CLIENT_ID = process.env.NAVER_CLIENT_ID;
+  const NAVER_CLIENT_SECRET = process.env.NAVER_CLIENT_SECRET;
+  if (!NAVER_CLIENT_ID || !NAVER_CLIENT_SECRET) return [];
+  
+  const url = `https://openapi.naver.com/v1/search/news.json?query=${encodeURIComponent(query)}&display=20&sort=sim`;
+  try {
+    const res = await fetch(url, {
+      headers: {
+        'X-Naver-Client-Id': NAVER_CLIENT_ID,
+        'X-Naver-Client-Secret': NAVER_CLIENT_SECRET
+      }
+    });
+    const data = await res.json();
+    if (!data.items) return [];
+    
+    return data.items.map(item => {
+      let title = item.title.replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, "&");
+      let description = item.description.replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, "&");
+      return {
+        title: '[네이버] ' + title,
+        link: item.link,
+        pubDate: formatToYYMMDD(new Date(item.pubDate)),
+        description: description,
+        isTrusted: true,
+        publisher: '네이버'
+      };
+    });
+  } catch (e) {
+    console.error('Naver API error:', e.message);
+    return [];
+  }
+}
+
+async function fetchNaverPollingData(code) {
+  try {
+    const res = await fetch(`https://polling.finance.naver.com/api/realtime/domestic/stock/${code}`);
+    const data = await res.json();
+    const stock = data.datas[0];
+    if (stock) {
+      return {
+        volume: parseFloat(stock.accumulatedTradingVolumeRaw || 0),
+        marketCap: parseFloat(stock.marketValueFullRaw || 0)
+      };
+    }
+  } catch (e) {
+    console.error('Naver Polling Error:', code, e.message);
+  }
+  return { volume: 0, marketCap: 0 };
+}
+
 async function fetchGoogleNews(query) {
   const url = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=ko&gl=KR&ceid=KR:ko`;
   const response = await fetch(url);
@@ -236,7 +289,8 @@ async function processLayer1(stockName, cache) {
   
   const mainNews = await fetchGoogleNews(query_main);
   const riskNews = await fetchGoogleNews(query_risk);
-  const combinedNews = [...mainNews, ...riskNews];
+  const naverNews = await fetchNaverNews(stockName);
+  const combinedNews = [...mainNews, ...riskNews, ...naverNews];
   
   // 중복 제거 및 캐시 저장
   for (const item of combinedNews) {
@@ -573,6 +627,7 @@ async function main() { try {
   housekeeping(cache);
   
   const majorNames = MAJOR_STOCKS.map(s => s.name);
+  const krxCodes = await fetchAllKRXCodes();
 
   // 외국인 선물 순매수 (뉴스 크롤링 기반)
   console.log("Fetching Foreign Futures data from News...");

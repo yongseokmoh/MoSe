@@ -145,7 +145,7 @@ export default function AccordionNews({ news, category }: { news: any, category?
                     대신 AI가 분석한 핵심 요약을 참고하시거나, 아래 버튼을 눌러 원문 사이트에서 직접 확인해 주세요.
                   </div>
                   <div className="bg-[var(--card)] p-4 rounded-xl border border-[var(--border)] shadow-sm text-left w-full mb-4">
-                    <strong className="text-blue-600 block mb-2">💡 AI 핵심 요약</strong>
+                    <strong className="text-[#000080] dark:text-[#7ba2eb] block mb-2">💡 AI 핵심 요약</strong>
                     <p className="text-base md:text-[1.15rem] leading-relaxed text-[var(--foreground)]">{news.articleSummary}</p>
                   </div>
                   <a href={articleUrl} target="_blank" rel="noopener noreferrer" className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-md inline-flex items-center gap-2 hover:bg-blue-700 active:scale-95 transition-all text-base md:text-lg">

@@ -12,6 +12,8 @@
     "@mozilla/readability": "^0.6.0",
     "@types/jsdom": "^30.0.0",
     "@types/mozilla-readability": "^0.2.1",
+    "cheerio": "^1.2.0",
+    "iconv-lite": "^0.7.3",
     "isomorphic-dompurify": "^4.3.0",
     "jsdom": "^30.1.1",
     "next": "16.3.6",
