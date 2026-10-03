@@ -1,8 +1,6 @@
 name: MoSe Daily News Batch
 
 on:
-  schedule:
-    - cron: '3 21 * * *' # KST 06:03 (UTC 21:03)
   workflow_dispatch:
 
 jobs:
