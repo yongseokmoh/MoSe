@@ -2,7 +2,7 @@
   "stocks": [
     {
       "name": "클로봇",
-      "type": "major"
+      "type": "interest"
     },
     {
       "name": "현대건설",
@@ -178,7 +178,7 @@
     },
     {
       "name": "LS전선",
-      "type": "interest"
+      "type": "major"
     },
     {
       "name": "두산퓨얼셀",
@@ -186,7 +186,7 @@
     },
     {
       "name": "가온전선",
-      "type": "interest"
+      "type": "major"
     },
     {
       "name": "범한퓨얼셀",
@@ -194,7 +194,7 @@
     },
     {
       "name": "대원전선",
-      "type": "interest"
+      "type": "major"
     },
     {
       "name": "덕산네오룩스",
@@ -202,7 +202,7 @@
     },
     {
       "name": "두산에너빌리티",
-      "type": "interest"
+      "type": "major"
     },
     {
       "name": "애경케미칼",
@@ -230,7 +230,7 @@
     },
     {
       "name": "SK이노베이션",
-      "type": "interest"
+      "type": "major"
     },
     {
       "name": "한국콜마",
@@ -254,15 +254,15 @@
     },
     {
       "name": "포스코퓨처엠",
-      "type": "interest"
+      "type": "major"
     },
     {
       "name": "PS일렉트로닉스",
-      "type": "interest"
+      "type": "major"
     },
     {
       "name": "NHN",
-      "type": "interest"
+      "type": "major"
     },
     {
       "name": "샘씨엔에스",
@@ -274,19 +274,14 @@
     },
     {
       "name": "삼성E&A",
-      "type": "interest"
+      "type": "major"
     },
     {
       "name": "GS건설",
-      "type": "interest"
+      "type": "major"
     },
     {
       "name": "자람테크놀로지",
-      "type": "interest"
-    },
-    {
-      "name": "카카오",
-      "code": "",
       "type": "interest"
     }
   ],
