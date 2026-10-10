@@ -12,7 +12,7 @@ export async function fetchAllKRXCodes() {
     const stocks = {};
     $('table tbody tr').each((i, el) => {
       const name = $(el).find('td').eq(0).text().trim();
-      const code = $(el).find('td').eq(1).text().trim();
+      const code = $(el).find('td').eq(2).text().trim(); // eq(1) is market type (e.g. 코스닥), eq(2) is the 6-digit KRX code
       if (name && code) {
         stocks[name] = code;
       }

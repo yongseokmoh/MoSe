@@ -4,8 +4,29 @@ import crypto from 'crypto';
 import { fetchAllKRXCodes } from './krx_codes.mjs';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const profilePath = path.join(process.cwd(), 'src', 'data', 'user_profile.json');
-const userProfile = JSON.parse(fs.readFileSync(profilePath, 'utf8'));
+
+let userProfile = { stocks: [], scraps: [] };
+try {
+  const token = process.env.GITHUB_PAT;
+  const repo = process.env.GITHUB_REPO;
+  if (token && repo) {
+    console.log("Fetching user_profile.json from GitHub...");
+    const apiUrl = `https://api.github.com/repos/${repo}/contents/mose-app/src/data/user_profile.json`;
+    const res = await fetch(apiUrl, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }});
+    if (res.ok) {
+      const data = await res.json();
+      userProfile = JSON.parse(Buffer.from(data.content, 'base64').toString('utf-8'));
+    }
+  }
+  if (!userProfile.stocks || userProfile.stocks.length === 0) {
+    const profilePath = path.join(process.cwd(), 'src', 'data', 'user_profile.json');
+    userProfile = JSON.parse(fs.readFileSync(profilePath, 'utf8'));
+  }
+} catch(e) {
+  console.warn("Using fallback profile load", e);
+  const profilePath = path.join(process.cwd(), 'src', 'data', 'user_profile.json');
+  userProfile = JSON.parse(fs.readFileSync(profilePath, 'utf8'));
+}
 
 const MAJOR_STOCKS = userProfile.stocks.filter(s => s.type === 'major');
 const INTEREST_STOCKS = userProfile.stocks.filter(s => s.type === 'interest');
