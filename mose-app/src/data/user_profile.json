@@ -186,7 +186,7 @@
     },
     {
       "name": "가온전선",
-      "type": "major"
+      "type": "interest"
     },
     {
       "name": "범한퓨얼셀",
@@ -194,7 +194,7 @@
     },
     {
       "name": "대원전선",
-      "type": "major"
+      "type": "interest"
     },
     {
       "name": "덕산네오룩스",
@@ -202,7 +202,7 @@
     },
     {
       "name": "두산에너빌리티",
-      "type": "major"
+      "type": "interest"
     },
     {
       "name": "애경케미칼",
@@ -230,7 +230,7 @@
     },
     {
       "name": "SK이노베이션",
-      "type": "major"
+      "type": "interest"
     },
     {
       "name": "한국콜마",
@@ -242,11 +242,11 @@
     },
     {
       "name": "에코프로",
-      "type": "major"
+      "type": "interest"
     },
     {
       "name": "에코프로비엠",
-      "type": "major"
+      "type": "interest"
     },
     {
       "name": "LG화학",
@@ -254,7 +254,7 @@
     },
     {
       "name": "포스코퓨처엠",
-      "type": "major"
+      "type": "interest"
     },
     {
       "name": "PS일렉트로닉스",
