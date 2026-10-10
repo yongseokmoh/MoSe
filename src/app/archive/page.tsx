@@ -1,5 +1,7 @@
 import ArchiveClient from './ArchiveClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ArchivePage() {
   let profile = { scraps: [] };
   try {

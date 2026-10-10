@@ -1,5 +1,7 @@
 import SettingsClient from './SettingsClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function SettingsPage() {
   // 서버 사이드에서 GitHub API를 통해 최신 JSON 파일을 읽어옵니다.
   let initialProfile = { stocks: [], scraps: [] };
